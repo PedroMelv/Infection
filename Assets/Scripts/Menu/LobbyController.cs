@@ -65,7 +65,7 @@ public class LobbyController : MonoBehaviourPunCallbacks
         attemptingConnect = true;
 
         PhotonNetwork.AutomaticallySyncScene = true;
-
+        PhotonNetwork.EnableCloseConnection = true;
         PhotonNetwork.GameVersion = "0.1a";
 
 

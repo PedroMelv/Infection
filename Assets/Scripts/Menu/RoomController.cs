@@ -44,8 +44,6 @@ public class RoomController : MonoBehaviourPunCallbacks
             if (playersList[i].ready) readyCount++;
         }
 
-        
-
         if (readyCount >= PhotonNetwork.CurrentRoom.MaxPlayers)
         {
             startButton.interactable = true;
@@ -90,6 +88,12 @@ public class RoomController : MonoBehaviourPunCallbacks
         UpdateUI();
     }
 
+    public override void OnMasterClientSwitched(Player newMasterClient)
+    {
+        playersOnline = PhotonNetwork.PlayerList;
+        UpdateUI();
+    }
+
     private void UpdateUI()
     {
         roomNameText.text = PhotonNetwork.CurrentRoom.Name;
@@ -123,7 +127,7 @@ public class RoomController : MonoBehaviourPunCallbacks
             {
                 PlayerItem pi = Instantiate(playerItemPrefab, playersPlacement);
                 pi.SetPlayer(playersOnline[i]);
-                pi.SetIsMaster(PhotonNetwork.IsMasterClient);
+                pi.SetIsMaster(PhotonNetwork.IsMasterClient, false);
                 pi.SetIsOwner((playersOnline[i] == PhotonNetwork.LocalPlayer));
                 playersList.Add(pi);
             }
@@ -156,6 +160,11 @@ public class RoomController : MonoBehaviourPunCallbacks
         return null;
     }
 
+    public void KickPlayer(Player kickMe)
+    {
+        view.RPC("RPC_KickPlayer", kickMe);
+    }
+
     #region RPCs
     [PunRPC]
     public void RPC_ReadyButton(string playerName)
@@ -164,8 +173,15 @@ public class RoomController : MonoBehaviourPunCallbacks
 
         if(player != null)
         {
-            player.ready = !player.ready;
+            player.SwitchReady();
         }
+    }
+
+    
+    [PunRPC]
+    public void RPC_KickPlayer()
+    {
+        DisconnectButton();
     }
 
     #endregion

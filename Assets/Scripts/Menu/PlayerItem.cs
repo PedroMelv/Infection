@@ -7,7 +7,7 @@ using Photon;
 using Photon.Realtime;
 using Photon.Pun;
 
-public class PlayerItem : MonoBehaviour
+public class PlayerItem : MonoBehaviourPun
 {
     [SerializeField] private Sprite masterSpr, readySpr, notReadySpr;
     [SerializeField] private TextMeshProUGUI playerNameText;
@@ -31,9 +31,9 @@ public class PlayerItem : MonoBehaviour
         playerIconImg.sprite = spr;
     }
 
-    public void SetIsMaster(bool isMaster, bool forceShowMasterSprite = false)
+    public void SetIsMaster(bool isMaster, bool showMasterSprite = false)
     {
-        if (isMaster || forceShowMasterSprite) SetIcon(masterSpr);
+        if (showMasterSprite) SetIcon(masterSpr);
         kickButton.SetActive(isMaster);
         promoteButton.SetActive(isMaster);
     }
@@ -51,7 +51,7 @@ public class PlayerItem : MonoBehaviour
 
     public void KickPlayer()
     {
-        PhotonNetwork.CloseConnection(connectedPlayer);
+        FindObjectOfType<RoomController>().KickPlayer(connectedPlayer);
     }
 
     public void PromotePlayer()

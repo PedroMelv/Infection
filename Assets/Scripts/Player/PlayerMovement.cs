@@ -5,6 +5,9 @@ using UnityEngine;
 public class PlayerMovement : MonoBehaviour
 {
     [SerializeField] private Transform orientation;
+    [SerializeField] private Rigidbody submarineBody;
+
+    private Vector3 submarineLastPosition;
 
     [Header("Movement")]
     [SerializeField] private float moveSpeed;
@@ -39,7 +42,26 @@ public class PlayerMovement : MonoBehaviour
 
     private void FixedUpdate()
     {
+        FollowSubmarine();
         HandleMovement();
+    }
+
+    private void FollowSubmarine()
+    {
+        if(submarineBody == null) return;
+
+        if(Vector3.Distance(transform.position, submarineBody.transform.position) > 10f) submarineBody = null;
+
+        if(submarineBody == null) return;
+
+        if(submarineLastPosition != Vector3.zero)
+        {
+            Vector3 dir = submarineBody.position - submarineLastPosition;
+            moveDirection += dir;
+            rb.AddForce(dir, ForceMode.Acceleration);
+        }
+
+        submarineLastPosition = submarineBody.position;
     }
 
     #region Movement
