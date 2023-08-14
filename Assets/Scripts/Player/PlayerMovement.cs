@@ -6,6 +6,7 @@ public class PlayerMovement : MonoBehaviour
 {
     [SerializeField] private Transform orientation;
     [SerializeField] private Rigidbody submarineBody;
+    [SerializeField] private float moveForce;
 
     private Vector3 submarineLastPosition;
 
@@ -33,7 +34,10 @@ public class PlayerMovement : MonoBehaviour
         rb = GetComponent<Rigidbody>();
         pInput = GetComponent<PlayerInput>();
     }
-
+    private void Start()
+    {
+        if(submarineBody != null) submarineLastPosition = submarineBody.position;
+    }
     private void Update()
     {
         HandleGroundDrag();
@@ -42,26 +46,29 @@ public class PlayerMovement : MonoBehaviour
 
     private void FixedUpdate()
     {
-        FollowSubmarine();
         HandleMovement();
+        FollowSubmarine();
     }
 
     private void FollowSubmarine()
     {
         if(submarineBody == null) return;
 
-        if(Vector3.Distance(transform.position, submarineBody.transform.position) > 10f) submarineBody = null;
+        float rotationAmount = submarineBody.GetComponent<SubmarineTest>().rotateSpeed * Time.deltaTime;
 
-        if(submarineBody == null) return;
+        Quaternion localAnglesAxis = Quaternion.AngleAxis(rotationAmount, transform.up);
+        rb.position = (localAnglesAxis * (rb.position - submarineBody.position)) + submarineBody.position;
 
-        if(submarineLastPosition != Vector3.zero)
-        {
-            Vector3 dir = submarineBody.position - submarineLastPosition;
-            moveDirection += dir;
-            rb.AddForce(dir, ForceMode.Acceleration);
-        }
+        Quaternion globalAngleAxis = Quaternion.AngleAxis(rotationAmount, rb.transform.InverseTransformDirection(submarineBody.transform.up));
+        rb.rotation *= globalAngleAxis;
 
+        
+        Vector3 dir = submarineBody.position - submarineLastPosition;
+        rb.position += dir;
+        
         submarineLastPosition = submarineBody.position;
+
+        if(Vector3.Distance(transform.position, submarineBody.transform.position) > 100f) submarineBody = null;
     }
 
     #region Movement

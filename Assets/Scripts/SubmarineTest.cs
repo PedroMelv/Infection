@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class SubmarineTest : MonoBehaviour
 {
-    [SerializeField] private float rotateSpeed;
+    public float rotateSpeed;
     [SerializeField] private float moveSpeed;
     private Rigidbody rb;
 
@@ -17,15 +17,15 @@ public class SubmarineTest : MonoBehaviour
         InvokeRepeating("SubmarineInputMovement", 0f, 5f);
         InvokeRepeating("SubmarineInputRotation", 0f, 5f);
     }
-    void Update()
+    void FixedUpdate()
     {
-        transform.Translate(transform.forward * moveSpeed * Time.deltaTime);
-        transform.Rotate(Vector3.up * rotateSpeed * Time.deltaTime);
+        transform.position += transform.forward * moveSpeed * Time.fixedDeltaTime;
+        transform.Rotate( Vector3.up * rotateSpeed * Time.fixedDeltaTime);
     }
 
     private void SubmarineInputRotation()
     {
-        rotateSpeed = Random.Range(-40f, 40f);
+        rotateSpeed = Random.Range(-60f, 60f);
     }
 
     private void SubmarineInputMovement()

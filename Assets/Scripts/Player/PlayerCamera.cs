@@ -48,9 +48,11 @@ public class PlayerCamera : MonoBehaviour
         xRotation -= yInput;
         xRotation = Mathf.Clamp(xRotation, minAngle, maxAngle);
 
-        transform.rotation = Quaternion.Euler(xRotation, yRotation + submarine.transform.eulerAngles.y, 0f);
-        orientation.rotation = Quaternion.Euler(0f, yRotation + submarine.transform.eulerAngles.y, 0f);
-        playerBody.rotation = Quaternion.Euler(0f, yRotation + submarine.transform.eulerAngles.y, 0f);
+        if (submarine != null) yRotation += +submarine.transform.eulerAngles.y;
+
+        transform.rotation = Quaternion.Euler(xRotation, yRotation, 0f);
+        orientation.rotation = Quaternion.Euler(0f, yRotation, 0f);
+        playerBody.rotation = Quaternion.Euler(0f, yRotation, 0f);
 
         cameraHandler.position = cameraPos.position + headbobOffset;
     }
