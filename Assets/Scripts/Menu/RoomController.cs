@@ -6,6 +6,7 @@ using Photon.Pun;
 using Photon.Realtime;
 using UnityEngine.UI;
 using TMPro;
+using UnityEngine.SceneManagement;
 
 [RequireComponent(typeof(PhotonView))]
 public class RoomController : MonoBehaviourPunCallbacks
@@ -143,9 +144,10 @@ public class RoomController : MonoBehaviourPunCallbacks
     {
         view.RPC("RPC_ReadyButton", RpcTarget.AllBufferedViaServer, PhotonNetwork.LocalPlayer.NickName);
     }
+
     public void StartGameButton()
     {
-
+        SceneManager.LoadScene("Game_Island");
     }
 
     public PlayerItem GetPlayerItem(string playername) 

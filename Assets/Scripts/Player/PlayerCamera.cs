@@ -32,8 +32,20 @@ public class PlayerCamera : MonoBehaviour
     private Vector3 headbobOffset;
     private float headbobTimer;
 
+
+    public void SetOwner(PlayerInput input)
+    {
+        pInput = input;
+
+        orientation = pInput.orientation;
+        playerBody = pInput.playerBody;
+        cameraPos = pInput.cameraPos;
+    }
+
     private void LateUpdate()
     {
+        if (pInput == null) return;
+
         HandleHeadbob();
         HandleCamera();
     }

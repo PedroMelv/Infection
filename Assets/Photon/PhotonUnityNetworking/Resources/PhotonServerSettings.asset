@@ -38,6 +38,7 @@ MonoBehaviour:
   - DestroyRpc
   - RPC_ReadyButton
   - RPC_KickPlayer
+  - RPC_CreatePlayer
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 1

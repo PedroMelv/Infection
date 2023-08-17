@@ -1,9 +1,14 @@
+using Photon.Pun;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PlayerInput : MonoBehaviour
+public class PlayerInput : MonoBehaviourPun
 {
+    public Transform cameraPos;
+    public Transform playerBody;
+    public Transform orientation;
+
     public float move_x_input;
     public float move_y_input;
 
@@ -12,6 +17,8 @@ public class PlayerInput : MonoBehaviour
 
     private void Update()
     {
+        if (photonView.IsMine == false) return;
+
         move_x_input = Input.GetAxisRaw("Horizontal");
         move_y_input = Input.GetAxisRaw("Vertical");
 
