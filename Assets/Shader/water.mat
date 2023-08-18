@@ -56,8 +56,8 @@ Material:
     - _Smoothness: 0.8
     - _WaveTile: 1
     - _Wave_Scale: 1
-    - _Wave_Speed: 1
-    - _Wave_Strength: 3
+    - _Wave_Speed: 0.7
+    - _Wave_Strength: 0.63
     m_Colors:
     - _DeepColor: {r: 0.04701306, g: 0, b: 0.8867924, a: 0}
     - _Depth_Color: {r: 0, g: 0, b: 0, a: 0}
