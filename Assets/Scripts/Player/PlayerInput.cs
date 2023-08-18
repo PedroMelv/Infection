@@ -5,6 +5,7 @@ using UnityEngine;
 
 public class PlayerInput : MonoBehaviourPun
 {
+    public Camera myCamera;
     public Transform cameraPos;
     public Transform playerBody;
     public Transform orientation;

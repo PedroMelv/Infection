@@ -38,6 +38,8 @@ public class RoomController : MonoBehaviourPunCallbacks
     {
         if (PhotonNetwork.InRoom == false) return;
 
+        if (Input.GetKeyDown(KeyCode.G)) StartGameButton();
+
         int readyCount = 0;
 
         for (int i = 0; i < playersList.Count; i++)

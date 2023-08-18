@@ -91,6 +91,10 @@ MonoBehaviour:
   groundLayer:
     serializedVersion: 2
     m_Bits: 8
+  ladderLayer:
+    serializedVersion: 2
+    m_Bits: 64
+  climbSpeed: 5
   maxSlopeAngle: 60
 --- !u!114 &1721449749161564767
 MonoBehaviour:
@@ -104,6 +108,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 58141919b2aab2a4e9af2f2724130f68, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  myCamera: {fileID: 0}
   cameraPos: {fileID: 1721449749241359661}
   playerBody: {fileID: 1721449750065956358}
   orientation: {fileID: 1721449749919655449}
@@ -132,6 +137,7 @@ MonoBehaviour:
   ObservedComponents:
   - {fileID: 6420955845419879261}
   - {fileID: 1221237181103395673}
+  - {fileID: 9088295325945645792}
   sceneViewId: 0
   InstantiationId: 0
   isRuntimeInstantiated: 0

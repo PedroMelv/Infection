@@ -21,6 +21,13 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private LayerMask groundLayer;
     private bool grounded;
 
+    [Header("LadderClimb")]
+    [SerializeField] private LayerMask ladderLayer;
+    [SerializeField] private float climbSpeed;
+    private bool ladderDetected;
+    private bool exitingLadder;
+    
+
     [Header("Slope")]
     [SerializeField, Range(0f, 90f)] private float maxSlopeAngle;
     private RaycastHit slopeHit;
@@ -36,12 +43,14 @@ public class PlayerMovement : MonoBehaviour
     }
     private void Start()
     {
+
         if(submarineBody != null) submarineLastPosition = submarineBody.position;
     }
     private void Update()
     {
         HandleGroundDrag();
         HandleSpeedLimit();
+        HandleLadderDetection();
     }
 
     private void FixedUpdate()
@@ -74,7 +83,24 @@ public class PlayerMovement : MonoBehaviour
     #region Movement
     private void HandleMovement()
     {
-        rb.useGravity = !OnSlope();
+        rb.useGravity = (!OnSlope());
+
+        if (ladderDetected)
+        {
+            rb.useGravity = false;
+
+            Debug.Log(pInput.myCamera.transform.forward);
+            float climbDirectionRaw = pInput.myCamera.transform.forward.y;
+            float climbDirection = (Mathf.Abs(climbDirectionRaw) > .5f) ? 1f * Mathf.Sign(climbDirectionRaw) : 0f;
+
+            if(climbDirection < 0f) //Se ir para trás ele cai da escada
+
+            moveDirection = Vector3.up * pInput.move_y_input * climbDirection * climbSpeed + orientation.right * pInput.move_x_input * moveSpeed;
+
+            rb.velocity = moveDirection;
+
+            return;
+        }
 
         moveDirection = orientation.forward * pInput.move_y_input + orientation.right * pInput.move_x_input;
 
@@ -131,6 +157,18 @@ public class PlayerMovement : MonoBehaviour
 
     #endregion
 
+    #region Ladder Things
+
+    private void HandleLadderDetection()
+    {
+        Ray mouseRay = pInput.myCamera.ScreenPointToRay(Input.mousePosition);
+
+        mouseRay.origin = transform.position - Vector3.up * (playerHeight / 2f);
+
+        ladderDetected = Physics.Raycast(mouseRay, 1f, ladderLayer);
+    }
+
+    #endregion
     #region Slope Things
 
     public bool OnSlope()
