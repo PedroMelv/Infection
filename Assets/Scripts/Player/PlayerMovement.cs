@@ -74,14 +74,36 @@ public class PlayerMovement : MonoBehaviour
     #region Movement
     private void HandleMovement()
     {
+        rb.useGravity = !OnSlope();
+
         moveDirection = orientation.forward * pInput.move_y_input + orientation.right * pInput.move_x_input;
+
+        if(OnSlope())
+        {
+            rb.velocity = GetSlopeDirection() * moveSpeed;
+            return;
+        }
 
         rb.AddForce(moveDirection.normalized * moveSpeed * 10f, ForceMode.Force);
     }
 
     private void HandleSpeedLimit()
     {
-        Vector3 flatVel = new Vector3(rb.velocity.x, 0f, rb.velocity.z);
+        Vector3 flatVel = Vector3.zero;
+
+        if (OnSlope())
+        {
+            flatVel = new Vector3(rb.velocity.x, rb.velocity.y, rb.velocity.z);
+            if(flatVel.magnitude > moveSpeed)
+            {
+                Vector3 limitedVel = flatVel.normalized * moveSpeed;
+                rb.velocity = new Vector3(limitedVel.x, limitedVel.y, limitedVel.z);
+            }
+
+            return;
+        }
+
+        flatVel = new Vector3(rb.velocity.x, 0f, rb.velocity.z);
         if (flatVel.magnitude > moveSpeed)
         {
             Vector3 limitedVel = flatVel.normalized * moveSpeed;
@@ -99,7 +121,31 @@ public class PlayerMovement : MonoBehaviour
             finalDrag = groundDrag;
         }
 
+        if(moveDirection == Vector3.zero && OnSlope())
+        {
+            finalDrag = 100;
+        }
+
         rb.drag = finalDrag;
+    }
+
+    #endregion
+
+    #region Slope Things
+
+    public bool OnSlope()
+    {
+        if(Physics.Raycast(transform.position, Vector3.down, out slopeHit, playerHeight * .5f + 0.3f, groundLayer))
+        {
+            float angle = Vector3.Angle(Vector3.up, slopeHit.normal);
+            return (angle < maxSlopeAngle && angle != 0f);
+        }
+        return false;
+    }
+
+    public Vector3 GetSlopeDirection()
+    {
+        return Vector3.ProjectOnPlane(moveDirection, slopeHit.normal).normalized;
     }
 
     #endregion

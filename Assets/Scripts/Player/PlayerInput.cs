@@ -15,6 +15,11 @@ public class PlayerInput : MonoBehaviourPun
     public float mouse_x_input;
     public float mouse_y_input;
 
+    private void Start()
+    {
+        Cursor.lockState = CursorLockMode.Locked;
+    }
+
     private void Update()
     {
         if (photonView.IsMine == false) return;
