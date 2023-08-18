@@ -103,7 +103,7 @@ public class PlayerMovement : MonoBehaviour
             if ((climbDirection < 0f && pInput.move_y_input < 0f) || (ladderDetected == false && pInput.move_y_input > 0f) || (grounded && pInput.move_y_input < 0f))
             {
                 currentLadder = null;
-                DirectionPartOne = orientation.forward * pInput.move_y_input;
+                DirectionPartOne = orientation.forward * pInput.move_y_input * moveSpeed;
             }
 
             moveDirection = DirectionPartOne + DirectionPartTwo;
