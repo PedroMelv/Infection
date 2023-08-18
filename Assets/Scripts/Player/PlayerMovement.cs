@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class PlayerMovement : MonoBehaviour
 {
+    [SerializeField] private Transform feetPos;
     [SerializeField] private Transform orientation;
     [SerializeField] private Rigidbody submarineBody;
     [SerializeField] private float moveForce;
@@ -26,6 +27,9 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private float climbSpeed;
     private bool ladderDetected;
     private bool exitingLadder;
+
+    private RaycastHit ladderHit;
+    private GameObject currentLadder;
     
 
     [Header("Slope")]
@@ -85,17 +89,24 @@ public class PlayerMovement : MonoBehaviour
     {
         rb.useGravity = (!OnSlope());
 
-        if (ladderDetected)
+        if (currentLadder != null)
         {
             rb.useGravity = false;
 
-            Debug.Log(pInput.myCamera.transform.forward);
             float climbDirectionRaw = pInput.myCamera.transform.forward.y;
-            float climbDirection = (Mathf.Abs(climbDirectionRaw) > .5f) ? 1f * Mathf.Sign(climbDirectionRaw) : 0f;
+            float climbDirection = (Mathf.Abs(climbDirectionRaw) > .25f) ? 1f * Mathf.Sign(climbDirectionRaw) : 0f;
 
-            if(climbDirection < 0f) //Se ir para trás ele cai da escada
+            Vector3 DirectionPartOne = Vector3.up * pInput.move_y_input * climbDirection * climbSpeed;
+            Vector3 DirectionPartTwo = orientation.right * pInput.move_x_input * moveSpeed;
 
-            moveDirection = Vector3.up * pInput.move_y_input * climbDirection * climbSpeed + orientation.right * pInput.move_x_input * moveSpeed;
+            //Se ir para trás ele cai da escada ou se não estiver olhando para a escada ele cai
+            if ((climbDirection < 0f && pInput.move_y_input < 0f) || (ladderDetected == false && pInput.move_y_input > 0f) || (grounded && pInput.move_y_input < 0f))
+            {
+                currentLadder = null;
+                DirectionPartOne = orientation.forward * pInput.move_y_input;
+            }
+
+            moveDirection = DirectionPartOne + DirectionPartTwo;
 
             rb.velocity = moveDirection;
 
@@ -163,9 +174,23 @@ public class PlayerMovement : MonoBehaviour
     {
         Ray mouseRay = pInput.myCamera.ScreenPointToRay(Input.mousePosition);
 
-        mouseRay.origin = transform.position - Vector3.up * (playerHeight / 2f);
+        //mouseRay.origin = transform.position - Vector3.up * (playerHeight / 2f);
 
-        ladderDetected = Physics.Raycast(mouseRay, 1f, ladderLayer);
+        ladderDetected = Physics.Raycast(feetPos.position, orientation.forward, out ladderHit, 1f, ladderLayer);
+
+        if (ladderHit.collider != null && pInput.move_y_input != 0f) currentLadder = ladderHit.collider.gameObject;
+    }
+
+    private bool IsOnLadder()
+    {
+        if (currentLadder == null) return false;
+
+        Vector3 ladderPos = currentLadder.transform.position;
+        ladderPos.y = 0f;
+        Vector3 playerPos = transform.position;
+        playerPos.y = 0f;
+
+        return Vector3.Distance(ladderPos, playerPos) <= 1f;
     }
 
     #endregion
