@@ -37,7 +37,7 @@ public class PlayerCamera : MonoBehaviour
     {
         pInput = input;
 
-        pInput.myCamera = GetComponentInChildren<Camera>();
+        pInput.myCamera = GetComponent<Camera>();
 
         orientation = pInput.orientation;
         playerBody = pInput.playerBody;

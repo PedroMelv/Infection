@@ -1,8 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
+using Photon.Pun;
 using UnityEngine;
 
-public class PlayerMovement : MonoBehaviour
+public class PlayerMovement : MonoBehaviourPun
 {
     [SerializeField] private Transform feetPos;
     [SerializeField] private Transform orientation;
@@ -52,6 +53,7 @@ public class PlayerMovement : MonoBehaviour
     }
     private void Update()
     {
+        if(photonView.IsMine == false) return;
         HandleGroundDrag();
         HandleSpeedLimit();
         HandleLadderDetection();
@@ -59,6 +61,12 @@ public class PlayerMovement : MonoBehaviour
 
     private void FixedUpdate()
     {
+        if(photonView.IsMine == false) 
+        {
+            rb.isKinematic = true;
+            rb.useGravity = false;
+            return;
+        }
         HandleMovement();
         FollowSubmarine();
     }
@@ -99,7 +107,7 @@ public class PlayerMovement : MonoBehaviour
             Vector3 DirectionPartOne = Vector3.up * pInput.move_y_input * climbDirection * climbSpeed;
             Vector3 DirectionPartTwo = orientation.right * pInput.move_x_input * moveSpeed;
 
-            //Se ir para trás ele cai da escada ou se não estiver olhando para a escada ele cai
+            //Se ir para trï¿½s ele cai da escada ou se nï¿½o estiver olhando para a escada ele cai
             if ((climbDirection < 0f && pInput.move_y_input < 0f) || (ladderDetected == false && pInput.move_y_input > 0f) || (grounded && pInput.move_y_input < 0f))
             {
                 currentLadder = null;

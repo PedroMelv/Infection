@@ -149,7 +149,7 @@ public class RoomController : MonoBehaviourPunCallbacks
 
     public void StartGameButton()
     {
-        SceneManager.LoadScene("Game_Island");
+        SceneManager.LoadScene("Game_Submarine");
     }
 
     public PlayerItem GetPlayerItem(string playername) 
