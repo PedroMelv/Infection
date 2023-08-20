@@ -7,10 +7,8 @@ public class PlayerMovement : MonoBehaviourPun
 {
     [SerializeField] private Transform feetPos;
     [SerializeField] private Transform orientation;
-    [SerializeField] private Rigidbody submarineBody;
-    [SerializeField] private float moveForce;
 
-    private Vector3 submarineLastPosition;
+    public bool canMove = true;
 
     [Header("Movement")]
     [SerializeField] private float moveSpeed;
@@ -39,18 +37,16 @@ public class PlayerMovement : MonoBehaviourPun
     private bool enteredSlope;
 
     private Rigidbody rb;
+    private Collider col;
     private PlayerInput pInput;
 
     private void Awake()
     {
         rb = GetComponent<Rigidbody>();
+        col = GetComponent<Collider>();
         pInput = GetComponent<PlayerInput>();
     }
-    private void Start()
-    {
 
-        if(submarineBody != null) submarineLastPosition = submarineBody.position;
-    }
     private void Update()
     {
         if(photonView.IsMine == false) return;
@@ -63,39 +59,25 @@ public class PlayerMovement : MonoBehaviourPun
     {
         if(photonView.IsMine == false) 
         {
+            col.isTrigger = true;
             rb.isKinematic = true;
             rb.useGravity = false;
             return;
         }
         HandleMovement();
-        FollowSubmarine();
-    }
-
-    private void FollowSubmarine()
-    {
-        if(submarineBody == null) return;
-
-        float rotationAmount = submarineBody.GetComponent<SubmarineTest>().rotateSpeed * Time.deltaTime;
-
-        Quaternion localAnglesAxis = Quaternion.AngleAxis(rotationAmount, transform.up);
-        rb.position = (localAnglesAxis * (rb.position - submarineBody.position)) + submarineBody.position;
-
-        Quaternion globalAngleAxis = Quaternion.AngleAxis(rotationAmount, rb.transform.InverseTransformDirection(submarineBody.transform.up));
-        rb.rotation *= globalAngleAxis;
-
-        
-        Vector3 dir = submarineBody.position - submarineLastPosition;
-        rb.position += dir;
-        
-        submarineLastPosition = submarineBody.position;
-
-        if(Vector3.Distance(transform.position, submarineBody.transform.position) > 100f) submarineBody = null;
     }
 
     #region Movement
     private void HandleMovement()
     {
         rb.useGravity = (!OnSlope());
+
+        if (canMove == false)
+        {
+            rb.velocity = Vector3.zero;
+            rb.angularVelocity = Vector3.zero;
+            return;
+        }
 
         if (currentLadder != null)
         {

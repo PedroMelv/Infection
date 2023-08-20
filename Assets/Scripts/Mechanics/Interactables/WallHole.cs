@@ -2,11 +2,15 @@ using Photon.Pun;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Photon.Realtime;
+using Unity.VisualScripting;
 
 public class WallHole : Interactable
 {
     [SerializeField] private Transform sideA;
     [SerializeField] private Transform sideB;
+
+    private bool isUsing;
 
     public override void Start()
     {
@@ -15,18 +19,65 @@ public class WallHole : Interactable
     }
     public void WallHoleInteract(GameObject whoInteracted)
     {
+        if (isUsing) return;
+
         Transform closestSide = GetClosestSide(whoInteracted.transform.position);
 
         Transform opositeSide = GetOpositeSide(closestSide);
 
-        photonView.RPC("RPC_CallWallHoldeInteraction", RpcTarget.All, whoInteracted.name, closestSide.gameObject.name, opositeSide.gameObject.name);
+        //photonView.RPC("RPC_CallWallHoldeInteraction", RpcTarget.All, whoInteracted.GetComponent<PhotonView>().ViewID, );
+        StartCoroutine(PassTheHole(whoInteracted, closestSide.transform.position, opositeSide.transform.position));
     }
 
     [PunRPC]
-    public void RPC_CallWallHoldeInteraction(string who, string from, string to)
+    public void RPC_SetWallHoleUsed(bool to)
     {
-        //PhotonNetwork.GetPhotonView(PhotonNetwork.LocalPlayer.UserId);
-        Debug.Log("The player " + who + " Interacted with this WallHode " + "Going from " + from + " to " + to);
+        isUsing = to;
+    }
+
+    private IEnumerator PassTheHole(GameObject pass, Vector3 pointA, Vector3 pointB)
+    {
+        PlayerMovement pMove = pass.GetComponent<PlayerMovement>();
+
+        pass.GetComponent<Collider>().isTrigger = true;
+
+        float prepSpeed = 10f;
+
+        float passSpeed = 3.5f;
+
+        photonView.RPC("RPC_SetWallHoleUsed", RpcTarget.All, true);
+
+        pMove.canMove = false;
+
+        while(!IsCloseTo(pass.transform.position, pointA))
+        {
+            pass.transform.position = Vector3.MoveTowards(pass.transform.position, pointA, prepSpeed * Time.deltaTime);
+            yield return new WaitForEndOfFrame();
+        }
+
+        pass.transform.position = pointA;
+
+        while (!IsCloseTo(pass.transform.position, pointB))
+        {
+            pass.transform.position = Vector3.MoveTowards(pass.transform.position, pointB, passSpeed * Time.deltaTime);
+            yield return new WaitForEndOfFrame();
+        }
+
+        pass.transform.position = pointB;
+
+        pass.GetComponent<Collider>().isTrigger = false;
+
+        pMove.canMove = true;
+
+        photonView.RPC("RPC_SetWallHoleUsed", RpcTarget.All, false);
+
+    }
+
+
+    #region Logic
+    private bool IsCloseTo(Vector3 who, Vector3 closeTo, float distance = .025f)
+    {
+        return Vector3.Distance(who, closeTo) < distance;
     }
 
     public Transform GetClosestSide(Vector3 interactedPos)
@@ -58,4 +109,5 @@ public class WallHole : Interactable
         if (side == sideA) return sideB;
         else return sideA;
     }
+    #endregion
 }

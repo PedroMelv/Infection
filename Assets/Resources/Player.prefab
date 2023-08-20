@@ -86,8 +86,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   feetPos: {fileID: 8351469836753450083}
   orientation: {fileID: 1721449749919655449}
-  submarineBody: {fileID: 0}
-  moveForce: 50
+  canMove: 1
   moveSpeed: 7
   groundDrag: 10
   playerHeight: 2
