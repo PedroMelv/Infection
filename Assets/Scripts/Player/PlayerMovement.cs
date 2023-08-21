@@ -183,7 +183,13 @@ public class PlayerMovement : MonoBehaviourPun
             {
                 Debug.Log("Not Detecting Ladder");
                 DropLadder();
-                rb.AddForce(ladderDirection + Vector3.up * 1f, ForceMode.Impulse);
+                rb.AddForce(ladderDirection + Vector3.up * 1.5f, ForceMode.Impulse);
+            }
+
+            if(Input.GetKeyDown(KeyCode.Space))
+            {
+                DropLadder();
+                rb.AddForce((orientation.forward * moveSpeed) + Vector3.up * 1.5f, ForceMode.Impulse);
             }
         }
         else
@@ -213,16 +219,9 @@ public class PlayerMovement : MonoBehaviourPun
         currentLadder = null;
     }
 
-    private bool IsOnLadder()
+    public bool IsOnLadder()
     {
-        if (currentLadder == null) return false;
-
-        Vector3 ladderPos = currentLadder.transform.position;
-        ladderPos.y = 0f;
-        Vector3 playerPos = transform.position;
-        playerPos.y = 0f;
-
-        return Vector3.Distance(ladderPos, playerPos) <= 1f;
+        return climbingLadder;
     }
 
     #endregion

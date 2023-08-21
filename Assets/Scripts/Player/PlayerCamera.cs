@@ -6,6 +6,7 @@ public class PlayerCamera : MonoBehaviour
 {
     [Header("Components")]
     [SerializeField] private PlayerInput pInput;
+    [SerializeField] private PlayerMovement pMove;
     [Header("Camera Parameters")]
     [SerializeField] private float minAngle;
     [SerializeField] private float maxAngle;
@@ -38,6 +39,8 @@ public class PlayerCamera : MonoBehaviour
     public void SetOwner(PlayerInput input)
     {
         pInput = input;
+
+        pMove = pInput.gameObject.GetComponent<PlayerMovement>();
 
         pInput.myCamera = GetComponent<Camera>();
 
@@ -83,16 +86,17 @@ public class PlayerCamera : MonoBehaviour
             float headbobSpeed = 0f;
             float headbobAmplitude = 0f;
 
-            if(pInput.MoveInput() != Vector2.zero)
+            if(pInput.MoveInput() != Vector2.zero && !pMove.IsOnLadder())
             {
                 headbobSpeed = walkBobSpeed;
                 headbobAmplitude = walkBobAmount;
+                if (pInput.sprintInput)
+                {
+                    headbobSpeed = sprintBobSpeed;
+                    headbobAmplitude = springBobAmount;
+                }
             }
-            if(pInput.sprintInput)
-            {
-                headbobSpeed = sprintBobSpeed;
-                headbobAmplitude = springBobAmount;
-            }
+            
             
             headbobTimer += Time.deltaTime * headbobSpeed;
             headbobOffset = new Vector3(0f, Mathf.Sin(headbobTimer) * headbobAmplitude, 0f);
