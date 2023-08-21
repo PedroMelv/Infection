@@ -11,7 +11,9 @@ public class PlayerMovement : MonoBehaviourPun
     public bool canMove = true;
 
     [Header("Movement")]
+    private float speed;
     [SerializeField] private float moveSpeed;
+    [SerializeField] private float sprintMultiplier;
     [SerializeField] private float groundDrag;
 
     private Vector3 moveDirection;
@@ -24,8 +26,9 @@ public class PlayerMovement : MonoBehaviourPun
     [Header("LadderClimb")]
     [SerializeField] private LayerMask ladderLayer;
     [SerializeField] private float climbSpeed;
-    private bool ladderDetected;
-    private bool exitingLadder;
+    private bool climbingLadder;
+
+    private Vector3 ladderDirection;
 
     private RaycastHit ladderHit;
     private GameObject currentLadder;
@@ -50,6 +53,9 @@ public class PlayerMovement : MonoBehaviourPun
     private void Update()
     {
         if(photonView.IsMine == false) return;
+
+        if (currentLadder != null) Debug.Log(Vector3.Dot(orientation.transform.forward , currentLadder.transform.forward));
+
         HandleGroundDrag();
         HandleSpeedLimit();
         HandleLadderDetection();
@@ -79,22 +85,13 @@ public class PlayerMovement : MonoBehaviourPun
             return;
         }
 
-        if (currentLadder != null)
+        if (climbingLadder)
         {
             rb.useGravity = false;
 
-            float climbDirectionRaw = pInput.myCamera.transform.forward.y;
-            float climbDirection = (Mathf.Abs(climbDirectionRaw) > .25f) ? 1f * Mathf.Sign(climbDirectionRaw) : 0f;
-
-            Vector3 DirectionPartOne = Vector3.up * pInput.move_y_input * climbDirection * climbSpeed;
+            Vector3 DirectionPartOne = Vector3.up * pInput.move_y_input * climbSpeed;
             Vector3 DirectionPartTwo = orientation.right * pInput.move_x_input * moveSpeed;
 
-            //Se ir para tr�s ele cai da escada ou se n�o estiver olhando para a escada ele cai
-            if ((climbDirection < 0f && pInput.move_y_input < 0f) || (ladderDetected == false && pInput.move_y_input > 0f) || (grounded && pInput.move_y_input < 0f))
-            {
-                currentLadder = null;
-                DirectionPartOne = orientation.forward * pInput.move_y_input * moveSpeed;
-            }
 
             moveDirection = DirectionPartOne + DirectionPartTwo;
 
@@ -107,23 +104,36 @@ public class PlayerMovement : MonoBehaviourPun
 
         if(OnSlope())
         {
-            rb.velocity = GetSlopeDirection() * moveSpeed;
+            rb.velocity = GetSlopeDirection() * speed;
             return;
         }
 
-        rb.AddForce(moveDirection.normalized * moveSpeed * 10f, ForceMode.Force);
+        rb.AddForce(moveDirection.normalized * speed * 10f, ForceMode.Force);
     }
 
     private void HandleSpeedLimit()
     {
+        //Change Speed
+
+        if(pInput.sprintInput && grounded)
+        {
+            speed = moveSpeed * sprintMultiplier;
+        }
+        else
+        {
+            speed = moveSpeed;
+        }
+
+
+        //Limit Speed
         Vector3 flatVel = Vector3.zero;
 
         if (OnSlope())
         {
             flatVel = new Vector3(rb.velocity.x, rb.velocity.y, rb.velocity.z);
-            if(flatVel.magnitude > moveSpeed)
+            if(flatVel.magnitude > speed)
             {
-                Vector3 limitedVel = flatVel.normalized * moveSpeed;
+                Vector3 limitedVel = flatVel.normalized * speed;
                 rb.velocity = new Vector3(limitedVel.x, limitedVel.y, limitedVel.z);
             }
 
@@ -131,9 +141,9 @@ public class PlayerMovement : MonoBehaviourPun
         }
 
         flatVel = new Vector3(rb.velocity.x, 0f, rb.velocity.z);
-        if (flatVel.magnitude > moveSpeed)
+        if (flatVel.magnitude > speed)
         {
-            Vector3 limitedVel = flatVel.normalized * moveSpeed;
+            Vector3 limitedVel = flatVel.normalized * speed;
             rb.velocity = new Vector3(limitedVel.x, rb.velocity.y, limitedVel.z);
         }
     }
@@ -162,13 +172,45 @@ public class PlayerMovement : MonoBehaviourPun
 
     private void HandleLadderDetection()
     {
-        Ray mouseRay = pInput.myCamera.ScreenPointToRay(Input.mousePosition);
+        if(climbingLadder)
+        {
+            if (Physics.Raycast(feetPos.position + Vector3.up * 0.1f, ladderDirection, out ladderHit, 1f, ladderLayer))
+            {
+                Debug.Log("Detecting Ladder");
+                if (grounded && pInput.move_y_input < 0f) DropLadder();
+            }
+            else
+            {
+                Debug.Log("Not Detecting Ladder");
+                DropLadder();
+                rb.AddForce(ladderDirection + Vector3.up * 1f, ForceMode.Impulse);
+            }
+        }
+        else
+        {
+            if(Physics.Raycast(feetPos.position + Vector3.up * 0.1f, orientation.forward, out ladderHit, 1f, ladderLayer))
+            {
+                if (ladderHit.collider != null && pInput.move_y_input > 0f)
+                {
+                    ClimbLadder(orientation.forward, ladderHit.collider.gameObject);
+                }
+            }
+        }
+    }
 
-        //mouseRay.origin = transform.position - Vector3.up * (playerHeight / 2f);
+    private void ClimbLadder(Vector3 ladderDirection, GameObject ladderObj)
+    {
+        Debug.Log("Grabbed ladder");
+        this.ladderDirection = ladderDirection;
+        currentLadder = ladderObj;
+        climbingLadder = true;
+    }
 
-        ladderDetected = Physics.Raycast(feetPos.position, orientation.forward, out ladderHit, 1f, ladderLayer);
-
-        if (ladderHit.collider != null && pInput.move_y_input != 0f) currentLadder = ladderHit.collider.gameObject;
+    private void DropLadder()
+    {
+        Debug.Log("Released ladder");
+        climbingLadder = false;
+        currentLadder = null;
     }
 
     private bool IsOnLadder()

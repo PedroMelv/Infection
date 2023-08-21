@@ -131,19 +131,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 02dcd43faddc4924ba2d086d8f9abc99, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  submarine: {fileID: 0}
   pInput: {fileID: 0}
-  minAngle: -60
-  maxAngle: 60
+  minAngle: -80
+  maxAngle: 80
   sensX: 2
   sensY: 2
   cameraHandler: {fileID: 3254984109021065000}
   cameraPos: {fileID: 0}
   playerBody: {fileID: 0}
   orientation: {fileID: 0}
-  headBobEnabled: 0
-  walkAmount: 0
-  walkBobSpeed: 0
+  headBobEnabled: 1
+  walkBobAmount: 0.1
+  walkBobSpeed: 10
+  springBobAmount: 0.125
+  sprintBobSpeed: 15
 --- !u!1 &3254984109021065003
 GameObject:
   m_ObjectHideFlags: 0

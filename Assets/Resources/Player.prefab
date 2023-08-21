@@ -88,6 +88,7 @@ MonoBehaviour:
   orientation: {fileID: 1721449749919655449}
   canMove: 1
   moveSpeed: 7
+  sprintMultiplier: 1.75
   groundDrag: 10
   playerHeight: 2
   groundLayer:
@@ -118,6 +119,7 @@ MonoBehaviour:
   move_y_input: 0
   mouse_x_input: 0
   mouse_y_input: 0
+  sprintInput: 0
 --- !u!114 &3763245986587800236
 MonoBehaviour:
   m_ObjectHideFlags: 0

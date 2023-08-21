@@ -5,7 +5,6 @@ using UnityEngine;
 public class PlayerCamera : MonoBehaviour
 {
     [Header("Components")]
-    [SerializeField] private Transform submarine;
     [SerializeField] private PlayerInput pInput;
     [Header("Camera Parameters")]
     [SerializeField] private float minAngle;
@@ -26,8 +25,11 @@ public class PlayerCamera : MonoBehaviour
     [Header("HeadBob Parameters")]
     [SerializeField] private bool headBobEnabled = true;
 
-    [SerializeField] private float walkAmount;
+    [SerializeField] private float walkBobAmount;
     [SerializeField] private float walkBobSpeed;
+
+    [SerializeField] private float springBobAmount;
+    [SerializeField] private float sprintBobSpeed;
 
     private Vector3 headbobOffset;
     private float headbobTimer;
@@ -62,7 +64,6 @@ public class PlayerCamera : MonoBehaviour
         xRotation -= yInput;
         xRotation = Mathf.Clamp(xRotation, minAngle, maxAngle);
 
-        if (submarine != null) yRotation += +submarine.transform.eulerAngles.y;
 
         transform.rotation = Quaternion.Euler(xRotation, yRotation, 0f);
         orientation.rotation = Quaternion.Euler(0f, yRotation, 0f);
@@ -79,8 +80,22 @@ public class PlayerCamera : MonoBehaviour
         }
         else
         {
-            headbobTimer += Time.deltaTime * walkBobSpeed;
-            headbobOffset = new Vector3(0f, Mathf.Sin(headbobTimer) * walkAmount, 0f);
+            float headbobSpeed = 0f;
+            float headbobAmplitude = 0f;
+
+            if(pInput.MoveInput() != Vector2.zero)
+            {
+                headbobSpeed = walkBobSpeed;
+                headbobAmplitude = walkBobAmount;
+            }
+            if(pInput.sprintInput)
+            {
+                headbobSpeed = sprintBobSpeed;
+                headbobAmplitude = springBobAmount;
+            }
+            
+            headbobTimer += Time.deltaTime * headbobSpeed;
+            headbobOffset = new Vector3(0f, Mathf.Sin(headbobTimer) * headbobAmplitude, 0f);
         }
     }
 }

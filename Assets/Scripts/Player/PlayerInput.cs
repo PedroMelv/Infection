@@ -17,6 +17,8 @@ public class PlayerInput : MonoBehaviourPun
     public float mouse_x_input;
     public float mouse_y_input;
 
+    public bool sprintInput;
+
     public Action OnInteractPress;
     public Action OnInteractHold;
     public Action OnInteractRelease;
@@ -38,8 +40,15 @@ public class PlayerInput : MonoBehaviourPun
         mouse_x_input = Input.GetAxisRaw("Mouse X");
         mouse_y_input = Input.GetAxisRaw("Mouse Y");
 
+        sprintInput = Input.GetKey(KeyCode.LeftShift);
+
         if (Input.GetKeyDown(KeyCode.E)) OnInteractPress?.Invoke();
         if (Input.GetKey(KeyCode.E))     OnInteractHold?.Invoke();
         if (Input.GetKeyUp(KeyCode.E))   OnInteractRelease?.Invoke();
+    }
+
+    public Vector2 MoveInput()
+    {
+        return new Vector2(move_x_input, move_y_input);
     }
 }
