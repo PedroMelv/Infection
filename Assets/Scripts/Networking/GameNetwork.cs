@@ -16,6 +16,10 @@ public class GameNetwork : MonoBehaviourPunCallbacks
     {
         if (!PhotonNetwork.IsMasterClient) return;
 
+        PhotonNetwork.CurrentRoom.IsOpen = false;
+        PhotonNetwork.CurrentRoom.IsVisible = false;
+
+
         Player[] players = PhotonNetwork.PlayerList;
         for (int i = 0; i < players.Length; i++)
         {
