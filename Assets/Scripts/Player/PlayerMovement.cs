@@ -67,8 +67,6 @@ public class PlayerMovement : MonoBehaviourPun
     {
         if(photonView.IsMine == false) 
         {
-            col.isTrigger = true;
-            rb.isKinematic = true;
             rb.useGravity = false;
             return;
         }
