@@ -39,7 +39,7 @@ public class WallHole : Interactable
     {
         PlayerMovement pMove = pass.GetComponent<PlayerMovement>();
 
-        pass.GetComponent<Collider>().isTrigger = true;
+        pMove.SetCollisions(true);
 
         float prepSpeed = 10f;
 
@@ -65,7 +65,7 @@ public class WallHole : Interactable
 
         pass.transform.position = pointB;
 
-        pass.GetComponent<Collider>().isTrigger = false;
+        pMove.SetCollisions(false);
 
         pMove.canMove = true;
 

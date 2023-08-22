@@ -42,13 +42,13 @@ public class PlayerMovement : MonoBehaviourPun
     private bool enteredSlope;
 
     private Rigidbody rb;
-    private Collider col;
+    private Collider[] cols;
     private PlayerInput pInput;
 
     private void Awake()
     {
         rb = GetComponent<Rigidbody>();
-        col = GetComponent<Collider>();
+        cols = GetComponents<Collider>();
         pInput = GetComponent<PlayerInput>();
     }
 
@@ -71,6 +71,14 @@ public class PlayerMovement : MonoBehaviourPun
             return;
         }
         HandleMovement();
+    }
+
+    public void SetCollisions(bool to)
+    {
+        for (int i = 0; i < cols.Length; i++)
+        {
+            cols[i].isTrigger = to;
+        }
     }
 
     #region Movement
@@ -176,7 +184,6 @@ public class PlayerMovement : MonoBehaviourPun
     }
 
     #endregion
-
     #region Ladder Things
 
     private void HandleLadderDetection()
