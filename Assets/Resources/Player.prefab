@@ -17,7 +17,7 @@ GameObject:
   - component: {fileID: 8739034638490398706}
   - component: {fileID: 6420955845419879261}
   - component: {fileID: -6756625047172380564}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Player
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -182,7 +182,6 @@ MonoBehaviour:
   - {fileID: 6420955845419879261}
   - {fileID: -6756625047172380564}
   - {fileID: 1221237181103395673}
-  - {fileID: 0}
   sceneViewId: 0
   InstantiationId: 0
   isRuntimeInstantiated: 0
@@ -227,7 +226,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1721449749241359661}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: CameraPos
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -258,7 +257,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1721449749919655449}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Orientation
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -292,7 +291,7 @@ GameObject:
   - component: {fileID: 1721449750065956355}
   - component: {fileID: 1721449750065956352}
   - component: {fileID: 1221237181103395673}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Body
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -389,7 +388,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8351469836753450083}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: FeetPos
   m_TagString: Untagged
   m_Icon: {fileID: 0}
