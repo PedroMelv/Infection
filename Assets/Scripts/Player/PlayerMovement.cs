@@ -183,7 +183,7 @@ public class PlayerMovement : MonoBehaviourPun
     {
         if(climbingLadder)
         {
-            if (Physics.Raycast(feetPos.position + Vector3.up * 0.1f, ladderDirection, out ladderHit, .65f, ladderLayer))
+            if (Physics.Raycast(feetPos.position + Vector3.up * 0.1f, ladderDirection, out ladderHit, .35f, ladderLayer))
             {
                 Debug.Log("Detecting Ladder");
                 if (grounded && pInput.move_y_input < 0f) DropLadder();
@@ -203,7 +203,7 @@ public class PlayerMovement : MonoBehaviourPun
         }
         else
         {
-            if(Physics.Raycast(feetPos.position + Vector3.up * 0.1f, orientation.forward, out ladderHit, .65f, ladderLayer))
+            if(Physics.Raycast(feetPos.position + Vector3.up * 0.1f, orientation.forward, out ladderHit, .35f, ladderLayer))
             {
                 if (ladderHit.collider != null && pInput.move_y_input > 0f)
                 {
