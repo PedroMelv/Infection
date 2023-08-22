@@ -92,12 +92,12 @@ public class PlayerMovement : MonoBehaviourPun
             Vector3 DirectionPartOne = Vector3.up * pInput.move_y_input * climbSpeed;
             Vector3 DirectionPartTwo = orientation.right * pInput.move_x_input * moveSpeed;
 
-            if(Physics.Raycast(transform.position, Vector3.up, 2f, playerLayer) && pInput.move_y_input > 0f)
+            if(Physics.BoxCast(transform.position, Vector3.one, Vector3.up, Quaternion.identity, 2f, playerLayer) && pInput.move_y_input > 0f)
             {
                 DirectionPartOne = Vector3.zero;
             }
 
-            if (Physics.Raycast(transform.position, Vector3.down, 2f, playerLayer) && pInput.move_y_input < 0f)
+            if (Physics.BoxCast(transform.position, Vector3.one, Vector3.up, Quaternion.identity, 2f, playerLayer) && pInput.move_y_input < 0f)
             {
                 DirectionPartOne = Vector3.zero;
             }
