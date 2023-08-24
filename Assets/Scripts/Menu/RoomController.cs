@@ -156,7 +156,7 @@ public class RoomController : MonoBehaviourPunCallbacks
     {
         for (int i = 0; i < playersList.Count; i++)
         {
-            if (playersList[i].GetPlayer().UserId == playername)
+            if (playersList[i].GetPlayer().NickName == playername)
             {
                 return playersList[i];
             }
