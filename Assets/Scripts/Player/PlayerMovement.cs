@@ -20,6 +20,10 @@ public class PlayerMovement : MonoBehaviourPun
 
     private Vector3 moveDirection;
 
+    [Header("Jump")]
+    [SerializeField] private float jumpForce;
+    [SerializeField,Range(0f,1f)] private float jumpCutMultiplier;
+
     [Header("Ground Check")]
     [SerializeField] private float playerHeight;
     [SerializeField] private LayerMask groundLayer;
@@ -61,6 +65,7 @@ public class PlayerMovement : MonoBehaviourPun
         HandleGroundDrag();
         HandleSpeedLimit();
         HandleLadderDetection();
+        HandleJump();
     }
 
     private void FixedUpdate()
@@ -110,7 +115,7 @@ public class PlayerMovement : MonoBehaviourPun
                 DirectionPartOne = Vector3.zero;
             }
 
-            moveDirection = DirectionPartOne + DirectionPartTwo;
+            moveDirection = DirectionPartOne + DirectionPartTwo ;
 
             rb.velocity = moveDirection;
 
@@ -181,6 +186,24 @@ public class PlayerMovement : MonoBehaviourPun
         }
 
         rb.drag = finalDrag;
+    }
+
+    #endregion
+    #region Jump
+
+    private void HandleJump()
+    {
+        if(pInput.jumpInputPressed && pInput.jumpInput && grounded)
+        {
+            rb.velocity = new Vector3(rb.velocity.x, 0f, rb.velocity.z);
+            rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
+        }
+        
+        if(pInput.jumpInputReleased && !pInput.jumpInput && !grounded)////
+        {
+            rb.AddForce(Vector3.down * rb.velocity.y * jumpCutMultiplier, ForceMode.Impulse);
+        }
+        
     }
 
     #endregion

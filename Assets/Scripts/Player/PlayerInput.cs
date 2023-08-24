@@ -23,7 +23,9 @@ public class PlayerInput : MonoBehaviourPun
     public Action OnInteractHold;
     public Action OnInteractRelease;
 
-
+    public bool jumpInput;
+    public bool jumpInputPressed;
+    public bool jumpInputReleased;
 
     private void Start()
     {
@@ -41,6 +43,10 @@ public class PlayerInput : MonoBehaviourPun
         mouse_y_input = Input.GetAxisRaw("Mouse Y");
 
         sprintInput = Input.GetKey(KeyCode.LeftShift);
+
+        jumpInput = Input.GetKey(KeyCode.Space);
+        jumpInputPressed = Input.GetKeyDown(KeyCode.Space);
+        jumpInputReleased = Input.GetKeyUp(KeyCode.Space);
 
         if (Input.GetKeyDown(KeyCode.E)) OnInteractPress?.Invoke();
         if (Input.GetKey(KeyCode.E))     OnInteractHold?.Invoke();
