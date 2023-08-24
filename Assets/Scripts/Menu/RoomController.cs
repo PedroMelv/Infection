@@ -144,7 +144,7 @@ public class RoomController : MonoBehaviourPunCallbacks
     }
     public void ReadyButton()
     {
-        view.RPC("RPC_ReadyButton", RpcTarget.AllBufferedViaServer, PhotonNetwork.LocalPlayer.UserId);
+        view.RPC("RPC_ReadyButton", RpcTarget.AllBufferedViaServer, PhotonNetwork.LocalPlayer.NickName);
     }
 
     public void StartGameButton()
@@ -152,11 +152,11 @@ public class RoomController : MonoBehaviourPunCallbacks
         SceneManager.LoadScene("Game_Submarine");
     }
 
-    public PlayerItem GetPlayerItem(string id) 
+    public PlayerItem GetPlayerItem(string playername) 
     {
         for (int i = 0; i < playersList.Count; i++)
         {
-            if (playersList[i].GetPlayer().UserId == id)
+            if (playersList[i].GetPlayer().UserId == playername)
             {
                 return playersList[i];
             }
