@@ -43,7 +43,7 @@ public class WallHole : Interactable
 
         float prepSpeed = 10f;
 
-        float passSpeed = 3.5f;
+        float passSpeed = 2.5f;
 
         photonView.RPC("RPC_SetWallHoleUsed", RpcTarget.All, true);
 

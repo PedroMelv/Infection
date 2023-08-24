@@ -16,7 +16,7 @@ MonoBehaviour:
     AppIdRealtime: ee58bbf0-4931-44c5-87bd-6f9e9b934889
     AppIdFusion: 
     AppIdChat: 
-    AppIdVoice: 
+    AppIdVoice: 01e346a9-67d0-4b66-8b09-ff768d017245
     AppVersion: 
     UseNameServer: 1
     FixedRegion: 
@@ -41,6 +41,9 @@ MonoBehaviour:
   - RPC_CreatePlayer
   - RPC_CallWallHoldeInteraction
   - RPC_SetWallHoleUsed
+  - CantHearYou
+  - ChangeColour
+  - HeresWhy
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 1

@@ -43,7 +43,7 @@ public class PlayerMovement : MonoBehaviourPun
     [Header("Slope")]
     [SerializeField, Range(0f, 90f)] private float maxSlopeAngle;
     private RaycastHit slopeHit;
-    private bool enteredSlope;
+    private bool exitingSlope;
 
     private Rigidbody rb;
     private Collider[] cols;
@@ -62,10 +62,10 @@ public class PlayerMovement : MonoBehaviourPun
 
         if (currentLadder != null) Debug.Log(Vector3.Dot(orientation.transform.forward , currentLadder.transform.forward));
 
+        HandleJump();
         HandleGroundDrag();
         HandleSpeedLimit();
         HandleLadderDetection();
-        HandleJump();
     }
 
     private void FixedUpdate()
@@ -73,6 +73,7 @@ public class PlayerMovement : MonoBehaviourPun
         if(photonView.IsMine == false) 
         {
             rb.useGravity = false;
+            rb.isKinematic = true;
             return;
         }
         HandleMovement();
@@ -124,9 +125,15 @@ public class PlayerMovement : MonoBehaviourPun
 
         moveDirection = orientation.forward * pInput.move_y_input + orientation.right * pInput.move_x_input;
 
-        if(OnSlope())
+        if(OnSlope() && !exitingSlope)
         {
-            rb.velocity = GetSlopeDirection() * speed;
+            rb.AddForce(GetSlopeDirection() * speed * 20f, ForceMode.Force); //Move to the direction of the slope
+
+            if (rb.velocity.y > 0) //Keep it stuck on the slope if it's going up
+            {
+                //Debug.Log("Applying! " + rb.velocity.y);
+                rb.AddForce(Vector3.down * 30f, ForceMode.Force);
+            }
             return;
         }
 
@@ -150,7 +157,7 @@ public class PlayerMovement : MonoBehaviourPun
         //Limit Speed
         Vector3 flatVel = Vector3.zero;
 
-        if (OnSlope())
+        if (OnSlope() && !exitingSlope)
         {
             flatVel = new Vector3(rb.velocity.x, rb.velocity.y, rb.velocity.z);
             if(flatVel.magnitude > speed)
@@ -180,7 +187,7 @@ public class PlayerMovement : MonoBehaviourPun
             finalDrag = groundDrag;
         }
 
-        if(moveDirection == Vector3.zero && OnSlope())
+        if(moveDirection == Vector3.zero && OnSlope() && !exitingSlope)
         {
             finalDrag = 100;
         }
@@ -195,16 +202,26 @@ public class PlayerMovement : MonoBehaviourPun
     {
         if(pInput.jumpInputPressed && pInput.jumpInput && grounded)
         {
+            exitingSlope = true;
+
             rb.velocity = new Vector3(rb.velocity.x, 0f, rb.velocity.z);
             rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
+
+            Invoke(nameof(ResetJump), 1f);
         }
         
         if(pInput.jumpInputReleased && !pInput.jumpInput && !grounded)
         {
+            
             Debug.Log("Jump Release");
             rb.AddForce(Vector3.down * rb.velocity.y * jumpCutMultiplier, ForceMode.Impulse);
         }
         
+    }
+
+    private void ResetJump()
+    {
+        exitingSlope = false;
     }
 
     #endregion
@@ -269,6 +286,8 @@ public class PlayerMovement : MonoBehaviourPun
 
     public bool OnSlope()
     {
+        //if (exitingSlope) return false;
+
         if(Physics.Raycast(transform.position, Vector3.down, out slopeHit, playerHeight * .5f + 0.3f, groundLayer))
         {
             float angle = Vector3.Angle(Vector3.up, slopeHit.normal);
