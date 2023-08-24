@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using Photon.Pun;
 using UnityEngine;
 
@@ -199,8 +200,9 @@ public class PlayerMovement : MonoBehaviourPun
             rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
         }
         
-        if(pInput.jumpInputReleased && !pInput.jumpInput && !grounded)////
+        if(pInput.jumpInputReleased && !pInput.jumpInput && !grounded)
         {
+            Debug.Log("Jump Release");
             rb.AddForce(Vector3.down * rb.velocity.y * jumpCutMultiplier, ForceMode.Impulse);
         }
         
