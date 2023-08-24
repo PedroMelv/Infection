@@ -42,11 +42,14 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
+    - _BubbleSize: 5
+    - _BubbleSpeed: 1.51
+    - _BubbleThickness: 5
     - _NoiseScale: 3
     m_Colors:
-    - _DarkColor: {r: 0, g: 0.01029539, b: 0.33962262, a: 1}
-    - _LightColor: {r: 0, g: 0.19104746, b: 0.509434, a: 1}
-    - _MoveSpeed: {r: 0, g: -0.05, b: 0, a: 0}
+    - _DarkColor: {r: 0.21026166, g: 0.22834475, b: 0.7075472, a: 1}
+    - _LightColor: {r: 0.06808473, g: 0.1641705, b: 0.3207547, a: 1}
+    - _MoveSpeed: {r: 0, g: -10.65, b: 0, a: 0}
   m_BuildTextureStacks: []
 --- !u!114 &8053375502479370130
 MonoBehaviour:
