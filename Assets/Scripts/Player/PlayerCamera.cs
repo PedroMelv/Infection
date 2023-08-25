@@ -29,8 +29,11 @@ public class PlayerCamera : MonoBehaviour
     [SerializeField] private float walkBobAmount;
     [SerializeField] private float walkBobSpeed;
 
-    [SerializeField] private float springBobAmount;
+    [SerializeField] private float sprintBobAmount;
     [SerializeField] private float sprintBobSpeed;
+    
+    [SerializeField] private float crawlBobAmount;
+    [SerializeField] private float crawlBobSpeed;
 
     private Vector3 headbobOffset;
     private float YheadbobTimer;
@@ -100,9 +103,15 @@ public class PlayerCamera : MonoBehaviour
                 if (pInput.sprintInput)
                 {
                     headbobSpeed = sprintBobSpeed;
-                    headbobAmplitude = springBobAmount;
+                    headbobAmplitude = sprintBobAmount;
+                }
+                if(pInput.crawlInput)
+                {
+                    headbobSpeed = crawlBobSpeed;
+                    headbobAmplitude = crawlBobAmount;
                 }
             }
+
             
             
             YheadbobTimer += Time.deltaTime * headbobSpeed;

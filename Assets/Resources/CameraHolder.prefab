@@ -144,8 +144,10 @@ MonoBehaviour:
   headBobEnabled: 1
   walkBobAmount: 0.075
   walkBobSpeed: 10
-  springBobAmount: 0.125
+  sprintBobAmount: 0.1
   sprintBobSpeed: 15
+  crawlBobAmount: 0.035
+  crawlBobSpeed: 7.5
 --- !u!1 &3254984109021065003
 GameObject:
   m_ObjectHideFlags: 0

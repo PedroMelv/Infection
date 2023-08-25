@@ -33,6 +33,7 @@ public class PlayerMovement : MonoBehaviourPun
     private Vector3 moveDirection;
 
     [Header("Crawl")]
+    [SerializeField] private float crawlMultiplier;
     [SerializeField] private float normalHeight;
     [SerializeField] private float crawlHeight;
     private bool isCrawling;
@@ -168,6 +169,11 @@ public class PlayerMovement : MonoBehaviourPun
         else
         {
             speed = moveSpeed;
+        }
+
+        if(pInput.crawlInput && grounded) 
+        {
+            speed = moveSpeed * crawlMultiplier;
         }
 
 
