@@ -98,22 +98,32 @@ public class PlayerCamera : MonoBehaviour
 
             if(pInput.MoveInput() != Vector2.zero && !pMove.IsOnLadder())
             {
-                headbobSpeed = walkBobSpeed;
-                headbobAmplitude = walkBobAmount;
-                if (pInput.sprintInput)
+                switch (pMove.GetMoveState)
                 {
-                    headbobSpeed = sprintBobSpeed;
-                    headbobAmplitude = sprintBobAmount;
+                    case MoveStates.IDLE:
+                        break;
+                    case MoveStates.WALKING:
+                        headbobSpeed = walkBobSpeed;
+                        headbobAmplitude = walkBobAmount;
+                        break;
+                    case MoveStates.RUNNING:
+                        headbobSpeed = sprintBobSpeed;
+                        headbobAmplitude = sprintBobAmount;
+                        break;
+                    case MoveStates.JUMPING:
+                        break;
+                    case MoveStates.CRAWLING:
+                        headbobSpeed = crawlBobSpeed;
+                        headbobAmplitude = crawlBobAmount;
+                        break;
+                    case MoveStates.DUCT:
+                        break;
                 }
-                if(pInput.crawlInput)
-                {
-                    headbobSpeed = crawlBobSpeed;
-                    headbobAmplitude = crawlBobAmount;
-                }
+
             }
 
-            
-            
+
+
             YheadbobTimer += Time.deltaTime * headbobSpeed;
             XheadbobTimer += Time.deltaTime * headbobSpeed / 2f;
 

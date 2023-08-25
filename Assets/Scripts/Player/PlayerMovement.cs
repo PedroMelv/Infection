@@ -29,6 +29,15 @@ public class PlayerMovement : MonoBehaviourPun
     [SerializeField] private float moveSpeed;
     [SerializeField] private float sprintMultiplier;
     [SerializeField] private float groundDrag;
+    [SerializeField] private float tiredMoveMultiplier;
+    [SerializeField] private float timeToRegenStamina = 2f;
+    [SerializeField] private float maxStamina = 100f;
+    [SerializeField] private float staminaRegen = 1f;
+    private float curStamina;
+    private float staminaCooldown;
+
+    private bool tired;
+
 
     private Vector3 moveDirection;
 
@@ -76,10 +85,17 @@ public class PlayerMovement : MonoBehaviourPun
         pInput = GetComponent<PlayerInput>();
     }
 
+    private void Start()
+    {
+        staminaCooldown = timeToRegenStamina;
+        curStamina = maxStamina;
+    }
+
     private void Update()
     {
         if(photonView.IsMine == false) return;
-        
+
+        HandleStamina();
         HandleJump();
         HandleCrawl();
         HandleGroundDrag();
@@ -166,16 +182,26 @@ public class PlayerMovement : MonoBehaviourPun
         if(pInput.sprintInput && grounded)
         {
             speed = moveSpeed * sprintMultiplier;
+            curMoveState = MoveStates.RUNNING;
         }
         else
         {
             speed = moveSpeed;
+            curMoveState = MoveStates.WALKING;
+        }
+
+        if(tired)
+        {
+            speed = moveSpeed * tiredMoveMultiplier;
+            curMoveState = MoveStates.WALKING;
         }
 
         if(pInput.crawlInput && grounded) 
         {
             speed = moveSpeed * crawlMultiplier;
+            curMoveState = MoveStates.CRAWLING;
         }
+
 
 
         //Limit Speed
@@ -219,6 +245,41 @@ public class PlayerMovement : MonoBehaviourPun
         rb.drag = finalDrag;
     }
 
+    private void HandleStamina()
+    {
+        if(curStamina < 0f)
+        {
+            curStamina = 0f;
+            tired = true;
+        }
+
+        if(curStamina > maxStamina)
+        {
+            curStamina = maxStamina;
+            tired = false;
+        }
+
+        if(pInput.sprintInput && moveDirection != Vector3.zero && !tired)
+        {
+            curStamina -= 6.4f * Time.deltaTime;
+        }
+
+        if(pInput.sprintInput == false && grounded)
+        {
+            if(staminaCooldown <= 0f)
+            {
+                curStamina += staminaRegen * (tired ? 3f : 1f ) * Time.deltaTime;
+            }
+            else
+            {
+                staminaCooldown -= Time.deltaTime;
+            }
+        }
+        else
+        {
+            staminaCooldown = timeToRegenStamina;
+        }
+    }
     #endregion
     #region Crawl
     public void HandleCrawl()
@@ -268,12 +329,15 @@ public class PlayerMovement : MonoBehaviourPun
 
     private void HandleJump()
     {
-        if(pInput.jumpInputPressed && pInput.jumpInput && grounded)
+        if(pInput.jumpInputPressed && pInput.jumpInput && grounded && tired == false && curStamina > 10f)
         {
             exitingSlope = true;
 
             rb.velocity = new Vector3(rb.velocity.x, 0f, rb.velocity.z);
             rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
+
+            curStamina -= 10f;
+            staminaCooldown = timeToRegenStamina;
 
             Invoke(nameof(ResetJump), 1f);
         }

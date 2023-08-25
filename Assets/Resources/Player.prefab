@@ -180,6 +180,10 @@ MonoBehaviour:
   moveSpeed: 5
   sprintMultiplier: 1.35
   groundDrag: 10
+  tiredMoveMultiplier: 0.65
+  timeToRegenStamina: 2
+  maxStamina: 100
+  staminaRegen: 5.2
   crawlMultiplier: 0.35
   normalHeight: 1
   crawlHeight: 0.125
