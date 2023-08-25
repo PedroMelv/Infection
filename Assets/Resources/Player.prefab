@@ -183,6 +183,9 @@ MonoBehaviour:
   crawlMultiplier: 0.35
   normalHeight: 1
   crawlHeight: 0.125
+  crouchCeilDetect:
+    serializedVersion: 2
+    m_Bits: 9
   jumpForce: 10
   jumpCutMultiplier: 0.282
   playerHeight: 2
