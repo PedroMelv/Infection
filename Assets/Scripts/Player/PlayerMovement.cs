@@ -3,12 +3,24 @@ using System.Collections.Generic;
 using Photon.Pun;
 using UnityEngine;
 
+public enum MoveStates
+{
+    IDLE,
+    WALKING,
+    RUNNING,
+    JUMPING,
+    CRAWLING,
+    DUCT
+}
 public class PlayerMovement : MonoBehaviourPun
 {
     [SerializeField] private Transform feetPos;
     [SerializeField] private Transform orientation;
 
     [SerializeField] private LayerMask playerLayer;
+
+    [SerializeField] private MoveStates curMoveState;
+    public MoveStates GetMoveState { get { return curMoveState; } }
 
     public bool canMove = true;
 
@@ -20,6 +32,11 @@ public class PlayerMovement : MonoBehaviourPun
 
     private Vector3 moveDirection;
 
+    [Header("Crawl")]
+    [SerializeField] private float normalHeight;
+    [SerializeField] private float crawlHeight;
+    private bool isCrawling;
+
     [Header("Jump")]
     [SerializeField] private float jumpForce;
     [SerializeField,Range(0f,1f)] private float jumpCutMultiplier;
@@ -28,6 +45,7 @@ public class PlayerMovement : MonoBehaviourPun
     [SerializeField] private float playerHeight;
     [SerializeField] private LayerMask groundLayer;
     private bool grounded;
+    public bool IsGrounded { get { return grounded; } }
 
     [Header("LadderClimb")]
     [SerializeField] private LayerMask ladderLayer;
@@ -59,10 +77,9 @@ public class PlayerMovement : MonoBehaviourPun
     private void Update()
     {
         if(photonView.IsMine == false) return;
-
-        if (currentLadder != null) Debug.Log(Vector3.Dot(orientation.transform.forward , currentLadder.transform.forward));
-
+        
         HandleJump();
+        HandleCrawl();
         HandleGroundDrag();
         HandleSpeedLimit();
         HandleLadderDetection();
@@ -195,6 +212,43 @@ public class PlayerMovement : MonoBehaviourPun
         rb.drag = finalDrag;
     }
 
+    #endregion
+    #region Crawl
+    public void HandleCrawl()
+    {
+        #region Start Crawling Input
+        if (grounded && pInput.crawlInputPressed && !isCrawling && !climbingLadder)
+        {
+            isCrawling = true;
+            rb.AddForce(Vector3.down * 100f, ForceMode.Impulse);
+        }
+        #endregion
+
+        #region Handle Crawling
+
+        Vector3 playerSize = Vector3.one;
+        playerSize.y = normalHeight;
+
+        if(!climbingLadder)
+        {
+            if(isCrawling && pInput.crawlInput)
+            {
+                playerSize.y = crawlHeight;
+            }else if(!pInput.crawlInput && pInput.crawlInputReleased)
+            {
+                rb.AddForce(Vector3.up * 4f, ForceMode.Impulse);
+                isCrawling = false;
+            }
+        }
+        else
+        {
+            playerSize.y = normalHeight;
+            isCrawling = false;
+        }
+
+        transform.localScale = playerSize;
+        #endregion
+    }
     #endregion
     #region Jump
 

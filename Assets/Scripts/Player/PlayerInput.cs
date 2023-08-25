@@ -26,6 +26,10 @@ public class PlayerInput : MonoBehaviourPun
     public bool jumpInput;
     public bool jumpInputPressed;
     public bool jumpInputReleased;
+    
+    public bool crawlInput;
+    public bool crawlInputPressed;
+    public bool crawlInputReleased;
 
     private void Start()
     {
@@ -47,6 +51,10 @@ public class PlayerInput : MonoBehaviourPun
         jumpInput = Input.GetKey(KeyCode.Space);
         jumpInputPressed = Input.GetKeyDown(KeyCode.Space);
         jumpInputReleased = Input.GetKeyUp(KeyCode.Space);
+
+        crawlInput = Input.GetKey(KeyCode.LeftControl);
+        crawlInputPressed = Input.GetKeyDown(KeyCode.LeftControl);
+        crawlInputReleased = Input.GetKeyUp(KeyCode.LeftControl);
 
         if (Input.GetKeyDown(KeyCode.E)) OnInteractPress?.Invoke();
         if (Input.GetKey(KeyCode.E))     OnInteractHold?.Invoke();

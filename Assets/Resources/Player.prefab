@@ -92,10 +92,13 @@ MonoBehaviour:
   playerLayer:
     serializedVersion: 2
     m_Bits: 256
+  curMoveState: 0
   canMove: 1
   moveSpeed: 5
   sprintMultiplier: 1.35
   groundDrag: 10
+  normalHeight: 1
+  crawlHeight: 0.125
   jumpForce: 10
   jumpCutMultiplier: 0.282
   playerHeight: 2
@@ -131,6 +134,9 @@ MonoBehaviour:
   jumpInput: 0
   jumpInputPressed: 0
   jumpInputReleased: 0
+  crawlInput: 0
+  crawlInputPressed: 0
+  crawlInputReleased: 0
 --- !u!114 &3763245986587800236
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -33,7 +33,8 @@ public class PlayerCamera : MonoBehaviour
     [SerializeField] private float sprintBobSpeed;
 
     private Vector3 headbobOffset;
-    private float headbobTimer;
+    private float YheadbobTimer;
+    private float XheadbobTimer;
 
 
     public void SetOwner(PlayerInput input)
@@ -72,16 +73,22 @@ public class PlayerCamera : MonoBehaviour
         orientation.rotation = Quaternion.Euler(0f, yRotation, 0f);
         playerBody.rotation = Quaternion.Euler(0f, yRotation, 0f);
 
-        cameraHandler.position = cameraPos.position + headbobOffset;
+        cameraHandler.position = (cameraPos.position + headbobOffset);
     }
+
+    private float LerpPos(float camPos, float camTarget, float speedTimer)
+    {
+        return Mathf.Lerp(camPos, camTarget, speedTimer * Time.deltaTime);
+    }
+
 
     private void HandleHeadbob()
     {
-        if(headBobEnabled == false)
+        if(headBobEnabled == false || pMove.IsGrounded == false)
         {
             headbobOffset = Vector3.zero;
         }
-        else
+        else if(headBobEnabled == true)
         {
             float headbobSpeed = 0f;
             float headbobAmplitude = 0f;
@@ -98,8 +105,11 @@ public class PlayerCamera : MonoBehaviour
             }
             
             
-            headbobTimer += Time.deltaTime * headbobSpeed;
-            headbobOffset = new Vector3(0f, Mathf.Sin(headbobTimer) * headbobAmplitude, 0f);
+            YheadbobTimer += Time.deltaTime * headbobSpeed;
+            XheadbobTimer += Time.deltaTime * headbobSpeed / 2f;
+
+
+            headbobOffset = (Vector3.up * Mathf.Sin(YheadbobTimer) * headbobAmplitude * 1.4f) + orientation.right * Mathf.Cos(XheadbobTimer) * headbobAmplitude * 1.6f;
         }
     }
 }
