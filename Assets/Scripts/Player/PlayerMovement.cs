@@ -36,6 +36,7 @@ public class PlayerMovement : MonoBehaviourPun
     [SerializeField] private float crawlMultiplier;
     [SerializeField] private float normalHeight;
     [SerializeField] private float crawlHeight;
+    [SerializeField] private LayerMask crouchCeilDetect;
     private bool isCrawling;
 
     [Header("Jump")]
@@ -240,7 +241,7 @@ public class PlayerMovement : MonoBehaviourPun
             if(isCrawling && pInput.crawlInput)
             {
                 playerSize.y = crawlHeight;
-            }else if(!pInput.crawlInput && pInput.crawlInputReleased)
+            }else if(!pInput.crawlInput && pInput.crawlInputReleased && CanGoUp())
             {
                 rb.AddForce(Vector3.up * 4f, ForceMode.Impulse);
                 isCrawling = false;
@@ -252,8 +253,15 @@ public class PlayerMovement : MonoBehaviourPun
             isCrawling = false;
         }
 
+        if (isCrawling && CanGoUp() == false) playerSize.y = crawlHeight;
+
         transform.localScale = playerSize;
         #endregion
+    }
+
+    private bool CanGoUp()
+    {
+        return !Physics.BoxCast(transform.position, Vector3.one / 2f, Vector3.up, Quaternion.identity, playerHeight + 0.3f, crouchCeilDetect);
     }
     #endregion
     #region Jump
