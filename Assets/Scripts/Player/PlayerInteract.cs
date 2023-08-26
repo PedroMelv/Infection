@@ -8,9 +8,15 @@ public class PlayerInteract : MonoBehaviour
     [SerializeField] private LayerMask interactLayer;
 
     private PlayerInput pInput;
+    private PlayerMovement pMove;
 
     private Ray mouseRay;
 
+    private void Awake()
+    {
+        pMove = GetComponent<PlayerMovement>();
+        pInput = GetComponent<PlayerInput>();
+    }
     private void Start()
     {
         InitializeInteractions();
@@ -40,7 +46,19 @@ public class PlayerInteract : MonoBehaviour
             if(detectedInteractable != null) 
             {
                 detectedInteractable.Interact(this.gameObject);
+
+                HandleCustomInteractions(detectedInteractable);
             }
+
+            
+        }
+    }
+
+    private void HandleCustomInteractions(Interactable interactable)
+    {
+        if(interactable is DuctTrigger)
+        {
+            pMove.InteractDuct((interactable as DuctTrigger));
         }
     }
 }

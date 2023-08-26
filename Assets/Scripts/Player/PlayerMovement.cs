@@ -68,6 +68,9 @@ public class PlayerMovement : MonoBehaviourPun
     private RaycastHit ladderHit;
     private GameObject currentLadder;
     
+    [Header("Duct")]
+    private bool inDuct;
+    private float ductLeaveTimer;
 
     [Header("Slope")]
     [SerializeField, Range(0f, 90f)] private float maxSlopeAngle;
@@ -95,6 +98,7 @@ public class PlayerMovement : MonoBehaviourPun
     {
         if(photonView.IsMine == false) return;
 
+        ductLeaveTimer += Time.deltaTime;
         HandleStamina();
         HandleJump();
         HandleCrawl();
@@ -166,7 +170,7 @@ public class PlayerMovement : MonoBehaviourPun
 
             if (rb.velocity.y > 0) //Keep it stuck on the slope if it's going up
             {
-                //Debug.Log("Applying! " + rb.velocity.y);
+                Debug.Log("Applying! " + rb.velocity.y);
                 rb.AddForce(Vector3.down * 30f, ForceMode.Force);
             }
             return;
@@ -196,7 +200,7 @@ public class PlayerMovement : MonoBehaviourPun
             curMoveState = MoveStates.WALKING;
         }
 
-        if(pInput.crawlInput && grounded) 
+        if((pInput.crawlInput || inDuct) && grounded) 
         {
             speed = moveSpeed * crawlMultiplier;
             curMoveState = MoveStates.CRAWLING;
@@ -284,11 +288,29 @@ public class PlayerMovement : MonoBehaviourPun
     #region Crawl
     public void HandleCrawl()
     {
+        if(inDuct)
+        {
+            Vector3 playerSizeDuct = Vector3.one;
+            playerSizeDuct.y = crawlHeight;
+
+            transform.localScale = playerSizeDuct;
+
+            if(CanGoUp())
+            {
+                inDuct = false;
+                isCrawling = false;
+
+                playerSizeDuct.y = normalHeight;
+                transform.localScale = playerSizeDuct;
+            }
+            return;
+        }
+
         #region Start Crawling Input
         if (grounded && pInput.crawlInputPressed && !isCrawling && !climbingLadder)
         {
             isCrawling = true;
-            rb.AddForce(Vector3.down * 100f, ForceMode.Impulse);
+            if(!inDuct)rb.AddForce(Vector3.down * 100f, ForceMode.Impulse);
         }
         #endregion
 
@@ -322,7 +344,24 @@ public class PlayerMovement : MonoBehaviourPun
 
     private bool CanGoUp()
     {
-        return !Physics.BoxCast(transform.position, Vector3.one / 2f, Vector3.up, Quaternion.identity, playerHeight + 0.3f, crouchCeilDetect);
+        return !Physics.BoxCast(transform.position - Vector3.up * .5f, Vector3.one / 2f, Vector3.up, Quaternion.identity, playerHeight + 0.3f, crouchCeilDetect);
+    }
+    #endregion
+    #region Duct
+    public void InteractDuct(DuctTrigger duct)
+    {
+        if(inDuct) return;
+
+        if(inDuct)
+        {
+            inDuct = false;
+            transform.position = duct.GetOutDuct();
+        }else{
+            inDuct = true;
+            isCrawling = true;
+            ductLeaveTimer = 0f;
+            transform.position = duct.GetInDuct();
+        }
     }
     #endregion
     #region Jump
@@ -420,9 +459,10 @@ public class PlayerMovement : MonoBehaviourPun
     {
         //if (exitingSlope) return false;
 
-        if(Physics.Raycast(transform.position, Vector3.down, out slopeHit, playerHeight * .5f + 0.3f, groundLayer))
+        if(Physics.Raycast(transform.position , Vector3.down, out slopeHit, playerHeight * .5f + 0.3f, groundLayer))
         {
             float angle = Vector3.Angle(Vector3.up, slopeHit.normal);
+            Debug.Log(angle);
             return (angle < maxSlopeAngle && angle != 0f);
         }
         return false;
