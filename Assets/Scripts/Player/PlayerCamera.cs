@@ -7,7 +7,13 @@ public class PlayerCamera : MonoBehaviour
     [Header("Components")]
     [SerializeField] private PlayerInput pInput;
     [SerializeField] private PlayerMovement pMove;
+    [SerializeField] private PlayerCombat pCombat;
+
+
     [Header("Camera Parameters")]
+    [SerializeField] private float defaultFov;
+    [SerializeField] private float aimingFov;
+
     [SerializeField] private float minAngle;
     [SerializeField] private float maxAngle;
 
@@ -18,6 +24,8 @@ public class PlayerCamera : MonoBehaviour
     [SerializeField] private Transform cameraPos;
     [SerializeField] private Transform playerBody;
     [SerializeField] private Transform orientation;
+
+    private Camera camera;
 
     private float xRotation;
     private float yRotation;
@@ -39,14 +47,15 @@ public class PlayerCamera : MonoBehaviour
     private float YheadbobTimer;
     private float XheadbobTimer;
 
-
     public void SetOwner(PlayerInput input)
     {
         pInput = input;
 
         pMove = pInput.gameObject.GetComponent<PlayerMovement>();
+        pCombat = pInput.gameObject.GetComponent<PlayerCombat>();
 
         pInput.myCamera = GetComponent<Camera>();
+        camera = pInput.myCamera;
 
         orientation = pInput.orientation;
         playerBody = pInput.playerBody;
@@ -58,6 +67,7 @@ public class PlayerCamera : MonoBehaviour
         if (pInput == null) return;
 
         HandleHeadbob();
+        HandleFov();
         HandleCamera();
     }
 
@@ -79,9 +89,13 @@ public class PlayerCamera : MonoBehaviour
         cameraHandler.position = (cameraPos.position + headbobOffset);
     }
 
-    private float LerpPos(float camPos, float camTarget, float speedTimer)
+    private void HandleFov()
     {
-        return Mathf.Lerp(camPos, camTarget, speedTimer * Time.deltaTime);
+        float fov = defaultFov;
+
+        if (pCombat.IsAiming) fov = aimingFov;
+
+        if (Mathf.Abs(fov - camera.fieldOfView) > 0.1f) camera.fieldOfView = Mathf.Lerp(camera.fieldOfView, fov, 40f * Time.deltaTime);
     }
 
 

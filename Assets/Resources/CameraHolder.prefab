@@ -133,6 +133,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   pInput: {fileID: 0}
   pMove: {fileID: 0}
+  pCombat: {fileID: 0}
+  defaultFov: 90
+  aimingFov: 60
   minAngle: -80
   maxAngle: 80
   sensX: 2

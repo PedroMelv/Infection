@@ -97,6 +97,7 @@ GameObject:
   - component: {fileID: 1721449749161564766}
   - component: {fileID: 1721449749161564767}
   - component: {fileID: 3763245986587800236}
+  - component: {fileID: 3622921710946648271}
   - component: {fileID: 8739034638490398706}
   - component: {fileID: 6420955845419879261}
   - component: {fileID: -6756625047172380564}
@@ -228,6 +229,12 @@ MonoBehaviour:
   crawlInput: 0
   crawlInputPressed: 0
   crawlInputReleased: 0
+  leftMouseInput: 0
+  leftMouseInputPressed: 0
+  leftMouseInputReleased: 0
+  rightMouseInput: 0
+  rightMouseInputPressed: 0
+  rightMouseInputReleased: 0
 --- !u!114 &3763245986587800236
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -244,6 +251,18 @@ MonoBehaviour:
   interactLayer:
     serializedVersion: 2
     m_Bits: 128
+--- !u!114 &3622921710946648271
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1721449749161564765}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 00dbd5b8f3142bd40b69a687c90ff00a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &8739034638490398706
 MonoBehaviour:
   m_ObjectHideFlags: 0
