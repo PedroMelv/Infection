@@ -187,7 +187,7 @@ MonoBehaviour:
   staminaRegen: 5.2
   crawlMultiplier: 0.35
   normalHeight: 1
-  crawlHeight: 0.125
+  crawlHeight: 0.25
   crouchCeilDetect:
     serializedVersion: 2
     m_Bits: 9

@@ -297,11 +297,14 @@ public class PlayerMovement : MonoBehaviourPun
 
             if(CanGoUp())
             {
+                Debug.Log("Lifting");
+                
                 inDuct = false;
                 isCrawling = false;
 
                 playerSizeDuct.y = normalHeight;
                 transform.localScale = playerSizeDuct;
+                           
             }
             return;
         }
@@ -344,7 +347,7 @@ public class PlayerMovement : MonoBehaviourPun
 
     private bool CanGoUp()
     {
-        return !Physics.BoxCast(transform.position - Vector3.up * .5f, Vector3.one / 2f, Vector3.up, Quaternion.identity, playerHeight + 0.3f, crouchCeilDetect);
+        return !Physics.BoxCast(feetPos.position + Vector3.up * 0.15f , Vector3.one / 2f, Vector3.up, Quaternion.identity, playerHeight + 0.3f, crouchCeilDetect);
     }
     #endregion
     #region Duct
