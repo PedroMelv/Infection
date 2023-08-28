@@ -13,19 +13,26 @@ public class PlayerCamera : MonoBehaviour
     [Header("Camera Parameters")]
     [SerializeField] private float defaultFov;
     [SerializeField] private float aimingFov;
-
+    [Space]
     [SerializeField] private float minAngle;
     [SerializeField] private float maxAngle;
-
+    [Space]
+    [SerializeField] private LayerMask blockStrafeLayer;
+    [SerializeField] private float strafeDistance;
+    [SerializeField] private float strafeAngle;
+    [Space]
     [SerializeField] private float sensX;
     [SerializeField] private float sensY;
-
+    [Space]
     [SerializeField] private Transform cameraHandler;
     [SerializeField] private Transform cameraPos;
     [SerializeField] private Transform playerBody;
     [SerializeField] private Transform orientation;
 
     private Camera camera;
+
+    private float strafeRotation;
+    private float strafePos;
 
     private float xRotation;
     private float yRotation;
@@ -68,6 +75,7 @@ public class PlayerCamera : MonoBehaviour
 
         HandleHeadbob();
         HandleFov();
+        HandleStrafe();
         HandleCamera();
     }
 
@@ -80,13 +88,19 @@ public class PlayerCamera : MonoBehaviour
 
         xRotation -= yInput;
         xRotation = Mathf.Clamp(xRotation, minAngle, maxAngle);
+        
+        Quaternion cameraRotationTarget = Quaternion.Euler(xRotation, yRotation, strafeRotation);
 
-
-        transform.rotation = Quaternion.Euler(xRotation, yRotation, 0f);
+        transform.rotation = Quaternion.Lerp(transform.rotation, cameraRotationTarget, 30f * Time.deltaTime); 
+        
+        
         orientation.rotation = Quaternion.Euler(0f, yRotation, 0f);
         playerBody.rotation = Quaternion.Euler(0f, yRotation, 0f);
 
-        cameraHandler.position = (cameraPos.position + headbobOffset);
+        Vector3 dir = orientation.right;
+
+
+        cameraHandler.position = Vector3.Lerp(cameraHandler.position, cameraPos.position + headbobOffset + dir * strafePos, 30f * Time.deltaTime);
     }
 
     private void HandleFov()
@@ -98,7 +112,26 @@ public class PlayerCamera : MonoBehaviour
         if (Mathf.Abs(fov - camera.fieldOfView) > 0.1f) camera.fieldOfView = Mathf.Lerp(camera.fieldOfView, fov, 40f * Time.deltaTime);
     }
 
+    private void HandleStrafe()
+    {
+        strafeRotation = -GetStrafeDir() * strafeAngle;
+        strafePos = GetStrafeDir() * strafeDistance;
+    }
 
+    private int GetStrafeDir()
+    {
+        int dir = 0;
+
+        if (pInput.strafeLeftInput) dir -= 1;
+        if (pInput.strafeRightInput) dir += 1;
+
+        Vector3 dirRay = orientation.right;
+
+
+        if (dir != 0 && Physics.Raycast(cameraPos.position, dirRay * dir, 1f, blockStrafeLayer)) dir = 0;
+
+        return dir;
+    }
     private void HandleHeadbob()
     {
         if(headBobEnabled == false || pMove.IsGrounded == false)
@@ -135,7 +168,6 @@ public class PlayerCamera : MonoBehaviour
                 }
 
             }
-
 
 
             YheadbobTimer += Time.deltaTime * headbobSpeed;

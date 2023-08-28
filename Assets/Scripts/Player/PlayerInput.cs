@@ -23,6 +23,9 @@ public class PlayerInput : MonoBehaviourPun
     public Action OnInteractHold;
     public Action OnInteractRelease;
 
+    public bool strafeRightInput;
+    public bool strafeLeftInput;
+
     public bool jumpInput;
     public bool jumpInputPressed;
     public bool jumpInputReleased;
@@ -65,6 +68,8 @@ public class PlayerInput : MonoBehaviourPun
         crawlInputPressed = Input.GetKeyDown(KeyCode.LeftControl);
         crawlInputReleased = Input.GetKeyUp(KeyCode.LeftControl);
 
+        strafeLeftInput = Input.GetKey(KeyCode.Q);
+        strafeRightInput = Input.GetKey(KeyCode.E);
 
         leftMouseInput = Input.GetKey(KeyCode.Mouse0);
         leftMouseInputPressed = Input.GetKeyDown(KeyCode.Mouse0);

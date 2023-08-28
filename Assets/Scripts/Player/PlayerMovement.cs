@@ -45,6 +45,8 @@ public class PlayerMovement : MonoBehaviourPun
     [SerializeField] private float crawlMultiplier;
     [SerializeField] private float normalHeight;
     [SerializeField] private float crawlHeight;
+    [SerializeField] private float ductHeight;
+
     [SerializeField] private LayerMask crouchCeilDetect;
     private bool isCrawling;
 
@@ -200,7 +202,7 @@ public class PlayerMovement : MonoBehaviourPun
             curMoveState = MoveStates.WALKING;
         }
 
-        if((pInput.crawlInput || inDuct) && grounded) 
+        if((isCrawling || inDuct) && grounded) 
         {
             speed = moveSpeed * crawlMultiplier;
             curMoveState = MoveStates.CRAWLING;
@@ -291,7 +293,7 @@ public class PlayerMovement : MonoBehaviourPun
         if(inDuct)
         {
             Vector3 playerSizeDuct = Vector3.one;
-            playerSizeDuct.y = crawlHeight;
+            playerSizeDuct.y = ductHeight;
 
             transform.localScale = playerSizeDuct;
 
@@ -340,6 +342,8 @@ public class PlayerMovement : MonoBehaviourPun
         }
 
         if (isCrawling && CanGoUp() == false) playerSize.y = crawlHeight;
+
+        if (playerSize.y == normalHeight) isCrawling = false;
 
         transform.localScale = playerSize;
         #endregion

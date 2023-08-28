@@ -138,6 +138,11 @@ MonoBehaviour:
   aimingFov: 60
   minAngle: -80
   maxAngle: 80
+  blockStrafeLayer:
+    serializedVersion: 2
+    m_Bits: 9
+  strafeDistance: 1
+  strafeAngle: 35
   sensX: 2
   sensY: 2
   cameraHandler: {fileID: 3254984109021065000}

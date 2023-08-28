@@ -187,7 +187,8 @@ MonoBehaviour:
   staminaRegen: 5.2
   crawlMultiplier: 0.35
   normalHeight: 1
-  crawlHeight: 0.25
+  crawlHeight: 0.35
+  ductHeight: 0.125
   crouchCeilDetect:
     serializedVersion: 2
     m_Bits: 9
@@ -263,6 +264,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 00dbd5b8f3142bd40b69a687c90ff00a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  hitLayer:
+    serializedVersion: 2
+    m_Bits: 9
+  bulletMark: {fileID: 3787753064261802207, guid: cf75ad506f32e874baa1e2d56b1d1ed4,
+    type: 3}
 --- !u!114 &8739034638490398706
 MonoBehaviour:
   m_ObjectHideFlags: 0
