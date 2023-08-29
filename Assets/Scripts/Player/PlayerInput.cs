@@ -79,9 +79,9 @@ public class PlayerInput : MonoBehaviourPun
         rightMouseInputPressed = Input.GetKeyDown(KeyCode.Mouse1);
         rightMouseInputReleased = Input.GetKeyUp(KeyCode.Mouse1);
 
-        if (Input.GetKeyDown(KeyCode.E)) OnInteractPress?.Invoke();
-        if (Input.GetKey(KeyCode.E))     OnInteractHold?.Invoke();
-        if (Input.GetKeyUp(KeyCode.E))   OnInteractRelease?.Invoke();
+        if (Input.GetKeyDown(KeyCode.F)) OnInteractPress?.Invoke();
+        if (Input.GetKey(KeyCode.F))     OnInteractHold?.Invoke();
+        if (Input.GetKeyUp(KeyCode.F))   OnInteractRelease?.Invoke();
     }
 
     public Vector2 MoveInput()
