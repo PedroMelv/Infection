@@ -1582,7 +1582,7 @@ MonoBehaviour:
   OnInteract:
     m_PersistentCalls:
       m_Calls: []
-  inDuct: {x: 0, y: -0.25, z: 0}
+  inDuct: {x: 0.64, y: -0.25, z: 0}
   outDuct: {x: 0, y: -0.25, z: 1}
 --- !u!65 &370013772
 BoxCollider:
@@ -1613,7 +1613,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 370013770}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 39.586, y: 1.013, z: -3.783}
+  m_LocalPosition: {x: 39.73, y: 0.81, z: -3.783}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -5933,6 +5933,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: Medium tubes (1)
+      objectReference: {fileID: 0}
+    - target: {fileID: 7166151703108926942, guid: c7649062f8acef2449126c0597048187,
+        type: 3}
+      propertyPath: m_Convex
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7965819803011867948, guid: c7649062f8acef2449126c0597048187,
         type: 3}

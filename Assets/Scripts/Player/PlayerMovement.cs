@@ -202,7 +202,7 @@ public class PlayerMovement : MonoBehaviourPun
             curMoveState = MoveStates.WALKING;
         }
 
-        if((isCrawling || inDuct) && grounded) 
+        if((isCrawling && grounded)|| inDuct) 
         {
             speed = moveSpeed * crawlMultiplier;
             curMoveState = MoveStates.CRAWLING;
@@ -351,7 +351,8 @@ public class PlayerMovement : MonoBehaviourPun
 
     private bool CanGoUp()
     {
-        return !Physics.BoxCast(feetPos.position + Vector3.up * 0.15f , Vector3.one / 2f, Vector3.up, Quaternion.identity, playerHeight + 0.3f, crouchCeilDetect);
+	//Debug.DrawLine(feetPos.position + Vector3.up * 0.15f, (feetPos.position + Vector3.up * 0.15f) + Vector3.up * playerHeight + 1f); 
+        return !Physics.BoxCast(feetPos.position + Vector3.up * 0.15f , Vector3.one / 2f, Vector3.up, Quaternion.identity, playerHeight + 1f, crouchCeilDetect);
     }
     #endregion
     #region Duct
