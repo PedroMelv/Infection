@@ -69,8 +69,9 @@ public class PlayerMovement : MonoBehaviourPun
 
     private RaycastHit ladderHit;
     private GameObject currentLadder;
-    
+
     [Header("Duct")]
+    [SerializeField] private Vector3 detectionSize;
     private bool inDuct;
     private float ductLeaveTimer;
 
@@ -297,7 +298,7 @@ public class PlayerMovement : MonoBehaviourPun
 
             transform.localScale = playerSizeDuct;
 
-            if(CanGoUp())
+            if(CanGoUp() && ductLeaveTimer > 1f)
             {
                 Debug.Log("Lifting");
                 
@@ -351,8 +352,15 @@ public class PlayerMovement : MonoBehaviourPun
 
     private bool CanGoUp()
     {
-	//Debug.DrawLine(feetPos.position + Vector3.up * 0.15f, (feetPos.position + Vector3.up * 0.15f) + Vector3.up * playerHeight + 1f); 
-        return !Physics.BoxCast(feetPos.position + Vector3.up * 0.15f , Vector3.one / 2f, Vector3.up, Quaternion.identity, playerHeight + 1f, crouchCeilDetect);
+        Collider[] cols = Physics.OverlapBox(transform.position + (Vector3.up * detectionSize.y / 2f) , detectionSize / 2f, Quaternion.identity, crouchCeilDetect);
+        Debug.Log(cols.Length);
+
+        for (int i = 0; i < cols.Length; i++)
+        {
+            Debug.Log(cols[i].gameObject.name);
+        }
+
+        return cols.Length <= 0;
     }
     #endregion
     #region Duct
@@ -482,4 +490,9 @@ public class PlayerMovement : MonoBehaviourPun
     }
 
     #endregion
+
+    private void OnDrawGizmos()
+    {
+        Gizmos.DrawWireCube((feetPos.position + (Vector3.up / 2f) * detectionSize.y), detectionSize);
+    }
 }
