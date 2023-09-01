@@ -1146,10 +1146,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4ba2426c65b627044a7b3eb97fa1e00d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  corners: []
-  baseSpeed: 2
   sprintMultiplier: 3
-  sprinting: 0
+  baseSpeed: 2
+  sprinting: 1
+  corners: []
   groundLayer:
     serializedVersion: 2
     m_Bits: 8
@@ -1682,7 +1682,7 @@ MonoBehaviour:
   m_OverrideTileSize: 0
   m_TileSize: 256
   m_OverrideVoxelSize: 0
-  m_VoxelSize: 0.07666667
+  m_VoxelSize: 0.19333333
   m_MinRegionArea: 2
   m_NavMeshData: {fileID: 23800000, guid: d27e8f16c81c55b4c929ece12f48b7d2, type: 2}
   m_BuildHeightMesh: 0

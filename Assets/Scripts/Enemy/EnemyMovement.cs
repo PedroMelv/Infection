@@ -8,19 +8,19 @@ using UnityEngine.AI;
 public class EnemyMovement : MonoBehaviour
 {
     
-    private Vector3 curTarget = Vector3.zero;
-
-    private NavMeshPath path;
-    [SerializeField] private Vector3[] corners;
-
-    [SerializeField] private float baseSpeed;
     [SerializeField] private float sprintMultiplier;
+    [SerializeField] private float baseSpeed;
+    [SerializeField] private bool sprinting = false;
     private float speed;
     private bool canMove = false;
 
-    [SerializeField] private bool sprinting = false;
+    [SerializeField] private Vector3[] corners;
+    private NavMeshPath path;
+    private Vector3 curTarget = Vector3.zero;
+
 
     [SerializeField] private LayerMask groundLayer;
+
     private RaycastHit slopeHit;
 
     private Vector3 moveDirection;
@@ -44,7 +44,7 @@ public class EnemyMovement : MonoBehaviour
 
         if(canMove)
         {
-            if (Vector3.Distance(transform.position, corners[index]) <= .1f)
+            if (Vector3.Distance(transform.position, corners[index]) <= .25f)
             {
                 index++;
                 if (index >= corners.Length) canMove = false;
@@ -57,9 +57,46 @@ public class EnemyMovement : MonoBehaviour
         if (canMove && !isLock)
         {
             moveDirection = corners[index] - transform.position;
-
+            moveDirection.y = 0f;
             
+            if(OnSlope())
+            {
+                rb.AddForce(GetSlopeDirection() * speed * 20f, ForceMode.Force);
+
+                if (rb.velocity.y > 0) //Keep it stuck on the slope if it's going up
+                {
+                    Debug.Log("Applying! " + rb.velocity.y);
+                    rb.AddForce(Vector3.down * 30f, ForceMode.Force);
+                }
+
+                
+            }else{
+
+                rb.AddForce(moveDirection.normalized * speed * 10f, ForceMode.Force);
+            }
+
         }
+
+        if(OnSlope())
+        {
+            Vector3 slopeVel = new Vector3(rb.velocity.x, rb.velocity.y, rb.velocity.z);
+            if(slopeVel.magnitude > speed)
+            {
+                Vector3 speedVel = slopeVel.normalized * speed;
+                rb.velocity = speedVel;
+            }
+            
+        }else{
+
+            Vector3 flatVel = new Vector3(rb.velocity.x, 0f, rb.velocity.z);
+            if(flatVel.magnitude > speed)
+            {
+                Vector3 speedVel = flatVel.normalized * speed;
+                speedVel.y = rb.velocity.y;
+                rb.velocity = speedVel;
+            }
+        }
+        
     }
 
     #region SetDestination
@@ -69,6 +106,7 @@ public class EnemyMovement : MonoBehaviour
             _ = InternalSetDestination(pos, callback);
         else
         {
+            Debug.Log("Cant Return");
             callback?.Invoke(null);
         }
     }
@@ -83,6 +121,8 @@ public class EnemyMovement : MonoBehaviour
         {
             isLock = false;
 
+            Debug.Log("Exiting");
+
             callback?.Invoke(path);
             return;
         }
@@ -93,7 +133,19 @@ public class EnemyMovement : MonoBehaviour
 
         NavMesh.CalculatePath(transform.position, hit.point, NavMesh.AllAreas, path);
 
-        corners = path.corners;
+        if(path.corners.Length == 0)
+        {
+            isLock = false;
+            Debug.Log("Impossible path");
+            return;
+        }
+
+        corners = new Vector3[path.corners.Length - 1];
+
+        for(int i = 0; i < corners.Length; i++)
+        {
+            corners[i] = path.corners[i + 1];
+        }
 
         for (int i = 0; i < corners.Length; i++)
         {
@@ -106,6 +158,9 @@ public class EnemyMovement : MonoBehaviour
         canMove = true;
 
         isLock = false;
+
+        Debug.Log("Returning");
+
         callback?.Invoke(path);
     }
     #endregion
@@ -144,4 +199,17 @@ public class EnemyMovement : MonoBehaviour
     }
 
     #endregion
+
+    private void OnDrawGizmos()
+    {
+        if(corners.Length > 0)
+        {
+            Gizmos.color = Color.red;
+            for(int i = 0; i < corners.Length; i++)
+            {
+                if(i > 0) Gizmos.DrawLine(corners[i-1],corners[i]);
+                Gizmos.DrawSphere(corners[i], .25f);
+            }
+        }
+    } 
 }
