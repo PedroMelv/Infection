@@ -48,7 +48,6 @@ public class EnemyMovement : MonoBehaviour
             {
                 index++;
                 if (index >= corners.Length) canMove = false;
-                
             }
         }
     }
@@ -68,13 +67,11 @@ public class EnemyMovement : MonoBehaviour
                     Debug.Log("Applying! " + rb.velocity.y);
                     rb.AddForce(Vector3.down * 30f, ForceMode.Force);
                 }
-
-                
             }else{
-
                 rb.AddForce(moveDirection.normalized * speed * 10f, ForceMode.Force);
             }
 
+            HandleRotation();
         }
 
         if(OnSlope())
@@ -167,6 +164,14 @@ public class EnemyMovement : MonoBehaviour
 
     #region Logic
 
+    private void HandleRotation()
+    {
+        float angle = Mathf.Atan2(moveDirection.z,moveDirection.x) * Mathf.Rad2Deg;
+
+        Quaternion rotation = Quaternion.AngleAxis(angle, Vector3.up);
+
+        transform.rotation = Quaternion.RotateTowards(transform.rotation, rotation, 500f * Time.fixedDeltaTime);
+    }
     private void HandleSpeed()
     {
         speed = baseSpeed;
