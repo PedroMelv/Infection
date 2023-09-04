@@ -7,6 +7,7 @@ public class EnemyBrain : MonoBehaviour
 {
 
     protected EnemyMovement enemyMovement;
+
     public virtual void Awake()
     {
         enemyMovement = GetComponent<EnemyMovement>();
@@ -21,6 +22,16 @@ public class EnemyBrain : MonoBehaviour
     }
 
     public virtual void Update()
+    {
+
+    }
+
+    public virtual void TriggerVision(Transform pos)
+    {
+
+    }
+
+    public virtual void TriggerVision(Vector3 pos)
     {
 
     }

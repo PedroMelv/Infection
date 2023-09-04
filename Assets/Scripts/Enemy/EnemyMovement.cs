@@ -5,30 +5,54 @@ using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.AI;
 
+public enum MovementAIStates
+{
+    IDLE,
+    WANDERING,
+    SEARCHING,
+    CHASING
+}
+
 public class EnemyMovement : MonoBehaviour
 {
-    
-    [SerializeField] private float sprintMultiplier;
+    #region Variables
+
+    [SerializeField] private MovementAIStates moveStates;
+
+    //Target
+    private Transform target;
+
+    [Header("Movement")]   
     [SerializeField] private float baseSpeed;
+    [SerializeField] private float sprintMultiplier;
     [SerializeField] private bool sprinting = false;
+    [SerializeField] private LayerMask groundLayer;
+    private Vector3 moveDirection;
+
     private float speed;
     private bool canMove = false;
 
-    [SerializeField] private Vector3[] corners;
+    private Rigidbody rb;
+    
+    //Pathfinding
+    private Queue<Vector3> corners = new Queue<Vector3>();
+    private Vector3[] pathStored = new Vector3[0];
     private NavMeshPath path;
     private Vector3 curTarget = Vector3.zero;
-
-
-    [SerializeField] private LayerMask groundLayer;
-
-    private RaycastHit slopeHit;
-
-    private Vector3 moveDirection;
-
-    private int index = 0;
+    private Vector3 finalTarget = new Vector3(-1000f,1000f,100000f);
     bool isLock = false;
 
-    private Rigidbody rb;
+    [Header("Slope")]
+    private RaycastHit slopeHit;
+
+
+    [Header("Rotation")]
+    [SerializeField] private float rotationOffset;
+    private Vector3 targetRotation;
+    private float rotateSpeed;
+    private bool rotating;
+
+    #endregion
 
     private void Awake()
     {
@@ -41,26 +65,40 @@ public class EnemyMovement : MonoBehaviour
     private void Update()
     {
         HandleSpeed();
+        HandleRotation();
+        HandleMovement();
 
-        if(canMove)
+
+        switch (moveStates)
         {
-            if (Vector3.Distance(transform.position, corners[index]) <= .25f)
-            {
-                index++;
-                if (index >= corners.Length) canMove = false;
-            }
+            case MovementAIStates.IDLE:
+                sprinting = false;
+                break;
+            case MovementAIStates.WANDERING:
+                sprinting = false;
+                break;
+            case MovementAIStates.SEARCHING:
+                sprinting = false;
+                break;
+            case MovementAIStates.CHASING:
+                ChaseState();
+                break;
+            default:
+                break;
         }
     }
     private void FixedUpdate()
     {
+        rb.useGravity = !OnSlope();
+
         if (canMove && !isLock)
         {
-            moveDirection = corners[index] - transform.position;
+            moveDirection = curTarget - transform.position;
             moveDirection.y = 0f;
             
             if(OnSlope())
             {
-                rb.AddForce(GetSlopeDirection() * speed * 20f, ForceMode.Force);
+                rb.AddForce(GetSlopeDirection() * speed * 30f, ForceMode.Force);
 
                 if (rb.velocity.y > 0) //Keep it stuck on the slope if it's going up
                 {
@@ -71,7 +109,7 @@ public class EnemyMovement : MonoBehaviour
                 rb.AddForce(moveDirection.normalized * speed * 10f, ForceMode.Force);
             }
 
-            HandleRotation();
+            
         }
 
         if(OnSlope())
@@ -96,7 +134,54 @@ public class EnemyMovement : MonoBehaviour
         
     }
 
+    #region States Logic
+
+    private void ChangeState(MovementAIStates state)
+    {
+        moveStates = state;
+    }
+
+    private void ChaseState()
+    {
+        sprinting = true;
+
+        if (target != null)
+        {
+            SetRotation(target.position, 500f);
+            SetDestination(target.position, null);
+        }
+        else
+        {
+            SetRotation(curTarget, 250f);
+        }
+
+        if (ReachedDestination())
+        {
+            if(target == null)
+            {
+                //TODO: Mudar o estado para o estado de procura
+                //Criar o estado de procura
+            }
+            else
+            {
+                //Inimigo está perto do alvo e o alvo continua visível
+                //TODO: Condição perfeita para atacar / Criar a condição de ataque 
+            }
+        }
+    }
+
+    #endregion
+
     #region SetDestination
+
+    public void SetTarget(Transform target)
+    {
+        if (target == null) return;
+
+        moveStates = MovementAIStates.CHASING;
+        this.target = target;
+    }
+
     private void SetDestination(Vector3 pos, System.Action<NavMeshPath> callback)
     {
         if(!isLock)
@@ -114,21 +199,21 @@ public class EnemyMovement : MonoBehaviour
     private async Task InternalSetDestination(Vector3 pos, System.Action<NavMeshPath> callback)
     {
         isLock = true;
-        if (curTarget == pos)
+        if (finalTarget == pos)
         {
             isLock = false;
-
-            Debug.Log("Exiting");
-
             callback?.Invoke(path);
             return;
         }
 
         // TODO: Garanir por role que executa so no server
 
-        Physics.Raycast(pos, Vector3.down, out RaycastHit hit, 100f);
+
+        Physics.Raycast(pos, Vector3.down, out RaycastHit hit, 100f, groundLayer);
+
 
         NavMesh.CalculatePath(transform.position, hit.point, NavMesh.AllAreas, path);
+        
 
         if(path.corners.Length == 0)
         {
@@ -137,23 +222,26 @@ public class EnemyMovement : MonoBehaviour
             return;
         }
 
-        corners = new Vector3[path.corners.Length - 1];
+        pathStored = path.corners;
 
-        for(int i = 0; i < corners.Length; i++)
+        corners = new Queue<Vector3>();
+
+        for(int i = 1; i < path.corners.Length; i++)
         {
-            corners[i] = path.corners[i + 1];
+            Vector3 point = path.corners[i];
+            point.y += 1f;
+
+            Debug.Log("Adding " + point);
+
+            corners.Enqueue(point);
         }
 
-        for (int i = 0; i < corners.Length; i++)
-        {
-            corners[i].y += 1f;
-        }
+        Debug.Log(corners.Peek());
 
-        curTarget = pos;
+        curTarget = corners.Dequeue();
+        finalTarget = pos;
 
-        index = 0;
         canMove = true;
-
         isLock = false;
 
         Debug.Log("Returning");
@@ -162,15 +250,55 @@ public class EnemyMovement : MonoBehaviour
     }
     #endregion
 
-    #region Logic
+    #region SetRotation
+
+    public void SetRotation(Vector3 dir, float rotateSpeed = 500f)
+    {
+        if (targetRotation == dir || rotating) return;
+
+        rotating = true;
+        this.rotateSpeed = rotateSpeed;
+        targetRotation = dir;
+    }
 
     private void HandleRotation()
     {
-        float angle = Mathf.Atan2(moveDirection.z,moveDirection.x) * Mathf.Rad2Deg;
+        if (rotating == false) return;
 
-        Quaternion rotation = Quaternion.AngleAxis(angle, Vector3.up);
+        Vector3 dir = targetRotation - transform.position;
 
-        transform.rotation = Quaternion.RotateTowards(transform.rotation, rotation, 500f * Time.fixedDeltaTime);
+        float angle = Mathf.Atan2(dir.x, dir.z) * Mathf.Rad2Deg;
+
+        Quaternion rotation = Quaternion.AngleAxis(angle + rotationOffset, Vector3.up);
+
+        transform.rotation = Quaternion.RotateTowards(transform.rotation, rotation, rotateSpeed * Time.fixedDeltaTime);
+
+        if(transform.rotation == rotation)
+        {
+            rotating = false;
+        }
+    }
+
+    #endregion
+
+    #region Logic
+
+    private void HandleMovement()
+    {
+        if (canMove)
+        {
+            if (Vector3.Distance(transform.position, curTarget) <= .25f)
+            {
+                if (corners.Count == 0)
+                {
+                    canMove = false;
+                }
+                else
+                {
+                    curTarget = corners.Dequeue();
+                }
+            }
+        }
     }
     private void HandleSpeed()
     {
@@ -180,9 +308,7 @@ public class EnemyMovement : MonoBehaviour
     }
     public bool ReachedDestination()
     {
-        if (corners == null || corners.Length == 0) return false;
-
-        return Vector3.Distance(transform.position, corners[corners.Length - 1]) <= .1f;
+        return corners.Count == 0;
     }
    
     public bool OnSlope()
@@ -192,7 +318,6 @@ public class EnemyMovement : MonoBehaviour
         if (Physics.Raycast(transform.position, Vector3.down, out slopeHit, 2f * .5f + 0.3f, groundLayer))
         {
             float angle = Vector3.Angle(Vector3.up, slopeHit.normal);
-            Debug.Log(angle);
             return (angle < 75f && angle != 0f);
         }
         return false;
@@ -207,14 +332,15 @@ public class EnemyMovement : MonoBehaviour
 
     private void OnDrawGizmos()
     {
-        if(corners.Length > 0)
+        if(corners.Count > 0)
         {
             Gizmos.color = Color.red;
-            for(int i = 0; i < corners.Length; i++)
+
+            for (int i = 0; i < pathStored.Length; i++)
             {
-                if(i > 0) Gizmos.DrawLine(corners[i-1],corners[i]);
-                Gizmos.DrawSphere(corners[i], .25f);
+                if(i > 0) Gizmos.DrawLine(pathStored[i-1], pathStored[i]);
+                Gizmos.DrawSphere(pathStored[i], .25f);
             }
         }
-    } 
+    }
 }
