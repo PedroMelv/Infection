@@ -67,6 +67,7 @@ public class EnemyMovement : MonoBehaviour
         HandleSpeed();
         HandleRotation();
         HandleMovement();
+        LimitSpeed();
 
 
         switch (moveStates)
@@ -95,43 +96,21 @@ public class EnemyMovement : MonoBehaviour
         {
             moveDirection = curTarget - transform.position;
             moveDirection.y = 0f;
-            
+
             if(OnSlope())
             {
                 rb.AddForce(GetSlopeDirection() * speed * 30f, ForceMode.Force);
 
-                if (rb.velocity.y > 0) //Keep it stuck on the slope if it's going up
+                if (rb.velocity.y > 0)
                 {
                     Debug.Log("Applying! " + rb.velocity.y);
                     rb.AddForce(Vector3.down * 30f, ForceMode.Force);
                 }
+            
             }else{
                 rb.AddForce(moveDirection.normalized * speed * 10f, ForceMode.Force);
             }
-
-            
         }
-
-        if(OnSlope())
-        {
-            Vector3 slopeVel = new Vector3(rb.velocity.x, rb.velocity.y, rb.velocity.z);
-            if(slopeVel.magnitude > speed)
-            {
-                Vector3 speedVel = slopeVel.normalized * speed;
-                rb.velocity = speedVel;
-            }
-            
-        }else{
-
-            Vector3 flatVel = new Vector3(rb.velocity.x, 0f, rb.velocity.z);
-            if(flatVel.magnitude > speed)
-            {
-                Vector3 speedVel = flatVel.normalized * speed;
-                speedVel.y = rb.velocity.y;
-                rb.velocity = speedVel;
-            }
-        }
-        
     }
 
     #region States Logic
@@ -145,14 +124,12 @@ public class EnemyMovement : MonoBehaviour
     {
         sprinting = true;
 
+
+
         if (target != null)
         {
-            SetRotation(target.position, 500f);
+            SetRotation(curTarget, 15f);
             SetDestination(target.position, null);
-        }
-        else
-        {
-            SetRotation(curTarget, 250f);
         }
 
         if (ReachedDestination())
@@ -254,7 +231,7 @@ public class EnemyMovement : MonoBehaviour
 
     public void SetRotation(Vector3 dir, float rotateSpeed = 500f)
     {
-        if (targetRotation == dir || rotating) return;
+        if (rotating) return;
 
         rotating = true;
         this.rotateSpeed = rotateSpeed;
@@ -263,20 +240,16 @@ public class EnemyMovement : MonoBehaviour
 
     private void HandleRotation()
     {
-        if (rotating == false) return;
+        Vector3 dir = (targetRotation - transform.position).normalized;
 
-        Vector3 dir = targetRotation - transform.position;
+        Quaternion rotacaoDesejada = Quaternion.LookRotation(dir);
 
-        float angle = Mathf.Atan2(dir.x, dir.z) * Mathf.Rad2Deg;
+        rotacaoDesejada.eulerAngles = new Vector3(0, rotacaoDesejada.eulerAngles.y, 0);
 
-        Quaternion rotation = Quaternion.AngleAxis(angle + rotationOffset, Vector3.up);
+        transform.rotation = Quaternion.Slerp(transform.rotation, rotacaoDesejada, rotateSpeed * Time.deltaTime);
 
-        transform.rotation = Quaternion.RotateTowards(transform.rotation, rotation, rotateSpeed * Time.fixedDeltaTime);
 
-        if(transform.rotation == rotation)
-        {
-            rotating = false;
-        }
+        rotating = false;
     }
 
     #endregion
@@ -287,7 +260,8 @@ public class EnemyMovement : MonoBehaviour
     {
         if (canMove)
         {
-            if (Vector3.Distance(transform.position, curTarget) <= .25f)
+
+            if (Vector3.Distance(transform.position, curTarget) <= .75f)
             {
                 if (corners.Count == 0)
                 {
@@ -304,8 +278,33 @@ public class EnemyMovement : MonoBehaviour
     {
         speed = baseSpeed;
         if(sprinting) speed *= sprintMultiplier;
-
     }
+
+    private void LimitSpeed()
+    {
+        if (OnSlope())
+        {
+            Vector3 slopeVel = new Vector3(rb.velocity.x, rb.velocity.y, rb.velocity.z);
+            if (slopeVel.magnitude > speed)
+            {
+                Vector3 speedVel = slopeVel.normalized * speed;
+                rb.velocity = speedVel;
+            }
+
+        }
+        else
+        {
+
+            Vector3 flatVel = new Vector3(rb.velocity.x, 0f, rb.velocity.z);
+            if (flatVel.magnitude > speed)
+            {
+                Vector3 speedVel = flatVel.normalized * speed;
+                speedVel.y = rb.velocity.y;
+                rb.velocity = speedVel;
+            }
+        }
+    }
+
     public bool ReachedDestination()
     {
         return corners.Count == 0;
@@ -339,7 +338,7 @@ public class EnemyMovement : MonoBehaviour
             for (int i = 0; i < pathStored.Length; i++)
             {
                 if(i > 0) Gizmos.DrawLine(pathStored[i-1], pathStored[i]);
-                Gizmos.DrawSphere(pathStored[i], .25f);
+                Gizmos.DrawSphere(pathStored[i], .75f);
             }
         }
     }
