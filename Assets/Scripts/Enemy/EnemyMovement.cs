@@ -103,7 +103,6 @@ public class EnemyMovement : MonoBehaviour
 
                 if (rb.velocity.y > 0)
                 {
-                    Debug.Log("Applying! " + rb.velocity.y);
                     rb.AddForce(Vector3.down * 30f, ForceMode.Force);
                 }
             
@@ -242,11 +241,11 @@ public class EnemyMovement : MonoBehaviour
     {
         Vector3 dir = (targetRotation - transform.position).normalized;
 
-        Quaternion rotacaoDesejada = Quaternion.LookRotation(dir);
+        Quaternion dirRotation = Quaternion.LookRotation(dir);
 
-        rotacaoDesejada.eulerAngles = new Vector3(0, rotacaoDesejada.eulerAngles.y, 0);
+        dirRotation.eulerAngles = new Vector3(0, dirRotation.eulerAngles.y, 0);
 
-        transform.rotation = Quaternion.Slerp(transform.rotation, rotacaoDesejada, rotateSpeed * Time.deltaTime);
+        transform.rotation = Quaternion.Slerp(transform.rotation, dirRotation, rotateSpeed * Time.deltaTime);
 
 
         rotating = false;
@@ -261,7 +260,7 @@ public class EnemyMovement : MonoBehaviour
         if (canMove)
         {
 
-            if (Vector3.Distance(transform.position, curTarget) <= .75f)
+            if (Vector3.Distance(transform.position, curTarget) <= ((!sprinting) ? .25f : .75f))
             {
                 if (corners.Count == 0)
                 {
@@ -338,7 +337,7 @@ public class EnemyMovement : MonoBehaviour
             for (int i = 0; i < pathStored.Length; i++)
             {
                 if(i > 0) Gizmos.DrawLine(pathStored[i-1], pathStored[i]);
-                Gizmos.DrawSphere(pathStored[i], .75f);
+                Gizmos.DrawSphere(pathStored[i], (!sprinting) ? .25f : .75f );
             }
         }
     }
