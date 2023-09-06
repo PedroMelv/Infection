@@ -21,6 +21,9 @@ public class EnemyMovement : MonoBehaviour
 
     //Target
     private Transform target;
+    [SerializeField] private LayerMask visionBlockerLayer;
+    private bool lostVision;
+    private float lostVisionTimer;
 
     [Header("Movement")]   
     [SerializeField] private float baseSpeed;
@@ -67,8 +70,10 @@ public class EnemyMovement : MonoBehaviour
         HandleSpeed();
         HandleRotation();
         HandleMovement();
+        HandleDrag();
         LimitSpeed();
 
+        Debug.Log("Magnitude: " + GetCurVelocity());
 
         switch (moveStates)
         {
@@ -99,7 +104,7 @@ public class EnemyMovement : MonoBehaviour
 
             if(OnSlope())
             {
-                rb.AddForce(GetSlopeDirection() * speed * 30f, ForceMode.Force);
+                rb.AddForce(GetSlopeDirection() * speed * 15f, ForceMode.Force);
 
                 if (rb.velocity.y > 0)
                 {
@@ -128,7 +133,15 @@ public class EnemyMovement : MonoBehaviour
         if (target != null)
         {
             SetRotation(curTarget, 15f);
-            SetDestination(target.position, null);
+
+            Vector3 dirToTarget = target.position - transform.position;
+            float targetDst = Vector3.Distance(target.position, transform.position);
+
+            lostVision = Physics.Raycast(transform.position, dirToTarget, targetDst, visionBlockerLayer);
+
+            if (lostVision) lostVisionTimer -= Time.deltaTime; else lostVisionTimer = .25f;
+
+            if (!lostVision || lostVisionTimer > 0f) SetDestination(target.position, null);
         }
 
         if (ReachedDestination())
@@ -140,6 +153,7 @@ public class EnemyMovement : MonoBehaviour
             }
             else
             {
+                moveDirection = Vector3.zero;
                 //Inimigo está perto do alvo e o alvo continua visível
                 //TODO: Condição perfeita para atacar / Criar a condição de ataque 
             }
@@ -255,12 +269,21 @@ public class EnemyMovement : MonoBehaviour
 
     #region Logic
 
+    private void HandleDrag()
+    {
+        float drag = 0f;
+
+        if (moveDirection == Vector3.zero) drag = 5f;
+
+        rb.drag = drag;
+    }
+
     private void HandleMovement()
     {
         if (canMove)
         {
 
-            if (Vector3.Distance(transform.position, curTarget) <= ((!sprinting) ? .25f : .75f))
+            if (Vector3.Distance(transform.position, curTarget) <= .75f * (GetCurVelocity() / (baseSpeed * sprintMultiplier)))
             {
                 if (corners.Count == 0)
                 {
@@ -308,6 +331,18 @@ public class EnemyMovement : MonoBehaviour
     {
         return corners.Count == 0;
     }
+
+    public float GetCurVelocity()
+    {
+        if (rb == null) return 0f;
+
+        if(OnSlope())
+        {
+            return Mathf.Max(1,rb.velocity.magnitude);
+        }
+
+        return Mathf.Max(1, new Vector3(rb.velocity.x, 0f, rb.velocity.z).magnitude);
+    }
    
     public bool OnSlope()
     {
@@ -337,8 +372,10 @@ public class EnemyMovement : MonoBehaviour
             for (int i = 0; i < pathStored.Length; i++)
             {
                 if(i > 0) Gizmos.DrawLine(pathStored[i-1], pathStored[i]);
-                Gizmos.DrawSphere(pathStored[i], (!sprinting) ? .25f : .75f );
+                Gizmos.DrawSphere(pathStored[i], .75f * (GetCurVelocity() / (baseSpeed * sprintMultiplier)));
             }
         }
+
+        UnityEditor.Handles.DrawWireArc(transform.position, Vector3.up, Vector3.forward, 360f, 10f);
     }
 }
