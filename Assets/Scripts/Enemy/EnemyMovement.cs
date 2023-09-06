@@ -375,7 +375,5 @@ public class EnemyMovement : MonoBehaviour
                 Gizmos.DrawSphere(pathStored[i], .75f * (GetCurVelocity() / (baseSpeed * sprintMultiplier)));
             }
         }
-
-        UnityEditor.Handles.DrawWireArc(transform.position, Vector3.up, Vector3.forward, 360f, 10f);
     }
 }
