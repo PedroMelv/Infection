@@ -5,19 +5,19 @@ using UnityEngine;
 public class RoomArea : MonoBehaviour
 {
     public Color roomColor;
-    [Space]
-    public Vector3 offset;
-    public Vector3 size;
+
     [Space]
     public LayerMask groundLayer;
 
-    public Vector3 GetRandomPoint()
+    [Space]
+    [Header("Debug")]
+    [SerializeField] private bool debugPoints;
+    [SerializeField] private Vector3[] points;
+
+    public RoomPoint GetRandomPoint()
     {
         Vector3 randomPos = Vector3.zero;
-
         bool hitGround = false;
-
-        RaycastHit hit = new RaycastHit();
 
         int iterations = 0;
         int maxIterations = 10000;
@@ -26,68 +26,141 @@ public class RoomArea : MonoBehaviour
         {
             iterations++;
 
-            randomPos = transform.position + offset;
-            randomPos.x += Random.Range(-size.x / 2f, size.x / 2f);
-            randomPos.z += Random.Range(-size.z / 2f, size.z / 2f);
+            randomPos = Vector3.zero;
+            randomPos.x += Random.Range(-transform.localScale.x / 2f, transform.localScale.x / 2f);
+            randomPos.z += Random.Range(-transform.localScale.z / 2f, transform.localScale.z / 2f);
 
-            hitGround = Physics.Raycast(randomPos, Vector3.down, out hit, 100f, groundLayer);
+            Quaternion rot = Quaternion.Euler(transform.rotation.eulerAngles);
+            randomPos = rot * randomPos;
+
+            randomPos = transform.position + randomPos;
+
+
+            hitGround = Physics.Raycast(randomPos, Vector3.down, 100f, groundLayer);
+
+            if (hitGround == false && iterations >= maxIterations) return new RoomPoint(Vector3.zero, false);
         }
 
-        return hit.point;
+        return new RoomPoint(randomPos, false);
     }
 
-    public Vector3[] GetRandomPoints(int amount, float distOfPoints = 0.0f)
+    public RoomPoint GetExtraPoint(Vector3 posBase, float dist)
     {
-        int fill = 0;
+        Vector3 randomPos = Vector3.zero;
+        bool hitGround = false;
 
-        Vector3[] result = new Vector3[amount];
+        int iterations = 0;
+        int maxIterations = 10000;
 
-        int fillIteration = 0;
-        int maxFillIterations = 1000;
-
-        while (fill < amount)
+        while (hitGround == false && iterations < maxIterations)
         {
-            Vector3 point = GetRandomPoint();
+            iterations++;
 
-            bool hasPointClose = false;
-
-            for (int i = 0; i < result.Length; i++)
-            {
-                if (Vector3.Distance(point, result[i]) < distOfPoints && result[i] != Vector3.zero)
-                {
-                    hasPointClose = true;
-                }
-            }
-
-            if(fillIteration < maxFillIterations)
-            {
-                if (hasPointClose == false)
-                {
-                    result[fill++] = point;
-                    fillIteration = 0;
-                }
-                else
-                {
-                    fillIteration++;
-                }
-            }
-            else
-            {
-                result[fill++] = Vector3.zero;
-                fillIteration = 0;
-            }
-
+            randomPos = posBase;
+            randomPos.x += Random.Range(-dist, dist);
+            randomPos.z += Random.Range(-dist, dist);
             
+
+            hitGround = Physics.Raycast(randomPos, Vector3.down, 100f, groundLayer);
+
+            if (hitGround == false && iterations >= maxIterations) return new RoomPoint(Vector3.zero, false);
         }
 
-        return result;
+        return new RoomPoint(randomPos, true);
+    }
+
+    public RoomPoint[] GetRandomPoints(int amount, float distOfPoints = 0.0f, bool hasExtra = false, int extraMin = 0, int extraMax = 2, float extraMaxDist = 1f)
+    {
+        List<RoomPoint> points = new List<RoomPoint>();
+        int amountCount = 0;
+
+        extraMax++;
+
+        while (amountCount < amount)
+        {
+            RoomPoint point = GetRandomPoint();
+            
+            while(point.pos == Vector3.zero)
+            {
+                point = GetRandomPoint();
+            }
+
+            points.Add(point);
+            amountCount++;
+
+            if(hasExtra)
+            {
+                int extraAmount = Random.Range(extraMin, extraMax);
+                int extraCount = 0;
+
+                while (extraCount < extraAmount)
+                {
+                    RoomPoint extraPoint = GetExtraPoint(point.pos, extraMaxDist);
+
+                    while (extraPoint.pos == Vector3.zero)
+                    {
+                        extraPoint = GetExtraPoint(point.pos, extraMaxDist);
+                    }
+                    points.Add(extraPoint);
+
+                    extraCount++;
+                }
+            } 
+        }
+
+        return points.ToArray();
+    }
+
+    [ContextMenu("GeneratePoints")]
+    private void GeneratePoints()
+    {
+        int rPoints = Random.Range(2, 6);
+
+        points = new Vector3[rPoints];
+
+        for (int i = 0; i < rPoints; i++)
+        {
+            points[i] = GetRandomPoint().pos;
+        }
     }
 
     private void OnDrawGizmos()
     {
-        Gizmos.color = roomColor;
+        if(debugPoints)
+        {
+            Gizmos.color = Color.white;
 
-        Gizmos.DrawWireCube(transform.position + offset, size);
+            for (int i = 0; i < points.Length; i++)
+            {
+                Gizmos.DrawWireSphere(points[i], .35f);
+            }
+        }
+
+        Gizmos.color = roomColor;
         
+        Quaternion rot = Quaternion.Euler(transform.rotation.eulerAngles);
+
+        // Calcule a matriz de transformação com base na posição, rotação e escala
+        Matrix4x4 matrix = Matrix4x4.TRS(transform.position, rot, transform.localScale);
+
+        // Defina a matriz de transformação para ser usada pelo Gizmos
+        Gizmos.matrix = matrix;
+
+        Gizmos.DrawWireCube(Vector3.zero, Vector3.one);
+
+        
+    }
+}
+
+
+public struct RoomPoint
+{
+    public Vector3 pos;
+    public bool isExtra;
+
+    public RoomPoint(Vector3 pos, bool isExtra)
+    {
+        this.pos = pos;
+        this.isExtra = isExtra;
     }
 }

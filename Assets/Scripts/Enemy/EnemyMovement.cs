@@ -30,6 +30,7 @@ public class EnemyMovement : MonoBehaviour
     [SerializeField] private float sprintMultiplier;
     [SerializeField] private bool sprinting = false;
     [SerializeField] private LayerMask groundLayer;
+
     private Vector3 moveDirection;
 
     private float speed;
@@ -73,7 +74,6 @@ public class EnemyMovement : MonoBehaviour
         HandleDrag();
         LimitSpeed();
 
-        Debug.Log("Magnitude: " + GetCurVelocity());
 
         switch (moveStates)
         {
@@ -105,6 +105,7 @@ public class EnemyMovement : MonoBehaviour
             if(OnSlope())
             {
                 rb.AddForce(GetSlopeDirection() * speed * 15f, ForceMode.Force);
+                SetRotation(curTarget, 7.5f);
 
                 if (rb.velocity.y > 0)
                 {
@@ -113,9 +114,15 @@ public class EnemyMovement : MonoBehaviour
             
             }else{
                 rb.AddForce(moveDirection.normalized * speed * 10f, ForceMode.Force);
+                SetRotation(curTarget, 7.5f);
             }
         }
+        else if(canMove == false)
+        {
+            rb.drag = 15f;
+        }
     }
+
 
     #region States Logic
 
@@ -172,19 +179,26 @@ public class EnemyMovement : MonoBehaviour
         this.target = target;
     }
 
-    private void SetDestination(Vector3 pos, System.Action<NavMeshPath> callback)
+    public bool SetDestination(Vector3 pos, System.Action<NavMeshPath> callback = null)
     {
+        bool couldGo = true;
+
         if(!isLock)
+        {
             _ = InternalSetDestination(pos, callback);
+            couldGo = true;
+        }
         else
         {
-            Debug.Log("Cant Return");
             callback?.Invoke(null);
+            couldGo = false;
         }
+
+        return couldGo;
     }
-    public void SetDestination(Transform pos, System.Action<NavMeshPath> callback = null)
+    public bool SetDestination(Transform pos, System.Action<NavMeshPath> callback = null)
     {
-        SetDestination(pos.position, callback);
+        return SetDestination(pos.position, callback);
     }
     private async Task InternalSetDestination(Vector3 pos, System.Action<NavMeshPath> callback)
     {
@@ -242,13 +256,13 @@ public class EnemyMovement : MonoBehaviour
 
     #region SetRotation
 
-    public void SetRotation(Vector3 dir, float rotateSpeed = 500f)
+    public void SetRotation(Vector3 targetPos, float rotateSpeed = 500f)
     {
         if (rotating) return;
 
         rotating = true;
         this.rotateSpeed = rotateSpeed;
-        targetRotation = dir;
+        targetRotation = targetPos;
     }
 
     private void HandleRotation()
@@ -283,7 +297,7 @@ public class EnemyMovement : MonoBehaviour
         if (canMove)
         {
 
-            if (Vector3.Distance(transform.position, curTarget) <= .75f * (GetCurVelocity() / (baseSpeed * sprintMultiplier)))
+            if (Vector3.Distance(transform.position, curTarget) <= .66f * (GetCurVelocity() / (baseSpeed * sprintMultiplier)))
             {
                 if (corners.Count == 0)
                 {
@@ -329,7 +343,7 @@ public class EnemyMovement : MonoBehaviour
 
     public bool ReachedDestination()
     {
-        return corners.Count == 0;
+        return (corners.Count == 0 && Vector3.Distance(transform.position, finalTarget) < .25f);
     }
 
     public float GetCurVelocity()
@@ -361,19 +375,23 @@ public class EnemyMovement : MonoBehaviour
         return Vector3.ProjectOnPlane(moveDirection, slopeHit.normal).normalized;
     }
 
+    public MovementAIStates GetMoveStates()
+    {
+        return moveStates;
+    }
+
     #endregion
 
     private void OnDrawGizmos()
     {
-        if(corners.Count > 0)
-        {
-            Gizmos.color = Color.red;
+        
+        Gizmos.color = Color.red;
 
-            for (int i = 0; i < pathStored.Length; i++)
-            {
-                if(i > 0) Gizmos.DrawLine(pathStored[i-1], pathStored[i]);
-                Gizmos.DrawSphere(pathStored[i], .75f * (GetCurVelocity() / (baseSpeed * sprintMultiplier)));
-            }
+        for (int i = 0; i < pathStored.Length; i++)
+        {
+            if(i > 0) Gizmos.DrawLine(pathStored[i-1], pathStored[i]);
+            Gizmos.DrawSphere(pathStored[i], .66f * (GetCurVelocity() / (baseSpeed * sprintMultiplier)));
         }
+        
     }
 }

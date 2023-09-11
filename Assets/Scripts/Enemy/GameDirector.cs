@@ -1,42 +1,80 @@
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditor;
 using UnityEngine;
 
 public class GameDirector : MonoBehaviour
 {
-    private RoomArea[] areas;
-    [SerializeField] private int index;
-    [SerializeField] private Vector3[] bunchOfPoints;
+    [Header("Areas")]
+    [SerializeField] private RoomArea wholeArea;
+    [SerializeField] private List<RoomArea> areas;
+
+    public static GameDirector instance;
+
+    private void Awake()
+    {
+        instance = this;
+    }
 
     private void Start()
     {
         GetAreas();
-
-        
-    }
-
-    private void Update()
-    {
-        if(Input.GetKeyDown(KeyCode.Space)) bunchOfPoints = areas[index].GetRandomPoints(4, 5f);
     }
 
     private void GetAreas()
     {
         GameObject[] objs = GameObject.FindGameObjectsWithTag("GameArea");
 
-        areas = new RoomArea[objs.Length];
+        areas = new List<RoomArea>(objs.Length);
 
-        for (int i = 0; i < areas.Length; i++)
+        for (int i = 0; i < areas.Count; i++)
         {
-            areas[i] = objs[i].GetComponent<RoomArea>();
+            RoomArea a = objs[i].GetComponent<RoomArea>();
+
+            if(a != null && a != wholeArea)
+            {
+                areas.Add(a);
+            }
+            
         }
     }
 
-    private void OnDrawGizmos()
+    public RoomPoint[] GetPoints(RoomArea area,int amount, float minDist = 1f, bool hasExtra = false, int extraMin = 0, int extraMax = 2, float extraMaxDist = 1f)
     {
-        for (int i = 0; i < bunchOfPoints.Length; i++)
+        return area.GetRandomPoints(amount, minDist, hasExtra, extraMin, extraMax, extraMaxDist);
+    }
+
+    public RoomPoint[] GetClosestPoints(Vector3 from, int amount, float minDist = 1f, bool hasExtra = false, int extraMin = 0, int extraMax = 2, float extraMaxDist = 1f)
+    {
+        return GetPoints(GetClosestRoom(from), amount, minDist, hasExtra, extraMin, extraMax, extraMaxDist);
+    }
+    
+    public RoomPoint[] GetRandomPoints(int amount, float minDist = 1f, bool hasExtra = false, int extraMin = 0, int extraMax = 2, float extraMaxDist = 1f)
+    {
+        return GetPoints(GetRandomRoom(), amount, minDist, hasExtra, extraMin, extraMax, extraMaxDist);
+    }
+    
+
+    public RoomArea GetClosestRoom(Vector3 from)
+    {
+        RoomArea selRoom = null;
+        float dist = int.MaxValue;
+
+        for (int i = 0; i < areas.Count; i++)
         {
-            Gizmos.DrawWireSphere(bunchOfPoints[i], .5f);
+            if (Vector3.Distance(areas[i].transform.position, from) < dist)
+            {
+                selRoom = areas[i];
+                dist = Vector3.Distance(areas[i].transform.position, from);
+            }
         }
+
+        return selRoom;
+    }
+
+    public RoomArea GetRandomRoom()
+    {
+        return areas[Random.Range(0, areas.Count)];
     }
 }
+

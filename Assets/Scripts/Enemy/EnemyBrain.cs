@@ -7,7 +7,9 @@ public class EnemyBrain : MonoBehaviour
 {
     protected EnemyMovement enemyMovement;
 
-    protected List<BaseBehaviour> behaviours = new List<BaseBehaviour>();
+    protected Queue<BaseBehaviour> behaviours = new Queue<BaseBehaviour>();
+
+    protected BaseBehaviour curBehaviour;
 
     public virtual void Awake()
     {
@@ -19,7 +21,11 @@ public class EnemyBrain : MonoBehaviour
         if (PhotonNetwork.InRoom && PhotonNetwork.IsMasterClient == false)
         {
             Destroy(this);
+
+            return;
         }
+
+        
     }
 
     public virtual void Update()
@@ -39,61 +45,71 @@ public class EnemyBrain : MonoBehaviour
 
     public virtual void HandleBehaviors()
     {
-        if (behaviours.Count == 0) return;
-
-
-    }
-
-    private BaseBehaviour GetMostPriorityBehaviour()
-    {
-        BaseBehaviour behaviour = behaviours[0];
-
-        for (int i = 0; i < behaviours.Count; i++)
+        if(curBehaviour == null && behaviours.TryDequeue(out BaseBehaviour b))
         {
-            if (behaviours[i].priority < behaviour.priority)
+            curBehaviour = b;
+        }
+        else if(curBehaviour != null && curBehaviour.behaviourApplied == false)
+        {
+            if(curBehaviour is WaitBehaviour)
             {
-                behaviour = behaviours[i];
+                curBehaviour.behaviourApplied = true;
+
+                return;
+            }
+            
+            if(curBehaviour is MoveBehaviour)
+            {
+                if(enemyMovement.SetDestination( (curBehaviour as MoveBehaviour).targetPos ))
+                {
+                    Debug.Log( "Going to: " + (curBehaviour as MoveBehaviour).targetPos );
+                    curBehaviour.behaviourApplied = true;
+                }
             }
         }
 
-        return behaviour;
-    }
-
-    private int GetNextPriority()
-    {
-        int priorityCount = 0;
-        while(true)
+        if(curBehaviour != null)
         {
-            if(ContainsPriority(priorityCount))
+            if (curBehaviour is WaitBehaviour && (curBehaviour as WaitBehaviour).timeIdling > 0f)
             {
-                break;
+                (curBehaviour as WaitBehaviour).timeIdling -= Time.deltaTime;
+                Debug.Log((curBehaviour as WaitBehaviour).timeIdling);
+                return;
             }
-            else
+
+            if (curBehaviour.IsCompleted())
             {
-                priorityCount++;
+                Debug.Log("Finished");
+                curBehaviour = null;
             }
         }
 
-        return priorityCount;
+        //TODO: Testar esse sistema e adicionar a leitura dele
+    }
+ 
+    public void AddMoveBehaviour(Vector3 target)
+    {
+        MoveBehaviour behaviour = new MoveBehaviour();
+
+        behaviour.targetPos = target;
+        behaviour.enemyPos = transform;
+
+        behaviours.Enqueue(behaviour);
     }
 
-    private bool ContainsPriority(int priority)
+    public void AddWaitBehaviour(float waitTime)
     {
-        for (int i = 0; i < behaviours.Count; i++)
-        {
-            if (behaviours[i].priority == priority)
-            {
-                return true;
-            }
-        }
+        WaitBehaviour behaviour = new WaitBehaviour();
 
-        return false;
+        behaviour.timeIdling = waitTime;
+
+        behaviours.Enqueue(behaviour);
     }
 
 
     protected class BaseBehaviour
     {
-        public int priority = 0;
+        public bool behaviourApplied;
 
         public virtual bool IsCompleted()
         {
@@ -103,8 +119,32 @@ public class EnemyBrain : MonoBehaviour
 
     protected class MoveBehaviour : BaseBehaviour
     {
+        public Transform enemyPos;
+        public Vector3 targetPos;
+
+        public virtual bool ReachedDestination()
+        {
+            Debug.Log(Vector3.Distance(enemyPos.transform.position, targetPos));
+            return Vector3.Distance(enemyPos.transform.position, targetPos) < 1.5f;
+        }
+
         public override bool IsCompleted()
         {
+            return ReachedDestination();
+        }
+    }
+
+    protected class WaitBehaviour : BaseBehaviour
+    {
+        public float timeIdling;
+
+        public override bool IsCompleted()
+        {
+            if(timeIdling > 0f)
+            {
+                return false;
+            }
+
             return true;
         }
     }
