@@ -11,6 +11,8 @@ using UnityEngine.SceneManagement;
 [RequireComponent(typeof(PhotonView))]
 public class RoomController : MonoBehaviourPunCallbacks
 {
+    [SerializeField] private string gameScene = "Game_Submarine";
+    [Space]
     [SerializeField] private GameObject roomAreaObj;
     [SerializeField] private TextMeshProUGUI roomNameText;
 
@@ -149,7 +151,7 @@ public class RoomController : MonoBehaviourPunCallbacks
 
     public void StartGameButton()
     {
-        SceneManager.LoadScene("Game_Submarine");
+        SceneManager.LoadScene(gameScene);
     }
 
     public PlayerItem GetPlayerItem(string playername) 

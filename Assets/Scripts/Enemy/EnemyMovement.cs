@@ -10,8 +10,7 @@ using static UnityEditor.PlayerSettings;
 
 public enum MovementAIStates
 {
-    IDLE,
-    WANDERING,
+    NONE,
     SEARCHING,
     CHASING
 }
@@ -21,12 +20,18 @@ public class EnemyMovement : MonoBehaviour
     #region Variables
 
     [SerializeField] private MovementAIStates moveStates;
+    [SerializeField] private float maxDetectPointDistance;
 
     //Target
     private Transform target;
     [SerializeField] private LayerMask visionBlockerLayer;
     private bool lostVision;
     private float lostVisionTimer;
+
+    //Chase
+    [SerializeField] private float minSearchDuration = 2.5f;
+    [SerializeField] private float maxSearchDuration = 10f;
+    private float searchTimer;
 
     [Header("Movement")]   
     [SerializeField] private float baseSpeed;
@@ -80,14 +85,12 @@ public class EnemyMovement : MonoBehaviour
 
         switch (moveStates)
         {
-            case MovementAIStates.IDLE:
-                sprinting = false;
-                break;
-            case MovementAIStates.WANDERING:
+            case MovementAIStates.NONE:
                 sprinting = false;
                 break;
             case MovementAIStates.SEARCHING:
                 sprinting = false;
+                SearchState();
                 break;
             case MovementAIStates.CHASING:
                 ChaseState();
@@ -122,7 +125,7 @@ public class EnemyMovement : MonoBehaviour
         }
         else if(canMove == false)
         {
-            rb.drag = 20f;
+            rb.drag = 40f;
         }
     }
 
@@ -165,6 +168,27 @@ public class EnemyMovement : MonoBehaviour
                 //Inimigo está perto do alvo e o alvo continua visível
                 //TODO: Condição perfeita para atacar / Criar a condição de ataque 
             }
+        }
+    }
+
+    private void SearchState()
+    {
+        if(searchTimer <= 0f)
+        {
+            if(Random.value > .75f)
+            {
+                SetDestination(transform.position + new Vector3(Random.Range(-3f, 3f), 0f, Random.Range(-3f, 3f)));
+            }
+            else
+            {
+                SetRotation(Quaternion.Euler(0f, Random.Range(0f, 360f), 0f).eulerAngles, 10f);
+            }
+            
+            searchTimer = Random.Range(minSearchDuration, maxSearchDuration);
+        }
+        else if(pathStored.Length == 0)
+        {
+            searchTimer -= Time.deltaTime;
         }
     }
 
@@ -274,7 +298,7 @@ public class EnemyMovement : MonoBehaviour
 
         Debug.Log("Returning");
 
-        if (moveStates != MovementAIStates.CHASING) ChangeState(MovementAIStates.WANDERING);
+        //if (moveStates != MovementAIStates.CHASING) ChangeState(MovementAIStates.WANDERING);
 
         pathCallback?.Invoke(true, true);
     }
@@ -323,12 +347,12 @@ public class EnemyMovement : MonoBehaviour
         if (canMove)
         {
 
-            if (Vector3.Distance(transform.position, curTarget) <= .66f * (GetCurVelocity() / (baseSpeed * sprintMultiplier)))
+            if (Vector3.Distance(transform.position, curTarget) <= maxDetectPointDistance * (GetCurVelocity() / (baseSpeed * sprintMultiplier)))
             {
                 if (corners.Count == 0)
                 {
+                    pathStored = new Vector3[0];
                     canMove = false;
-                    if(moveStates == MovementAIStates.WANDERING) ChangeState(MovementAIStates.IDLE);
                 }
                 else
                 {
@@ -407,6 +431,12 @@ public class EnemyMovement : MonoBehaviour
         return moveStates;
     }
 
+    public Vector3[] GetPathStored()
+    {
+        if (pathStored == null) return new Vector3[0];
+        return pathStored;
+    }
+
     #endregion
 
     private void OnDrawGizmos()
@@ -417,7 +447,7 @@ public class EnemyMovement : MonoBehaviour
         for (int i = 0; i < pathStored.Length; i++)
         {
             if(i > 0) Gizmos.DrawLine(pathStored[i-1], pathStored[i]);
-            Gizmos.DrawSphere(pathStored[i], .66f * (GetCurVelocity() / (baseSpeed * sprintMultiplier)));
+            Gizmos.DrawSphere(pathStored[i], maxDetectPointDistance * (GetCurVelocity() / (baseSpeed * sprintMultiplier)));
         }
         
     }

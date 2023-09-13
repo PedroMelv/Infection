@@ -1,3 +1,4 @@
+using Photon.Pun;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEditor;
@@ -13,6 +14,11 @@ public class GameDirector : MonoBehaviour
 
     private void Awake()
     {
+        if(PhotonNetwork.IsMasterClient == false && PhotonNetwork.InRoom == true)
+        {
+            Destroy(this.gameObject);
+            return;
+        }
         instance = this;
     }
 
@@ -57,7 +63,7 @@ public class GameDirector : MonoBehaviour
     public RoomPoint GetRandomPointOnMap()
     {
         int selected = 0;
-        RoomPoint[] GotPoints = GetPoints(wholeArea, 5, 1f, false, 0, 0, 0);
+        RoomPoint[] GotPoints = GetPoints(wholeArea, 50, 1f, false, 0, 0, 0);
 
         for (int i = 0; i < GotPoints.Length; i++)
         {

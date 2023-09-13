@@ -9,6 +9,8 @@ public class EnemyBrain : MonoBehaviour
 
     protected Queue<BaseBehaviour> behaviours = new Queue<BaseBehaviour>();
 
+    protected BaseBehaviour[] listBehaviours;
+
     protected BaseBehaviour curBehaviour;
 
     [SerializeField] protected LayerMask groundLayer;
@@ -32,7 +34,7 @@ public class EnemyBrain : MonoBehaviour
 
     public virtual void Update()
     {
-
+        listBehaviours = behaviours.ToArray();
     }
 
     public virtual void TriggerVision(Transform pos)
@@ -49,6 +51,7 @@ public class EnemyBrain : MonoBehaviour
     {
         if (curBehaviour == null && behaviours.TryDequeue(out BaseBehaviour b))
         {
+            Debug.Log("Setting cur behaviour");
             curBehaviour = b;
         }
         else if(curBehaviour != null && curBehaviour.behaviourApplied == false)
@@ -70,6 +73,7 @@ public class EnemyBrain : MonoBehaviour
                     {
                         if(pathWasMade)
                         {
+                            Debug.Log("Target Applied");
                             curBehaviour.behaviourApplied = true;
                         }
                     }
@@ -77,6 +81,7 @@ public class EnemyBrain : MonoBehaviour
                     {
                         if (pathWasMade)
                         {
+                            Debug.Log("Target Applied");
                             curBehaviour.behaviourApplied = true;
                         }
                     }
@@ -171,7 +176,7 @@ public class EnemyBrain : MonoBehaviour
         public virtual bool ReachedDestination()
         {
             Debug.Log(Vector3.Distance(enemyPos.transform.position, targetPos));
-            return Vector3.Distance(enemyPos.transform.position, targetPos) < 1.5f;
+            return Vector3.Distance(enemyPos.transform.position, targetPos) < 1.5f || enemyPos.GetComponent<EnemyMovement>().GetPathStored().Length == 0;
         }
 
         public override bool IsCompleted()
