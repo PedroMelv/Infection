@@ -11,6 +11,8 @@ public class EnemyBrain : MonoBehaviour
 
     protected BaseBehaviour curBehaviour;
 
+    [SerializeField] protected LayerMask groundLayer;
+
     public virtual void Awake()
     {
         enemyMovement = GetComponent<EnemyMovement>();
@@ -45,7 +47,7 @@ public class EnemyBrain : MonoBehaviour
 
     public virtual void HandleBehaviors()
     {
-        if(curBehaviour == null && behaviours.TryDequeue(out BaseBehaviour b))
+        if (curBehaviour == null && behaviours.TryDequeue(out BaseBehaviour b))
         {
             curBehaviour = b;
         }
@@ -53,6 +55,7 @@ public class EnemyBrain : MonoBehaviour
         {
             if(curBehaviour is WaitBehaviour)
             {
+                Debug.Log("Action: Wait");
                 curBehaviour.behaviourApplied = true;
 
                 return;
@@ -60,11 +63,34 @@ public class EnemyBrain : MonoBehaviour
             
             if(curBehaviour is MoveBehaviour)
             {
-                if(enemyMovement.SetDestination( (curBehaviour as MoveBehaviour).targetPos ))
+                Debug.Log("Action: Move");
+                enemyMovement.SetDestination(curBehaviour as MoveBehaviour, (bool pathIsPossible, bool pathWasMade) =>
                 {
-                    Debug.Log( "Going to: " + (curBehaviour as MoveBehaviour).targetPos );
-                    curBehaviour.behaviourApplied = true;
-                }
+                    if(pathIsPossible)
+                    {
+                        if(pathWasMade)
+                        {
+                            curBehaviour.behaviourApplied = true;
+                        }
+                    }
+                    else
+                    {
+                        if (pathWasMade)
+                        {
+                            curBehaviour.behaviourApplied = true;
+                        }
+                    }
+                });
+                return;
+            }
+            
+            if(curBehaviour is MoveStateChangeBehaviour)
+            {
+                Debug.Log("Action: Change");
+                Debug.Log((curBehaviour as MoveStateChangeBehaviour).setTo.ToString());
+                enemyMovement.ChangeState((curBehaviour as MoveStateChangeBehaviour).setTo);
+                curBehaviour.behaviourApplied = true;
+                return;
             }
         }
 
@@ -77,7 +103,7 @@ public class EnemyBrain : MonoBehaviour
                 return;
             }
 
-            if (curBehaviour.IsCompleted())
+            if (curBehaviour.IsCompleted() && curBehaviour.behaviourApplied)
             {
                 Debug.Log("Finished");
                 curBehaviour = null;
@@ -87,14 +113,26 @@ public class EnemyBrain : MonoBehaviour
         //TODO: Testar esse sistema e adicionar a leitura dele
     }
  
+    public virtual void RemoveBehaviours()
+    {
+        behaviours.Clear();
+        curBehaviour = null;
+    }
     public void AddMoveBehaviour(Vector3 target)
     {
         MoveBehaviour behaviour = new MoveBehaviour();
 
-        behaviour.targetPos = target;
-        behaviour.enemyPos = transform;
+        if(Physics.Raycast(target, Vector3.down, out RaycastHit hit, 100f, groundLayer))
+        {
+            behaviour.targetPos = hit.point;
+            behaviour.enemyPos = transform;
 
-        behaviours.Enqueue(behaviour);
+            behaviours.Enqueue(behaviour);
+
+            return;
+        }
+
+        
     }
 
     public void AddWaitBehaviour(float waitTime)
@@ -106,8 +144,16 @@ public class EnemyBrain : MonoBehaviour
         behaviours.Enqueue(behaviour);
     }
 
+    public void AddChangeMoveStateBehaviour(MovementAIStates moveState)
+    {
+        MoveStateChangeBehaviour behaviour = new MoveStateChangeBehaviour();
 
-    protected class BaseBehaviour
+        behaviour.setTo = moveState;
+
+        behaviours.Enqueue(behaviour);
+    }
+
+    public class BaseBehaviour
     {
         public bool behaviourApplied;
 
@@ -117,7 +163,7 @@ public class EnemyBrain : MonoBehaviour
         }
     }
 
-    protected class MoveBehaviour : BaseBehaviour
+    public class MoveBehaviour : BaseBehaviour
     {
         public Transform enemyPos;
         public Vector3 targetPos;
@@ -134,7 +180,7 @@ public class EnemyBrain : MonoBehaviour
         }
     }
 
-    protected class WaitBehaviour : BaseBehaviour
+    public class WaitBehaviour : BaseBehaviour
     {
         public float timeIdling;
 
@@ -149,4 +195,12 @@ public class EnemyBrain : MonoBehaviour
         }
     }
 
+    public class MoveStateChangeBehaviour : BaseBehaviour
+    {
+        public MovementAIStates setTo;
+        public override bool IsCompleted()
+        {
+            return true;
+        }
+    }
 }

@@ -13,18 +13,13 @@ public class P0_EnemyBrain : EnemyBrain
 
     public override void Update()
     {
-        Debug.Log(behaviours.Count);
         if(Input.GetKeyDown(KeyCode.G))
         {
-            RoomPoint[] points = GameDirector.instance.GetRandomPoints(5,2f, true, 0, 4, 1.5f);
+            RoomPoint point = GameDirector.instance.GetRandomPointOnMap();
 
-            for (int i = 0; i < points.Length; i++)
-            {
-                
-                AddMoveBehaviour(points[i].pos);
-                if(points[i].isExtra) AddWaitBehaviour(Random.Range(.75f, 1.5f)); else AddWaitBehaviour(Random.Range(1f, 2.5f));
-
-            }
+            AddMoveBehaviour(point.pos);
+            AddWaitBehaviour(Random.Range(1f, 2.5f));
+            AddChangeMoveStateBehaviour(MovementAIStates.SEARCHING);
         }
 
         HandleBehaviors();
@@ -32,7 +27,11 @@ public class P0_EnemyBrain : EnemyBrain
 
     public override void HandleBehaviors()
     {
-        if (enemyMovement.GetMoveStates() == MovementAIStates.CHASING) return;
+        if (enemyMovement.GetMoveStates() == MovementAIStates.CHASING) 
+        {
+            RemoveBehaviours();
+            return;
+        }
         base.HandleBehaviors();
     }
 

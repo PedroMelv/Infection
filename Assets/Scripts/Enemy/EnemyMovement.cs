@@ -2,8 +2,11 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
+using Unity.Burst.CompilerServices;
 using UnityEngine;
 using UnityEngine.AI;
+using static EnemyBrain;
+using static UnityEditor.PlayerSettings;
 
 public enum MovementAIStates
 {
@@ -119,14 +122,14 @@ public class EnemyMovement : MonoBehaviour
         }
         else if(canMove == false)
         {
-            rb.drag = 15f;
+            rb.drag = 20f;
         }
     }
 
 
     #region States Logic
 
-    private void ChangeState(MovementAIStates state)
+    public void ChangeState(MovementAIStates state)
     {
         moveStates = state;
     }
@@ -134,8 +137,6 @@ public class EnemyMovement : MonoBehaviour
     private void ChaseState()
     {
         sprinting = true;
-
-
 
         if (target != null)
         {
@@ -175,54 +176,77 @@ public class EnemyMovement : MonoBehaviour
     {
         if (target == null) return;
 
-        moveStates = MovementAIStates.CHASING;
+        ChangeState(MovementAIStates.CHASING);
         this.target = target;
     }
 
-    public bool SetDestination(Vector3 pos, System.Action<NavMeshPath> callback = null)
+    public bool SetDestination(Vector3 pos, System.Action<bool, bool> pathCallback = null)
     {
         bool couldGo = true;
 
         if(!isLock)
         {
-            _ = InternalSetDestination(pos, callback);
+            _ = InternalSetDestination(pos, true, pathCallback);
             couldGo = true;
         }
         else
         {
-            callback?.Invoke(null);
+            pathCallback?.Invoke(false, false);
             couldGo = false;
         }
 
         return couldGo;
     }
-    public bool SetDestination(Transform pos, System.Action<NavMeshPath> callback = null)
+
+    public bool SetDestination(MoveBehaviour moveBehaviour, System.Action<bool, bool> pathCallback = null)
     {
-        return SetDestination(pos.position, callback);
+        bool couldGo = true;
+
+        if (!isLock)
+        {
+            _ = InternalSetDestination(moveBehaviour.targetPos, false, pathCallback);
+            couldGo = true;
+        }
+        else
+        {
+            pathCallback?.Invoke(false, false);
+            couldGo = false;
+        }
+
+        return couldGo;
     }
-    private async Task InternalSetDestination(Vector3 pos, System.Action<NavMeshPath> callback)
+
+    public bool SetDestination(Transform pos, System.Action<bool, bool> pathCallback = null)
+    {
+        return SetDestination(pos.position, pathCallback);
+    }
+    private async Task InternalSetDestination(Vector3 pos, bool castTarget, System.Action<bool, bool> pathCallback)
     {
         isLock = true;
         if (finalTarget == pos)
         {
             isLock = false;
-            callback?.Invoke(path);
+            pathCallback?.Invoke(true, true);
             return;
         }
 
-        // TODO: Garanir por role que executa so no server
+        if(castTarget)
+        {
+            Physics.Raycast(pos, Vector3.down, out RaycastHit hit, 100f, groundLayer);
 
+            NavMesh.CalculatePath(transform.position, hit.point, NavMesh.AllAreas, path);
+        }
+        else
+        {
+            NavMesh.CalculatePath(transform.position, pos, NavMesh.AllAreas, path);
+        }
 
-        Physics.Raycast(pos, Vector3.down, out RaycastHit hit, 100f, groundLayer);
-
-
-        NavMesh.CalculatePath(transform.position, hit.point, NavMesh.AllAreas, path);
-        
 
         if(path.corners.Length == 0)
         {
             isLock = false;
             Debug.Log("Impossible path");
+            pathCallback?.Invoke(false, true);
             return;
         }
 
@@ -250,7 +274,9 @@ public class EnemyMovement : MonoBehaviour
 
         Debug.Log("Returning");
 
-        callback?.Invoke(path);
+        if (moveStates != MovementAIStates.CHASING) ChangeState(MovementAIStates.WANDERING);
+
+        pathCallback?.Invoke(true, true);
     }
     #endregion
 
@@ -302,6 +328,7 @@ public class EnemyMovement : MonoBehaviour
                 if (corners.Count == 0)
                 {
                     canMove = false;
+                    if(moveStates == MovementAIStates.WANDERING) ChangeState(MovementAIStates.IDLE);
                 }
                 else
                 {

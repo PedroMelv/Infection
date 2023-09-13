@@ -25,9 +25,9 @@ public class GameDirector : MonoBehaviour
     {
         GameObject[] objs = GameObject.FindGameObjectsWithTag("GameArea");
 
-        areas = new List<RoomArea>(objs.Length);
+        areas = new List<RoomArea>();
 
-        for (int i = 0; i < areas.Count; i++)
+        for (int i = 0; i < objs.Length; i++)
         {
             RoomArea a = objs[i].GetComponent<RoomArea>();
 
@@ -54,6 +54,22 @@ public class GameDirector : MonoBehaviour
         return GetPoints(GetRandomRoom(), amount, minDist, hasExtra, extraMin, extraMax, extraMaxDist);
     }
     
+    public RoomPoint GetRandomPointOnMap()
+    {
+        int selected = 0;
+        RoomPoint[] GotPoints = GetPoints(wholeArea, 5, 1f, false, 0, 0, 0);
+
+        for (int i = 0; i < GotPoints.Length; i++)
+        {
+            if (GotPoints[i].pos != Vector3.zero)
+            {
+                selected = i;
+                break;
+            }
+        }
+
+        return GotPoints[selected];
+    }
 
     public RoomArea GetClosestRoom(Vector3 from)
     {
