@@ -15,7 +15,7 @@ public enum MovementAIStates
     CHASING
 }
 
-public class EnemyMovement : MonoBehaviour
+public class EnemyMovement : MovementBase
 {
     #region Variables
 
@@ -42,15 +42,46 @@ public class EnemyMovement : MonoBehaviour
     private Vector3 moveDirection;
 
     private float speed;
-    private bool canMove = false;
+    private bool hasPath = false;
 
     private Rigidbody rb;
     
     //Pathfinding
-    private Queue<Vector3> corners = new Queue<Vector3>();
-    private Vector3[] pathStored = new Vector3[0];
+
+    public struct PathNode
+    {
+        public enum PathNodeType
+        {
+            MOVE,
+            WALLHOLE
+        }
+
+        public PathNodeType type;
+
+        public Vector3 moveTo;
+        public WallHole wallHole;
+
+        public PathNode(Vector3 moveTo)
+        {
+            type = PathNodeType.MOVE;
+            this.moveTo = moveTo;
+            wallHole = null;
+        }
+
+        public PathNode(WallHole hole, Vector3 basePos)
+        {
+            this.type = PathNodeType.WALLHOLE;
+            moveTo = hole.GetClosestSide(basePos).position;
+            wallHole = hole;
+        }
+    }
+
+    [SerializeField] private LayerMask wallHoleLayer;
+
+    private Queue<PathNode> corners = new Queue<PathNode>();
+    private PathNode[] pathStored = new PathNode[0];
     private NavMeshPath path;
-    private Vector3 curTarget = Vector3.zero;
+    private PathNode curTarget;
     private Vector3 finalTarget = new Vector3(-1000f,1000f,100000f);
     bool isLock = false;
 
@@ -66,8 +97,9 @@ public class EnemyMovement : MonoBehaviour
 
     #endregion
 
-    private void Awake()
+    public override void Awake()
     {
+        base.Awake();
         rb = GetComponent<Rigidbody>();
     }
     private void Start()
@@ -76,6 +108,12 @@ public class EnemyMovement : MonoBehaviour
     }
     private void Update()
     {
+        if (!canMove)
+        {
+
+            return;
+        }
+
         HandleSpeed();
         HandleRotation();
         HandleMovement();
@@ -101,29 +139,43 @@ public class EnemyMovement : MonoBehaviour
     }
     private void FixedUpdate()
     {
+        if(!canMove)
+        {
+            rb.velocity = Vector3.zero;
+            return;
+        }
         rb.useGravity = !OnSlope();
 
-        if (canMove && !isLock)
-        {
-            moveDirection = curTarget - transform.position;
-            moveDirection.y = 0f;
+        HandlePhysicMovement();
 
-            if(OnSlope())
+    }
+
+    private void HandlePhysicMovement()
+    {
+        if (hasPath && !isLock)
+        {
+            moveDirection = curTarget.moveTo - transform.position;
+            Vector3 rotatePos = curTarget.moveTo;
+
+
+            if (OnSlope())
             {
                 rb.AddForce(GetSlopeDirection() * speed * 15f, ForceMode.Force);
-                SetRotation(curTarget, 7.5f);
+                SetRotation(rotatePos, 7.5f);
 
                 if (rb.velocity.y > 0)
                 {
                     rb.AddForce(Vector3.down * 30f, ForceMode.Force);
                 }
-            
-            }else{
+
+            }
+            else
+            {
                 rb.AddForce(moveDirection.normalized * speed * 10f, ForceMode.Force);
-                SetRotation(curTarget, 7.5f);
+                SetRotation(rotatePos, 7.5f);
             }
         }
-        else if(canMove == false)
+        else if (hasPath == false)
         {
             rb.drag = 40f;
         }
@@ -143,7 +195,7 @@ public class EnemyMovement : MonoBehaviour
 
         if (target != null)
         {
-            SetRotation(curTarget, 15f);
+            SetRotation(curTarget.moveTo, 15f);
 
             Vector3 dirToTarget = target.position - transform.position;
             float targetDst = Vector3.Distance(target.position, transform.position);
@@ -274,26 +326,68 @@ public class EnemyMovement : MonoBehaviour
             return;
         }
 
-        pathStored = path.corners;
+        corners = new Queue<PathNode>();
 
-        corners = new Queue<Vector3>();
-
-        for(int i = 1; i < path.corners.Length; i++)
+        if(path.corners.Length == 1)
         {
-            Vector3 point = path.corners[i];
-            point.y += 1f;
+            Vector3 pointA = path.corners[0] + Vector3.up;
+            Vector3 pointB = transform.position;
 
-            Debug.Log("Adding " + point);
+            float dist = Vector3.Distance(pointA, pointB);
+            Vector3 dir = (pointA - pointB).normalized;
 
-            corners.Enqueue(point);
+            if (Physics.Raycast(pointB, dir, out RaycastHit hit, dist, wallHoleLayer) && hit.collider.TryGetComponent(out WallHole wallHole))
+            {
+                PathNode node = new PathNode(wallHole, pointB);
+
+                corners.Enqueue(node);
+            }
+
+            PathNode nodeBase = new PathNode(pointA);
+
+            corners.Enqueue(nodeBase);
+
+
         }
+        else
+        {
+            for (int i = 1; i < path.corners.Length; i++)
+            {
+                Vector3 pointA = path.corners[i];
+                Vector3 pointB = path.corners[i - 1];
 
-        Debug.Log(corners.Peek());
+                pointA += Vector3.up;
+                pointB += Vector3.up;
+
+                float dist = Vector3.Distance(pointA, pointB);
+                Vector3 dir = (pointA - pointB).normalized;
+
+                if (Physics.Raycast(pointB, dir, out RaycastHit hit, dist, wallHoleLayer) && hit.collider.TryGetComponent(out WallHole wallHole))
+                {
+                    Debug.DrawLine(pointA, pointB, Color.yellow, 1000f);
+
+                    PathNode node = new PathNode(wallHole, pointB);
+
+                    corners.Enqueue(node);
+                }
+                else
+                {
+                    
+                    PathNode node = new PathNode(pointA);
+
+                    corners.Enqueue(node);
+                }
+            }
+        }
+        
+        
+
+        pathStored = corners.ToArray();
 
         curTarget = corners.Dequeue();
         finalTarget = pos;
 
-        canMove = true;
+        hasPath = true;
         isLock = false;
 
         Debug.Log("Returning");
@@ -344,21 +438,43 @@ public class EnemyMovement : MonoBehaviour
 
     private void HandleMovement()
     {
-        if (canMove)
-        {
 
-            if (Vector3.Distance(transform.position, curTarget) <= maxDetectPointDistance * (GetCurVelocity() / (baseSpeed * sprintMultiplier)))
+        if (hasPath)
+        {
+            switch (curTarget.type)
             {
-                if (corners.Count == 0)
-                {
-                    pathStored = new Vector3[0];
-                    canMove = false;
-                }
-                else
-                {
-                    curTarget = corners.Dequeue();
-                }
+                case PathNode.PathNodeType.MOVE:
+
+                    if (Vector3.Distance(transform.position, curTarget.moveTo) <= maxDetectPointDistance * (GetCurVelocity() / (baseSpeed * sprintMultiplier)))
+                    {
+                        Debug.Log("Reached point");
+                        if (corners.Count == 0)
+                        {
+                            pathStored = new PathNode[0];
+                            hasPath = false;
+                        }
+                        else
+                        {
+                            curTarget = corners.Dequeue();
+                        }
+                    }
+
+                    break;
+                case PathNode.PathNodeType.WALLHOLE:
+
+                    if (Vector3.Distance(transform.position, curTarget.moveTo) <= 2)
+                    {
+                        if(curTarget.wallHole.WallHoleInteract(this.gameObject))
+                        {
+                            curTarget = corners.Dequeue();
+                        }
+                    }
+
+                    break;
+                default:
+                    break;
             }
+            
         }
     }
     private void HandleSpeed()
@@ -431,9 +547,9 @@ public class EnemyMovement : MonoBehaviour
         return moveStates;
     }
 
-    public Vector3[] GetPathStored()
+    public PathNode[] GetPathStored()
     {
-        if (pathStored == null) return new Vector3[0];
+        if (pathStored == null) return new PathNode[0];
         return pathStored;
     }
 
@@ -441,13 +557,33 @@ public class EnemyMovement : MonoBehaviour
 
     private void OnDrawGizmos()
     {
-        
-        Gizmos.color = Color.red;
-
         for (int i = 0; i < pathStored.Length; i++)
         {
-            if(i > 0) Gizmos.DrawLine(pathStored[i-1], pathStored[i]);
-            Gizmos.DrawSphere(pathStored[i], maxDetectPointDistance * (GetCurVelocity() / (baseSpeed * sprintMultiplier)));
+            switch (pathStored[i].type)
+            {
+                case PathNode.PathNodeType.MOVE:
+                    Gizmos.color = Color.red;
+
+                    if(i > 0 && pathStored[i - 1].wallHole != null)
+                    {
+                        Gizmos.DrawLine(pathStored[i - 1].wallHole.GetClosestSide(pathStored[i].moveTo).position, pathStored[i].moveTo);
+                    }
+                    else if (i > 0) Gizmos.DrawLine(pathStored[i - 1].moveTo, pathStored[i].moveTo);
+
+
+                    Gizmos.DrawSphere(pathStored[i].moveTo, maxDetectPointDistance * (GetCurVelocity() / (baseSpeed * sprintMultiplier)));
+
+                    break;
+                case PathNode.PathNodeType.WALLHOLE:
+                    Gizmos.color = Color.blue;
+
+                    if (i > 0) Gizmos.DrawLine(pathStored[i].moveTo, pathStored[i].wallHole.GetOpositeSide(pathStored[i].moveTo).position);
+                    Gizmos.DrawSphere(pathStored[i].moveTo, .35f);
+                    Gizmos.DrawSphere(pathStored[i].wallHole.GetOpositeSide(pathStored[i].moveTo).position, .35f);
+
+                    break;
+            }
+            
         }
         
     }

@@ -12,7 +12,7 @@ public enum MoveStates
     CRAWLING,
     DUCT
 }
-public class PlayerMovement : MonoBehaviourPun
+public class PlayerMovement : MovementBase
 {
     [SerializeField] private Transform feetPos;
     [SerializeField] private Transform orientation;
@@ -22,7 +22,7 @@ public class PlayerMovement : MonoBehaviourPun
     [SerializeField] private MoveStates curMoveState;
     public MoveStates GetMoveState { get { return curMoveState; } }
 
-    public bool canMove = true;
+    
 
     [Header("Movement")]
     private float speed;
@@ -81,13 +81,13 @@ public class PlayerMovement : MonoBehaviourPun
     private bool exitingSlope;
 
     private Rigidbody rb;
-    private Collider[] cols;
     private PlayerInput pInput;
 
-    private void Awake()
+    public override void Awake()
     {
+        base.Awake();
         rb = GetComponent<Rigidbody>();
-        cols = GetComponents<Collider>();
+        
         pInput = GetComponent<PlayerInput>();
     }
 
@@ -119,14 +119,6 @@ public class PlayerMovement : MonoBehaviourPun
             return;
         }
         HandleMovement();
-    }
-
-    public void SetCollisions(bool to)
-    {
-        for (int i = 0; i < cols.Length; i++)
-        {
-            cols[i].isTrigger = to;
-        }
     }
 
     #region Movement

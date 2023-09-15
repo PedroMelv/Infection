@@ -17,9 +17,9 @@ public class WallHole : Interactable
         base.Start();
         OnInteractAction += (GameObject who) => WallHoleInteract(who);
     }
-    public void WallHoleInteract(GameObject whoInteracted)
+    public bool WallHoleInteract(GameObject whoInteracted)
     {
-        if (isUsing) return;
+        if (isUsing) return false;
 
         Transform closestSide = GetClosestSide(whoInteracted.transform.position);
 
@@ -27,7 +27,10 @@ public class WallHole : Interactable
 
         //photonView.RPC("RPC_CallWallHoldeInteraction", RpcTarget.All, whoInteracted.GetComponent<PhotonView>().ViewID, );
         StartCoroutine(PassTheHole(whoInteracted, closestSide.transform.position, opositeSide.transform.position));
+
+        return true;
     }
+
 
     [PunRPC]
     public void RPC_SetWallHoleUsed(bool to)
@@ -37,17 +40,17 @@ public class WallHole : Interactable
 
     private IEnumerator PassTheHole(GameObject pass, Vector3 pointA, Vector3 pointB)
     {
-        PlayerMovement pMove = pass.GetComponent<PlayerMovement>();
+        MovementBase move = pass.GetComponent<MovementBase>();
 
-        pMove.SetCollisions(true);
+        move.SetCollisions(true);
 
         float prepSpeed = 10f;
 
         float passSpeed = 2.5f;
 
-        photonView.RPC("RPC_SetWallHoleUsed", RpcTarget.All, true);
+        if (PhotonNetwork.InRoom) photonView.RPC("RPC_SetWallHoleUsed", RpcTarget.All, true); else isUsing = true;
 
-        pMove.canMove = false;
+        move.canMove = false;
 
         while(!IsCloseTo(pass.transform.position, pointA))
         {
@@ -65,11 +68,11 @@ public class WallHole : Interactable
 
         pass.transform.position = pointB;
 
-        pMove.SetCollisions(false);
+        move.SetCollisions(false);
 
-        pMove.canMove = true;
+        move.canMove = true;
 
-        photonView.RPC("RPC_SetWallHoleUsed", RpcTarget.All, false);
+        if (PhotonNetwork.InRoom) photonView.RPC("RPC_SetWallHoleUsed", RpcTarget.All, false); else isUsing = false;
 
     }
 
@@ -108,6 +111,11 @@ public class WallHole : Interactable
     {
         if (side == sideA) return sideB;
         else return sideA;
+    }
+
+    public Transform GetOpositeSide(Vector3 side)
+    {
+        return GetOpositeSide(GetClosestSide(side));
     }
     #endregion
 }
