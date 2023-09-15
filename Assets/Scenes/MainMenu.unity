@@ -2117,7 +2117,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4b2c327116feb9b4d8890793aa290aa5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  gameScene: AITesting
+  gameScene: Game_Submarine
   roomAreaObj: {fileID: 2064753167}
   roomNameText: {fileID: 1010080525}
   readyButton: {fileID: 174506760}

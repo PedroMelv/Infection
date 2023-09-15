@@ -110,7 +110,7 @@ public class EnemyMovement : MovementBase
     {
         if (!canMove)
         {
-
+            Debug.Log("Cant move");
             return;
         }
 
@@ -299,7 +299,7 @@ public class EnemyMovement : MovementBase
     private async Task InternalSetDestination(Vector3 pos, bool castTarget, System.Action<bool, bool> pathCallback)
     {
         isLock = true;
-        if (finalTarget == pos)
+        if (finalTarget == pos || !canMove)
         {
             isLock = false;
             pathCallback?.Invoke(true, true);
@@ -462,11 +462,20 @@ public class EnemyMovement : MovementBase
                     break;
                 case PathNode.PathNodeType.WALLHOLE:
 
-                    if (Vector3.Distance(transform.position, curTarget.moveTo) <= 2)
+                    if (Vector3.Distance(transform.position, curTarget.moveTo) <= 2f)
                     {
                         if(curTarget.wallHole.WallHoleInteract(this.gameObject))
                         {
-                            curTarget = corners.Dequeue();
+                            Debug.Log("Reached point");
+                            if (corners.Count == 0)
+                            {
+                                pathStored = new PathNode[0];
+                                hasPath = false;
+                            }
+                            else
+                            {
+                                curTarget = corners.Dequeue();
+                            }
                         }
                     }
 

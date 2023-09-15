@@ -44,7 +44,7 @@ public class WallHole : Interactable
 
         move.SetCollisions(true);
 
-        float prepSpeed = 10f;
+        float prepSpeed = 5f;
 
         float passSpeed = 2.5f;
 
