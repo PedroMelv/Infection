@@ -10,6 +10,8 @@ public class WallHole : Interactable
     [SerializeField] private Transform sideA;
     [SerializeField] private Transform sideB;
 
+    private Vector3 offset;
+
     private bool isUsing;
 
     public override void Start()
@@ -17,9 +19,11 @@ public class WallHole : Interactable
         base.Start();
         OnInteractAction += (GameObject who) => WallHoleInteract(who);
     }
-    public bool WallHoleInteract(GameObject whoInteracted)
+    public bool WallHoleInteract(GameObject whoInteracted, Vector3 offset)
     {
         if (isUsing) return false;
+
+        this.offset = offset;
 
         Transform closestSide = GetClosestSide(whoInteracted.transform.position);
 
@@ -29,6 +33,11 @@ public class WallHole : Interactable
         StartCoroutine(PassTheHole(whoInteracted, closestSide.transform.position, opositeSide.transform.position));
 
         return true;
+    }
+
+    public bool WallHoleInteract(GameObject whoInteracted)
+    {
+        return WallHoleInteract(whoInteracted, Vector3.zero);
     }
 
 
@@ -43,32 +52,37 @@ public class WallHole : Interactable
         MovementBase move = pass.GetComponent<MovementBase>();
 
         move.SetCollisions(true);
+        move.GetComponent<Rigidbody>().isKinematic = true;
 
-        float prepSpeed = 5f;
+        float prepSpeed = 7.5f;
 
-        float passSpeed = 2.5f;
+        float passSpeed = 5f;
 
         if (PhotonNetwork.InRoom) photonView.RPC("RPC_SetWallHoleUsed", RpcTarget.All, true); else isUsing = true;
 
         move.canMove = false;
 
-        while(!IsCloseTo(pass.transform.position, pointA))
+        while(!IsCloseTo(pass.transform.position, pointA + offset))
         {
-            pass.transform.position = Vector3.MoveTowards(pass.transform.position, pointA, prepSpeed * Time.deltaTime);
-            yield return new WaitForEndOfFrame();
+            Debug.Log("Adjusting");
+
+            pass.transform.position = Vector3.MoveTowards(pass.transform.position, pointA + offset, prepSpeed * Time.deltaTime);
+            yield return null;
         }
 
-        pass.transform.position = pointA;
+        pass.transform.position = pointA + offset;
 
-        while (!IsCloseTo(pass.transform.position, pointB))
+        while (!IsCloseTo(pass.transform.position, pointB + offset))
         {
-            pass.transform.position = Vector3.MoveTowards(pass.transform.position, pointB, passSpeed * Time.deltaTime);
-            yield return new WaitForEndOfFrame();
+            Debug.Log("Passing");
+            pass.transform.position = Vector3.MoveTowards(pass.transform.position, pointB + offset, passSpeed * Time.deltaTime);
+            yield return null;
         }
 
-        pass.transform.position = pointB;
+        pass.transform.position = pointB + offset;
 
         move.SetCollisions(false);
+        move.GetComponent<Rigidbody>().isKinematic = false;
 
         move.canMove = true;
 

@@ -464,7 +464,7 @@ public class EnemyMovement : MovementBase
 
                     if (Vector3.Distance(transform.position, curTarget.moveTo) <= 2f)
                     {
-                        if(curTarget.wallHole.WallHoleInteract(this.gameObject))
+                        if(curTarget.wallHole.WallHoleInteract(this.gameObject, Vector3.up))
                         {
                             Debug.Log("Reached point");
                             if (corners.Count == 0)
