@@ -13,8 +13,16 @@ public class P0_EnemyBrain : EnemyBrain
     [SerializeField] private float idlingMaxTime;
     private float idlingTime;
 
-    Vector3 rotateDir;
 
+    public override void Start()
+    {
+        base.Start();
+
+        GetComponent<EnemyHealth>().OnDie += () =>
+        {
+            enemyMovement.ChangeState(MovementAIStates.FLEEING);
+        };
+    }
 
     public override void Update()
     {
@@ -65,7 +73,7 @@ public class P0_EnemyBrain : EnemyBrain
 
     public override void HandleBehaviors()
     {
-        if (enemyMovement.GetMoveStates() == MovementAIStates.CHASING) 
+        if (enemyMovement.GetMoveStates() == MovementAIStates.CHASING || enemyMovement.GetMoveStates() == MovementAIStates.FLEEING)
         {
             RemoveBehaviours();
             return;

@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Photon.Pun;
 using UnityEngine;
+using UnityEngine.Rendering;
 
 public enum MoveStates
 {
@@ -35,6 +36,7 @@ public class PlayerMovement : MovementBase
     [SerializeField] private float staminaRegen = 1f;
     private float curStamina;
     private float staminaCooldown;
+    private Volume staminaVolume;
 
     private bool tired;
 
@@ -93,6 +95,10 @@ public class PlayerMovement : MovementBase
 
     private void Start()
     {
+        GameObject sVolumeObj = GameObject.FindGameObjectWithTag("StaminaVolume");
+        if(sVolumeObj != null)
+            staminaVolume = sVolumeObj.GetComponent<Volume>();
+
         staminaCooldown = timeToRegenStamina;
         curStamina = maxStamina;
     }
@@ -246,7 +252,9 @@ public class PlayerMovement : MovementBase
 
     private void HandleStamina()
     {
-        if(curStamina < 0f)
+        staminaVolume.weight = 1 - Mathf.Clamp01(((curStamina  / maxStamina) - .15f));
+
+        if (curStamina < 0f)
         {
             curStamina = 0f;
             tired = true;
@@ -260,10 +268,10 @@ public class PlayerMovement : MovementBase
 
         if(pInput.sprintInput && moveDirection != Vector3.zero && !tired)
         {
-            curStamina -= 6.4f * Time.deltaTime;
+            curStamina -= 15f * Time.deltaTime;
         }
 
-        if(pInput.sprintInput == false && grounded)
+        if(pInput.sprintInput == false && grounded || tired)
         {
             if(staminaCooldown <= 0f)
             {
@@ -376,6 +384,7 @@ public class PlayerMovement : MovementBase
 
     private void HandleJump()
     {
+        /*
         if(pInput.jumpInputPressed && pInput.jumpInput && grounded && tired == false && curStamina > 10f)
         {
             exitingSlope = true;
@@ -395,7 +404,7 @@ public class PlayerMovement : MovementBase
             Debug.Log("Jump Release");
             rb.AddForce(Vector3.down * rb.velocity.y * jumpCutMultiplier, ForceMode.Impulse);
         }
-        
+        */
     }
 
     private void ResetJump()

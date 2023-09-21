@@ -6,13 +6,12 @@ using Unity.Burst.CompilerServices;
 using UnityEngine;
 using UnityEngine.AI;
 using static EnemyBrain;
-using static UnityEditor.PlayerSettings;
-
 public enum MovementAIStates
 {
     NONE,
     SEARCHING,
-    CHASING
+    CHASING,
+    FLEEING
 }
 
 public class EnemyMovement : MovementBase
@@ -32,6 +31,10 @@ public class EnemyMovement : MovementBase
     [SerializeField] private float minSearchDuration = 2.5f;
     [SerializeField] private float maxSearchDuration = 10f;
     private float searchTimer;
+
+    //Flee
+    [SerializeField] private float timeStunnedOnFlee;
+    private float timeStunned;
 
     [Header("Movement")]   
     [SerializeField] private float baseSpeed;
@@ -104,6 +107,7 @@ public class EnemyMovement : MovementBase
     }
     private void Start()
     {
+        timeStunned = timeStunnedOnFlee;
         path = new NavMeshPath();
     }
     private void Update()
@@ -132,6 +136,9 @@ public class EnemyMovement : MovementBase
                 break;
             case MovementAIStates.CHASING:
                 ChaseState();
+                break;
+            case MovementAIStates.FLEEING:
+                FleeState();
                 break;
             default:
                 break;
@@ -241,6 +248,32 @@ public class EnemyMovement : MovementBase
         else if(pathStored.Length == 0)
         {
             searchTimer -= Time.deltaTime;
+        }
+    }
+
+    private void FleeState()
+    {
+        bool pathSet = false;
+        timeStunned = timeStunnedOnFlee;
+
+        while (true)
+        {
+            if(pathSet == false)
+            {
+                Debug.Log("Setted");
+                pathSet = true;
+                return;
+            }
+            
+            if(timeStunned < 0f)
+            {
+                ChangeState(MovementAIStates.NONE);
+                break;
+            }
+            else
+            {
+                timeStunned -= Time.deltaTime;
+            }
         }
     }
 

@@ -29,8 +29,21 @@ public class PlayerCombat : MonoBehaviour
 
             if(collided)
             {
+                BaseHealth hp = hit.collider.gameObject.GetComponent<BaseHealth>();
+
+                if(hp != null) 
+                { 
+                    if(hp is EnemyHealth)
+                    {
+                        hp.TakeDamage(1);
+                        return;
+                    }
+                    return;
+                }  
+
                 GameObject mark = PhotonNetwork.Instantiate(bulletMark.name, hit.point, Quaternion.FromToRotation(Vector3.forward, hit.normal));
                 mark.transform.position += mark.transform.forward * 0.01f;
+                Destroy(mark, 5f);
             }
         }
     }
