@@ -70,14 +70,17 @@ public class P0_EnemyBrain : EnemyBrain
             HandleBehaviors();
         }
     }
-
     public override void HandleBehaviors()
     {
+        if (enemyMovement.GetMoveStates() == MovementAIStates.FLEEING) return;
+
         if (enemyMovement.GetMoveStates() == MovementAIStates.CHASING || enemyMovement.GetMoveStates() == MovementAIStates.FLEEING)
         {
             RemoveBehaviours();
             return;
         }
+
+
         base.HandleBehaviors();
     }
 
