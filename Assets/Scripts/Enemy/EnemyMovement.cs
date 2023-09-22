@@ -256,24 +256,29 @@ public class EnemyMovement : MovementBase
         bool pathSet = false;
         timeStunned = timeStunnedOnFlee;
 
+        Vector3 furthestPoint = GameDirector.instance.GetFurthestPoints(transform.position, 1, 1, false, 0, 2, 1)[0].pos;
+
         while (true)
         {
-            if(pathSet == false)
+            if(pathSet == false && SetDestination(furthestPoint))
             {
                 Debug.Log("Setted");
                 pathSet = true;
                 return;
+            }else if(pathSet == true && ReachedDestination())
+            {
+
+                if(timeStunned < 0f)
+                {
+                    ChangeState(MovementAIStates.NONE);
+                    break;
+                }
+                else
+                {
+                    timeStunned -= Time.deltaTime;
+                }
             }
             
-            if(timeStunned < 0f)
-            {
-                ChangeState(MovementAIStates.NONE);
-                break;
-            }
-            else
-            {
-                timeStunned -= Time.deltaTime;
-            }
         }
     }
 
@@ -508,6 +513,10 @@ public class EnemyMovement : MovementBase
                             else
                             {
                                 curTarget = corners.Dequeue();
+                                while(Vector3.Distance(curTarget.moveTo, transform.position) <= 2f)
+                                {
+                                    curTarget = corners.Dequeue();
+                                }
                             }
                         }
                     }

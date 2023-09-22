@@ -134,6 +134,22 @@ public class P0_EnemyBrain : EnemyBrain
 
             return this;
         }
+        
+        public TemplateBehaviour MoveToFurthestRoom(float waitTimePerPoints = 1f)
+        {
+            RoomPoint[] points = GameDirector.instance.GetFurthestPoints(brain.transform.position, 5, 4f, true, 0, 3, 1f);
+
+            actionQueue += () =>
+            {
+                for (int i = 0; i < points.Length; i++)
+                {
+                    brain.AddMoveBehaviour(points[i].pos);
+                    brain.AddWaitBehaviour(waitTimePerPoints);
+                }
+            };
+
+            return this;
+        }
         public TemplateBehaviour MoveToRandomRoom(float waitTimePerPoints = 1f)
         {
             RoomPoint[] points = GameDirector.instance.GetRandomPoints(5, 4f, true, 0, 3, 1f);

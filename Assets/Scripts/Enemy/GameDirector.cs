@@ -55,6 +55,11 @@ public class GameDirector : MonoBehaviour
         return GetPoints(GetClosestRoom(from), amount, minDist, hasExtra, extraMin, extraMax, extraMaxDist);
     }
     
+    public RoomPoint[] GetFurthestPoints(Vector3 from, int amount, float minDist = 1f, bool hasExtra = false, int extraMin = 0, int extraMax = 2, float extraMaxDist = 1f)
+    {
+        return GetPoints(GetFurthestRoom(from), amount, minDist, hasExtra, extraMin, extraMax, extraMaxDist);
+    }
+    
     public RoomPoint[] GetRandomPoints(int amount, float minDist = 1f, bool hasExtra = false, int extraMin = 0, int extraMax = 2, float extraMaxDist = 1f)
     {
         return GetPoints(GetRandomRoom(), amount, minDist, hasExtra, extraMin, extraMax, extraMaxDist);
@@ -85,6 +90,23 @@ public class GameDirector : MonoBehaviour
         for (int i = 0; i < areas.Count; i++)
         {
             if (Vector3.Distance(areas[i].transform.position, from) < dist)
+            {
+                selRoom = areas[i];
+                dist = Vector3.Distance(areas[i].transform.position, from);
+            }
+        }
+
+        return selRoom;
+    }
+    
+    public RoomArea GetFurthestRoom(Vector3 from)
+    {
+        RoomArea selRoom = null;
+        float dist = int.MinValue;
+
+        for (int i = 0; i < areas.Count; i++)
+        {
+            if (Vector3.Distance(areas[i].transform.position, from) > dist)
             {
                 selRoom = areas[i];
                 dist = Vector3.Distance(areas[i].transform.position, from);
