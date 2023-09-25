@@ -13,23 +13,42 @@ public class P0_EnemyBrain : EnemyBrain
     [SerializeField] private float idlingMaxTime;
     private float idlingTime;
 
+    [Space]
+
+    [SerializeField] private float attackMaxCooldown;
+    private float attackCooldown;
+
 
     public override void Start()
     {
         base.Start();
 
+        attackCooldown = attackMaxCooldown;
+
         GetComponent<EnemyHealth>().OnDie += () =>
         {
             enemyMovement.ChangeState(MovementAIStates.FLEEING);
+        };
+        
+        GetComponent<EnemyHealth>().OnTakeDamage += (Vector3 pos) =>
+        {
+            enemyMovement.ChangeState(MovementAIStates.NONE);
+            enemyMovement.SetDestination(pos);
+        };
+
+        GetComponent<EnemyHealth>().OnFullHealth += () =>
+        {
+            enemyMovement.ChangeState(MovementAIStates.NONE);
         };
     }
 
     public override void Update()
     {
-        
         if(behaviours.Count == 0)
         {
             //Sem ações para fazer
+
+            if (enemyMovement.GetMoveStates() == MovementAIStates.FLEEING || enemyMovement.GetMoveStates() == MovementAIStates.CHASING) return;
 
             if(idlingTime <= 0f)
             {
@@ -68,6 +87,19 @@ public class P0_EnemyBrain : EnemyBrain
 
 
             HandleBehaviors();
+        }
+    
+        if(enemyMovement.closeToPlayer)
+        {
+            if(attackCooldown <= 0f)
+            {
+                currentTarget.GetComponent<PlayerHealth>().CallTakeDamage(1, Vector3.zero);
+                attackCooldown = attackMaxCooldown;
+            }
+            else
+            {
+                attackCooldown -= Time.deltaTime;
+            }
         }
     }
     public override void HandleBehaviors()
@@ -212,7 +244,10 @@ public class P0_EnemyBrain : EnemyBrain
 
     public override void TriggerVision(Transform pos)
     {
+        if (enemyMovement.GetMoveStates() == MovementAIStates.FLEEING) return;
+
         enemyMovement.SetTarget(pos);
+        currentTarget = pos;
     }
     public override void TriggerVision(Vector3 pos)
     {

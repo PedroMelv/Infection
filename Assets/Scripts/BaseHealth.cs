@@ -1,9 +1,10 @@
+using Photon.Pun;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class BaseHealth : MonoBehaviour
+public class BaseHealth : MonoBehaviourPun
 {
     [Header("Health Basics")]
     protected float health;
@@ -13,8 +14,9 @@ public class BaseHealth : MonoBehaviour
     public float GetMaxHealth { get { return maxHealth; } set { } }
 
     public bool isDead = false;
-    public Action OnTakeDamage;
+    public Action<Vector3> OnTakeDamage;
     public Action OnDie;
+    public Action OnFullHealth;
     
     [Header("Regen")]
     [SerializeField] protected bool canRegen;
@@ -29,12 +31,16 @@ public class BaseHealth : MonoBehaviour
 
     public virtual void Update()
     {
-        if(canRegen && health < maxHealth)
+        if(canRegen && health < maxHealth && !isDead)
         {
             if(regenTimer <= 0f)
             {
                 health += regenAmountPerSecond * Time.deltaTime;
-                if (health > maxHealth) health = maxHealth;
+                if (health > maxHealth)
+                {
+                    health = maxHealth;
+                    OnFullHealth?.Invoke();
+                }
             }
             else
             {
@@ -43,9 +49,11 @@ public class BaseHealth : MonoBehaviour
         }
     }
 
-    public virtual void TakeDamage(float damage)
+    protected virtual void TakeDamage(float damage, Vector3 damageCameFrom)
     {
         health -= damage;
+
+        health = Mathf.Clamp(health, 0, maxHealth);
 
         if(health <= 0f)
         {
@@ -56,6 +64,17 @@ public class BaseHealth : MonoBehaviour
 
         regenTimer = timeToStartRegen;
 
-        OnTakeDamage?.Invoke();
+        OnTakeDamage?.Invoke(damageCameFrom);
+    }
+
+    [PunRPC]
+    protected void RPC_TakeDamage(float damage, Vector3 damageCameFrom)
+    {
+        TakeDamage(damage, damageCameFrom);
+    }
+
+    public void CallTakeDamage(float damage, Vector3 damageCameFrom)
+    {
+        if (PhotonNetwork.InRoom) this.photonView.RPC(nameof(RPC_TakeDamage), RpcTarget.All, damage, damageCameFrom); else TakeDamage(damage, damageCameFrom);
     }
 }

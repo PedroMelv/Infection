@@ -31,10 +31,12 @@ public class EnemyMovement : MovementBase
     [SerializeField] private float minSearchDuration = 2.5f;
     [SerializeField] private float maxSearchDuration = 10f;
     private float searchTimer;
+    public bool closeToPlayer;
 
     //Flee
     [SerializeField] private float timeStunnedOnFlee;
     private float timeStunned;
+    private bool fleeing;
 
     [Header("Movement")]   
     [SerializeField] private float baseSpeed;
@@ -112,6 +114,7 @@ public class EnemyMovement : MovementBase
     }
     private void Update()
     {
+        closeToPlayer = false;
         if (!canMove)
         {
             Debug.Log("Cant move");
@@ -167,7 +170,20 @@ public class EnemyMovement : MovementBase
 
             if (OnSlope())
             {
-                rb.AddForce(GetSlopeDirection() * speed * 15f, ForceMode.Force);
+                Vector3 vel = new Vector3(rb.velocity.x, rb.velocity.y, rb.velocity.z);
+
+                float movementSpeed = speed * 15f;
+
+                if (GetMoveStates() == MovementAIStates.FLEEING) movementSpeed *= 5f;
+                
+
+                if (vel.magnitude > movementSpeed)
+                {
+                    rb.velocity = vel.normalized * movementSpeed;
+                }
+                else
+                    rb.AddForce(GetSlopeDirection() * 15f, ForceMode.Force);
+
                 SetRotation(rotatePos, 7.5f);
 
                 if (rb.velocity.y > 0)
@@ -178,13 +194,25 @@ public class EnemyMovement : MovementBase
             }
             else
             {
-                rb.AddForce(moveDirection.normalized * speed * 10f, ForceMode.Force);
+                Vector3 vel = new Vector3(rb.velocity.x, 0f, rb.velocity.z);
+
+                float movementSpeed = speed * 10f;
+
+                if (GetMoveStates() == MovementAIStates.FLEEING) movementSpeed *= 5f;
+
+                if (vel.magnitude > movementSpeed)
+                {
+                    rb.velocity = vel.normalized * movementSpeed;
+                }
+                else
+                    rb.AddForce(moveDirection.normalized * 15f, ForceMode.Force);
+
                 SetRotation(rotatePos, 7.5f);
             }
         }
         else if (hasPath == false)
         {
-            rb.drag = 40f;
+            rb.drag = 25f;
         }
     }
 
@@ -200,32 +228,30 @@ public class EnemyMovement : MovementBase
     {
         sprinting = true;
 
+
         if (target != null)
         {
-            SetRotation(curTarget.moveTo, 15f);
-
-            Vector3 dirToTarget = target.position - transform.position;
-            float targetDst = Vector3.Distance(target.position, transform.position);
-
-            lostVision = Physics.Raycast(transform.position, dirToTarget, targetDst, visionBlockerLayer);
-
-            if (lostVision) lostVisionTimer -= Time.deltaTime; else lostVisionTimer = .25f;
-
-            if (!lostVision || lostVisionTimer > 0f) SetDestination(target.position, null);
-        }
-
-        if (ReachedDestination())
-        {
-            if(target == null)
+            if (Vector3.Distance(transform.position, target.position) < 1.5f)
             {
-                //TODO: Mudar o estado para o estado de procura
-                //Criar o estado de procura
+                SetRotation(target.position, 15f);
+
+                pathStored = new PathNode[0];
+                hasPath = false;
+
+                closeToPlayer = true;
             }
             else
             {
-                moveDirection = Vector3.zero;
-                //Inimigo está perto do alvo e o alvo continua visível
-                //TODO: Condição perfeita para atacar / Criar a condição de ataque 
+                SetRotation(curTarget.moveTo, 15f);
+
+                Vector3 dirToTarget = target.position - transform.position;
+                float targetDst = Vector3.Distance(target.position, transform.position);
+
+                lostVision = Physics.Raycast(transform.position, dirToTarget, targetDst, visionBlockerLayer);
+
+                if (lostVision) lostVisionTimer -= Time.deltaTime; else lostVisionTimer = .25f;
+
+                if (!lostVision || lostVisionTimer > 0f) SetDestination(target.position, null);
             }
         }
     }
@@ -253,32 +279,47 @@ public class EnemyMovement : MovementBase
 
     private void FleeState()
     {
-        bool pathSet = false;
+        sprinting = true;
+
         timeStunned = timeStunnedOnFlee;
+
+        StartCoroutine(EFleeState());
+    }
+
+    private IEnumerator EFleeState()
+    {
+        if (fleeing == false) yield break;
+
+        bool pathSet = false;
+        fleeing = true;
 
         Vector3 furthestPoint = GameDirector.instance.GetFurthestPoints(transform.position, 1, 1, false, 0, 2, 1)[0].pos;
 
         while (true)
         {
-            if(pathSet == false && SetDestination(furthestPoint))
+            if (pathSet == false)
             {
-                Debug.Log("Setted");
                 pathSet = true;
-                return;
-            }else if(pathSet == true && ReachedDestination())
+
+                yield return new WaitForEndOfFrame();
+            }
+            else if (pathSet == true)
             {
 
-                if(timeStunned < 0f)
+                if (timeStunned < 0f)
                 {
+                    fleeing = false;
                     ChangeState(MovementAIStates.NONE);
-                    break;
+                    yield break;
                 }
                 else
                 {
                     timeStunned -= Time.deltaTime;
                 }
+
+                yield return new WaitForEndOfFrame();
             }
-            
+
         }
     }
 

@@ -13,6 +13,8 @@ public class EnemyBrain : MonoBehaviour
 
     protected BaseBehaviour curBehaviour;
 
+    protected Transform currentTarget;
+
     [SerializeField] protected LayerMask groundLayer;
 
     public virtual void Awake()

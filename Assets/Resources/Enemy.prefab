@@ -24,7 +24,7 @@ GameObject:
   - component: {fileID: 1376725786569719531}
   - component: {fileID: 1376725786569719524}
   - component: {fileID: 1376725786569719530}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: Enemy
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -143,6 +143,7 @@ MonoBehaviour:
     m_Bits: 8
   idlingMinTime: 1
   idlingMaxTime: 4
+  attackMaxCooldown: 1.25
 --- !u!114 &1376725786569719321
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -163,6 +164,8 @@ MonoBehaviour:
     m_Bits: 9
   minSearchDuration: 2.5
   maxSearchDuration: 4
+  closeToPlayer: 0
+  timeStunnedOnFlee: 0
   baseSpeed: 3
   sprintMultiplier: 2
   sprinting: 0

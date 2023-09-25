@@ -1473,6 +1473,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: Enemy
       objectReference: {fileID: 0}
+    - target: {fileID: 1376725786569719322, guid: 20bd282ea346bc345ad546817eceb987,
+        type: 3}
+      propertyPath: m_Layer
+      value: 11
+      objectReference: {fileID: 0}
     - target: {fileID: 1376725786569719523, guid: 20bd282ea346bc345ad546817eceb987,
         type: 3}
       propertyPath: m_RootOrder
@@ -1664,6 +1669,55 @@ MonoBehaviour:
   m_Center: {x: 0, y: 1, z: 0}
   m_Area: 1
   m_AffectedAgents: ffffffff
+--- !u!1 &735243827
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 735243829}
+  - component: {fileID: 735243828}
+  m_Layer: 0
+  m_Name: DamageVolume
+  m_TagString: DamageVolume
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &735243828
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 735243827}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 172515602e62fb746b5d573b38a5fe58, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_IsGlobal: 1
+  priority: 0
+  blendDistance: 0
+  weight: 0
+  sharedProfile: {fileID: 11400000, guid: b59d4d31453976944a44fc7f29f552d0, type: 2}
+--- !u!4 &735243829
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 735243827}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -55.86816, y: -17.01929, z: 9.40751}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 23
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &801113726
 GameObject:
   m_ObjectHideFlags: 0
@@ -2537,7 +2591,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_IsGlobal: 1
-  priority: 0
+  priority: -1
   blendDistance: 0
   weight: 0
   sharedProfile: {fileID: 11400000, guid: a88501fed612a0048a2df9d9db4af971, type: 2}
@@ -6367,7 +6421,7 @@ GameObject:
   - component: {fileID: 1923400625899688446}
   - component: {fileID: 3568329236548258822}
   - component: {fileID: 1074190602427503467}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Door_frame.003
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -7633,7 +7687,7 @@ GameObject:
   - component: {fileID: 7317893421101801997}
   - component: {fileID: 6849555375552803948}
   - component: {fileID: 4345216327490521255}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Door_frame.001
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -7667,7 +7721,7 @@ GameObject:
   - component: {fileID: 4303933472606102096}
   - component: {fileID: 5453116929751447273}
   - component: {fileID: 4759704564105450554}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Door_frame
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -8389,7 +8443,7 @@ GameObject:
   - component: {fileID: 5994872950494815339}
   - component: {fileID: 4325579238770375100}
   - component: {fileID: 5629736728967364321}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Door_frame2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -8424,7 +8478,7 @@ GameObject:
   - component: {fileID: 3235025996450608892}
   - component: {fileID: 2785308728783652211}
   - component: {fileID: 3360032943537315194}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Door_frame.002
   m_TagString: Untagged
   m_Icon: {fileID: 0}

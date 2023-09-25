@@ -35,7 +35,7 @@ public class PlayerCombat : MonoBehaviour
                 { 
                     if(hp is EnemyHealth)
                     {
-                        hp.TakeDamage(1);
+                        hp.CallTakeDamage(1, transform.position);
                         return;
                     }
                     return;

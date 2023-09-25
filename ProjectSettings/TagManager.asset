@@ -6,6 +6,7 @@ TagManager:
   tags:
   - GameArea
   - StaminaVolume
+  - DamageVolume
   layers:
   - Default
   - TransparentFX
@@ -17,8 +18,8 @@ TagManager:
   - Interactable
   - Player
   - Prop
-  - 
-  - 
+  - DoorFrame
+  - Enemy
   - 
   - 
   - 
