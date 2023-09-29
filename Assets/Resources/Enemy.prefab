@@ -168,6 +168,9 @@ MonoBehaviour:
   timeStunnedOnFlee: 0
   baseSpeed: 3
   sprintMultiplier: 2
+  acceleration: 6
+  deacceleration: 12
+  velPower: 0.926
   sprinting: 0
   groundLayer:
     serializedVersion: 2
@@ -190,9 +193,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   focusedView: {fileID: 1376725786569719526}
   unfocusedView: {fileID: 1376725786569719527}
-  unfocusedDetectionStrength: 0.909
+  unfocusedDetectionStrength: 1
   periphericalView: {fileID: 1376725786569719520}
-  periphericalDetectionStrength: 0.643
+  periphericalDetectionStrength: 0.837
   closeView: {fileID: 1376725786569719521}
   detectionMaxValue: 1
   detectionValue: 0
@@ -225,8 +228,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1bee9909f11520041bdc3d5209d6a1f0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  viewRadius: 15
-  viewAngle: 15
+  viewRadius: 25
+  viewAngle: 24
   fovEditorColor: {r: 1, g: 0, b: 0, a: 1}
   targetMask:
     serializedVersion: 2
@@ -247,8 +250,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1bee9909f11520041bdc3d5209d6a1f0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  viewRadius: 15
-  viewAngle: 49
+  viewRadius: 25
+  viewAngle: 65
   fovEditorColor: {r: 1, g: 1, b: 1, a: 1}
   targetMask:
     serializedVersion: 2
@@ -269,7 +272,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1bee9909f11520041bdc3d5209d6a1f0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  viewRadius: 11.7
+  viewRadius: 22.5
   viewAngle: 165
   fovEditorColor: {r: 1, g: 0.9027058, b: 0, a: 1}
   targetMask:

@@ -44,28 +44,48 @@ public class P0_EnemyBrain : EnemyBrain
 
     public override void Update()
     {
-        if(behaviours.Count == 0)
+        BehaviourHandling();
+
+
+        if (enemyMovement.closeToPlayer)
+        {
+            if(attackCooldown <= 0f)
+            {
+                currentTarget.GetComponent<PlayerHealth>().CallTakeDamage(1, Vector3.zero);
+                attackCooldown = attackMaxCooldown;
+            }
+            else
+            {
+                attackCooldown -= Time.deltaTime;
+            }
+        }
+    }
+
+    private void BehaviourHandling()
+    {
+        if (behaviours.Count == 0)
         {
             //Sem ações para fazer
 
             if (enemyMovement.GetMoveStates() == MovementAIStates.FLEEING || enemyMovement.GetMoveStates() == MovementAIStates.CHASING) return;
 
-            if(idlingTime <= 0f)
+            if (idlingTime <= 0f)
             {
                 idlingTime = UnityEngine.Random.Range(idlingMinTime, idlingMaxTime);
 
-                if(UnityEngine.Random.value < .75f)
+                if (UnityEngine.Random.value < .75f)
                 {
                     float b = UnityEngine.Random.value;
 
                     if (b >= 0f && b < .25f)
                     {
                         MoveToRandomPointAndSearch();
-                    }else if(b >= .25f && b < .35f)
+                    }
+                    else if (b >= .25f && b < .35f)
                     {
                         MoveToClosestRoomAndSearch(20f);
                     }
-                    else if(b >= .35f && b < .66f)
+                    else if (b >= .35f && b < .66f)
                     {
                         Behave().ChangeState(MovementAIStates.SEARCHING).Run();
                     }
@@ -88,20 +108,8 @@ public class P0_EnemyBrain : EnemyBrain
 
             HandleBehaviors();
         }
-    
-        if(enemyMovement.closeToPlayer)
-        {
-            if(attackCooldown <= 0f)
-            {
-                currentTarget.GetComponent<PlayerHealth>().CallTakeDamage(1, Vector3.zero);
-                attackCooldown = attackMaxCooldown;
-            }
-            else
-            {
-                attackCooldown -= Time.deltaTime;
-            }
-        }
     }
+
     public override void HandleBehaviors()
     {
         if (enemyMovement.GetMoveStates() == MovementAIStates.FLEEING) return;

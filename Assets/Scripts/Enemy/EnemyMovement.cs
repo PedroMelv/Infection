@@ -41,6 +41,10 @@ public class EnemyMovement : MovementBase
     [Header("Movement")]   
     [SerializeField] private float baseSpeed;
     [SerializeField] private float sprintMultiplier;
+    [SerializeField] private float acceleration;
+    [SerializeField] private float deacceleration;
+    [SerializeField, Range(0f, 1f)] private float velPower;
+
     [SerializeField] private bool sprinting = false;
     [SerializeField] private LayerMask groundLayer;
 
@@ -182,7 +186,14 @@ public class EnemyMovement : MovementBase
                     rb.velocity = vel.normalized * movementSpeed;
                 }
                 else
-                    rb.AddForce(GetSlopeDirection() * 15f, ForceMode.Force);
+                {
+                    float horizontal = CalculateForce(GetSlopeDirection().x, rb.velocity.x, movementSpeed);
+                    float vertical = CalculateForce(GetSlopeDirection().z, rb.velocity.z, movementSpeed);
+                    float up = CalculateForce(GetSlopeDirection().y, rb.velocity.y, movementSpeed);
+
+                    Vector3 direction = new Vector3(horizontal, up, vertical);
+                    rb.AddForce(direction * 15f, ForceMode.Force);
+                }
 
                 SetRotation(rotatePos, 7.5f);
 
@@ -205,7 +216,13 @@ public class EnemyMovement : MovementBase
                     rb.velocity = vel.normalized * movementSpeed;
                 }
                 else
-                    rb.AddForce(moveDirection.normalized * 15f, ForceMode.Force);
+                {
+                    float horizontal = CalculateForce(moveDirection.normalized.x, rb.velocity.x, movementSpeed);
+                    float vertical = CalculateForce(moveDirection.normalized.z, rb.velocity.z, movementSpeed);
+
+                    Vector3 direction = new Vector3(horizontal, 0f, vertical);
+                    rb.AddForce(direction, ForceMode.Force);
+                }
 
                 SetRotation(rotatePos, 7.5f);
             }
@@ -214,6 +231,15 @@ public class EnemyMovement : MovementBase
         {
             rb.drag = 25f;
         }
+    }
+
+    public float CalculateForce(float input, float curVelocity, float speed)
+    {
+        float targetVelocity = input * speed;
+        float velDiff = targetVelocity - curVelocity;
+        float accelRate = (Mathf.Abs(targetVelocity) > 0.01f) ? acceleration : deacceleration;
+
+        return Mathf.Pow(Mathf.Abs(velDiff) * accelRate, velPower) * Mathf.Sign(velDiff);
     }
 
 
@@ -517,7 +543,6 @@ public class EnemyMovement : MovementBase
 
     private void HandleMovement()
     {
-
         if (hasPath)
         {
             switch (curTarget.type)
