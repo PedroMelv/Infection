@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-public class Cell : MonoBehaviour, IPointerEnterHandler, IPointerClickHandler
+public class Cell : MonoBehaviour, IPointerEnterHandler, IPointerClickHandler, IPointerMoveHandler, IPointerExitHandler
 {
     public void OnPointerClick(PointerEventData eventData)
     {
@@ -15,6 +15,15 @@ public class Cell : MonoBehaviour, IPointerEnterHandler, IPointerClickHandler
         PointerEnter();
     }
 
+    public void OnPointerExit(PointerEventData eventData)
+    {
+        PointerExit();
+    }
+
+    public void OnPointerMove(PointerEventData eventData)
+    {
+        PointerMove();
+    }
 
     public virtual void PointerClick()
     {
@@ -22,6 +31,14 @@ public class Cell : MonoBehaviour, IPointerEnterHandler, IPointerClickHandler
     }
 
     public virtual void PointerEnter()
+    {
+
+    }
+    public virtual void PointerExit()
+    {
+
+    }
+    public virtual void PointerMove()
     {
 
     }

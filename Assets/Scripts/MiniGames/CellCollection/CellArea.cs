@@ -1,16 +1,16 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
 public class CellArea : MonoBehaviour, IPointerExitHandler, IPointerEnterHandler
 {
+    [SerializeField] private TextMeshProUGUI collectedText;
     [SerializeField] private GameObject enemyCell;
     [SerializeField] private GameObject enemySpinCell;
 
     [SerializeField] private GameObject collectCell;
-
-    private RectTransform rectTransform;
 
     private List<GameObject> collectCells = new List<GameObject>();
     private List<GameObject> enemyCells = new List<GameObject>();
@@ -18,7 +18,6 @@ public class CellArea : MonoBehaviour, IPointerExitHandler, IPointerEnterHandler
     private int currentLevel = 0;
 
     private bool generated;
-    private bool generating;
 
     private Coroutine Generation;
 
@@ -31,18 +30,30 @@ public class CellArea : MonoBehaviour, IPointerExitHandler, IPointerEnterHandler
     private void Awake()
     {
         i = this;
-        rectTransform = GetComponent<RectTransform>();
     }
 
     private void Start()
     {
         generated = true;
         InitializeCell();
+        collectedText.SetText(
+            "Fase " + currentLevel + "/5");
     }
 
     private void Update()
     {
-        
+        if(collectCells.Count <= 0 && generated)
+        {
+            currentLevel++;
+            if(currentLevel > 5)
+            {
+                Debug.Log("Minigame acabou");
+                return;
+            }
+            collectedText.SetText(
+            "Fase " + currentLevel + "/5");
+            RestartCell();
+        }
     }
 
     public void InitializeCell()
@@ -88,10 +99,10 @@ public class CellArea : MonoBehaviour, IPointerExitHandler, IPointerEnterHandler
         int cellEnemyAmount = 0;
         Vector3 lastCellPos = Vector3.zero;
 
-        while (cellEnemyAmount < 10 * (1 + .25 * (currentLevel - 1)))
+        while (cellEnemyAmount < 10 * (1 + .5 * (currentLevel - 1)))
         {
-            float width = 615f;
-            float height = 485f;
+            float width = 550f;
+            float height = 420f;
 
             float randomWidth = Random.Range(-(width / 2), (width / 2));
             float randomHeight = Random.Range(-(height / 2), (height / 2));
@@ -137,15 +148,15 @@ public class CellArea : MonoBehaviour, IPointerExitHandler, IPointerEnterHandler
 
         while (cellCollectAmount < currentLevel)
         {
-            float width = 615f;
-            float height = 485f;
+            float width = 550f;
+            float height = 420f;
 
             float randomWidth = Random.Range(-(width / 2), (width / 2));
             float randomHeight = Random.Range(-(height / 2), (height / 2));
 
             Vector3 cellPos = new Vector3(randomWidth, randomHeight, 0);
 
-            if (Vector3.Distance(mouse, cellPos) > 5 && (Vector3.Distance(lastCellPos, cellPos) > 5f || lastCellPos == Vector3.zero))
+            if ((Vector3.Distance(lastCellPos, cellPos) > 5f || lastCellPos == Vector3.zero))
             {
                 GameObject cell = Instantiate(collectCell, cellPos, Quaternion.identity);
                 cell.transform.SetParent(transform, true);
@@ -158,7 +169,7 @@ public class CellArea : MonoBehaviour, IPointerExitHandler, IPointerEnterHandler
                 cellCollectAmount++;
             }
 
-            yield return new WaitForEndOfFrame();
+            yield return null;
         }
 
         #endregion
@@ -173,13 +184,14 @@ public class CellArea : MonoBehaviour, IPointerExitHandler, IPointerEnterHandler
 
     public void OnPointerExit(PointerEventData eventData)
     {
-        Debug.Log("Exit: " + eventData.fullyExited);
-        
+        //generated = true;
+        //InitializeCell();
     }
 
     public void OnPointerEnter(PointerEventData eventData)
     {
-
+        //Debug.Log(eventData.fullyExited);
+        //generated = true;
         //InitializeCell();
     }
 }

@@ -77,4 +77,23 @@ public class BaseHealth : MonoBehaviourPun
     {
         if (PhotonNetwork.InRoom) this.photonView.RPC(nameof(RPC_TakeDamage), RpcTarget.All, damage, damageCameFrom); else TakeDamage(damage, damageCameFrom);
     }
+
+    protected void ForceHeal(float percentage = 1f)
+    {
+        isDead = false;
+        health += maxHealth * percentage;
+
+        health = Mathf.Clamp(health, 0, maxHealth);
+    }
+
+    [PunRPC]
+    protected void RPC_ForceHeal(float percentage = 1f)
+    {
+        ForceHeal(percentage);
+    }
+
+    public void CallForceHeal(float percentage = 1f)
+    {
+        if (PhotonNetwork.InRoom) this.photonView.RPC(nameof(RPC_ForceHeal), RpcTarget.All, percentage); else ForceHeal(percentage);
+    }
 }

@@ -54,7 +54,7 @@ public class EnemyMovement : MovementBase
     private bool hasPath = false;
 
     private Rigidbody rb;
-    
+    private EnemyHealth health;
     //Pathfinding
 
     public struct PathNode
@@ -110,6 +110,7 @@ public class EnemyMovement : MovementBase
     {
         base.Awake();
         rb = GetComponent<Rigidbody>();
+        health = GetComponent<EnemyHealth>();
     }
     private void Start()
     {
@@ -209,7 +210,7 @@ public class EnemyMovement : MovementBase
 
                 float movementSpeed = speed * 10f;
 
-                if (GetMoveStates() == MovementAIStates.FLEEING) movementSpeed *= 5f;
+                if (GetMoveStates() == MovementAIStates.FLEEING) movementSpeed *= 2.5f;
 
                 if (vel.magnitude > movementSpeed)
                 {
@@ -305,16 +306,14 @@ public class EnemyMovement : MovementBase
 
     private void FleeState()
     {
-        sprinting = true;
-
-        timeStunned = timeStunnedOnFlee;
+        sprinting = true;     
 
         StartCoroutine(EFleeState());
     }
 
     private IEnumerator EFleeState()
     {
-        if (fleeing == false) yield break;
+        if (fleeing == true) yield break;
 
         bool pathSet = false;
         fleeing = true;
@@ -326,16 +325,19 @@ public class EnemyMovement : MovementBase
             if (pathSet == false)
             {
                 pathSet = true;
+                timeStunned = timeStunnedOnFlee;
+                SetDestination(furthestPoint);
 
                 yield return new WaitForEndOfFrame();
             }
-            else if (pathSet == true)
+            else if (pathSet == true && Vector3.Distance(transform.position, furthestPoint) <= 4f)
             {
 
                 if (timeStunned < 0f)
                 {
                     fleeing = false;
                     ChangeState(MovementAIStates.NONE);
+                    health.CallForceHeal(1f);
                     yield break;
                 }
                 else
@@ -345,7 +347,7 @@ public class EnemyMovement : MovementBase
 
                 yield return new WaitForEndOfFrame();
             }
-
+            yield return new WaitForEndOfFrame();
         }
     }
 

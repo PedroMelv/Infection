@@ -9,9 +9,7 @@ using Photon.Pun;
 
 public class PlayerItem : MonoBehaviourPun
 {
-    [SerializeField] private Sprite masterSpr, readySpr, notReadySpr;
     [SerializeField] private TextMeshProUGUI playerNameText;
-    [SerializeField] private Image playerIconImg;
     [SerializeField] private GameObject kickButton;
     [SerializeField] private GameObject promoteButton;
 
@@ -26,14 +24,8 @@ public class PlayerItem : MonoBehaviourPun
         playerNameText.text = connectedPlayer.NickName;
     }
 
-    public void SetIcon(Sprite spr)
-    {
-        playerIconImg.sprite = spr;
-    }
-
     public void SetIsMaster(bool isMaster, bool showMasterSprite = false)
     {
-        if (showMasterSprite) SetIcon(masterSpr);
         kickButton.SetActive(isMaster);
         promoteButton.SetActive(isMaster);
     }
@@ -41,12 +33,11 @@ public class PlayerItem : MonoBehaviourPun
     public void SwitchReady()
     {
         ready = !ready;
-        SetIcon((ready ? readySpr : notReadySpr));
     }
 
     public void SetIsOwner(bool isOwner)
     {
-        if (isOwner) playerNameText.color = Color.yellow;
+        
     }
 
     public void KickPlayer()

@@ -8,7 +8,7 @@ public enum CellType
 {
     WALK,
     SPIN,
-    WALK_SPIN
+    STATIC
 }
 
 public class EnemyCell : Cell
@@ -28,6 +28,8 @@ public class EnemyCell : Cell
 
     private void Start()
     {
+        if (cellType == CellType.STATIC) return;
+
         spinDirection = Random.value < 0.5f;
 
         if(cellType == CellType.WALK)
@@ -71,8 +73,6 @@ public class EnemyCell : Cell
     public override void PointerEnter()
     {
         if(!activated) return;
-
-        //Debug.Log("Hitting");
+        CellArea.i.RestartCell();
     }
-
 }
