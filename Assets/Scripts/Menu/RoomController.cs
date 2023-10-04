@@ -154,6 +154,11 @@ public class RoomController : MonoBehaviourPunCallbacks
         SceneManager.LoadScene(gameScene);
     }
 
+    public void SetPlayerCharacter(int character)
+    {
+
+    }
+
     public PlayerItem GetPlayerItem(string playername) 
     {
         for (int i = 0; i < playersList.Count; i++)
