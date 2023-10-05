@@ -6,7 +6,7 @@ using Photon.Realtime;
 
 public class GameNetwork : MonoBehaviourPunCallbacks
 {
-    [SerializeField] private string playerPrefab;
+    [SerializeField] private GameObject playerChris, playerPenny;
     [SerializeField] private GameObject cameraPrefab;
     [SerializeField] private Vector3 spawnPos;
 
@@ -33,7 +33,13 @@ public class GameNetwork : MonoBehaviourPunCallbacks
     {
         Player[] players = PhotonNetwork.PlayerList;
 
-        GameObject playerObj = PhotonNetwork.Instantiate(playerPrefab, transform.position + spawnPos + new Vector3(0f, 0f, 1.5f) * index, Quaternion.identity);
+        GameObject playerPrefab = playerChris;
+        if ((int)players[index].CustomProperties["c"] == 2)
+        {
+            playerPrefab = playerPenny;
+        }
+
+        GameObject playerObj = PhotonNetwork.Instantiate(playerPrefab.name, transform.position + spawnPos + new Vector3(0f, 0f, 1.5f) * index, Quaternion.identity);
 
 
         playerObj.GetComponent<PhotonView>().TransferOwnership(players[index]);

@@ -154,12 +154,6 @@ public class LobbyController : MonoBehaviourPunCallbacks
             options.IsVisible = true;
             options.IsOpen = true;
 
-            ExitGames.Client.Photon.Hashtable playerConfig = PhotonNetwork.LocalPlayer.CustomProperties;
-
-            playerConfig.Add("c", 0);
-
-            PhotonNetwork.LocalPlayer.SetCustomProperties(playerConfig);
-
             PhotonNetwork.JoinOrCreateRoom(roomNameField.text, options, null);
         }
     }

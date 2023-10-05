@@ -7,6 +7,7 @@ using Photon.Realtime;
 using UnityEngine.UI;
 using TMPro;
 using UnityEngine.SceneManagement;
+using static UnityEditor.Progress;
 
 [RequireComponent(typeof(PhotonView))]
 public class RoomController : MonoBehaviourPunCallbacks
@@ -16,7 +17,6 @@ public class RoomController : MonoBehaviourPunCallbacks
     [SerializeField] private GameObject roomAreaObj;
     [SerializeField] private TextMeshProUGUI roomNameText;
 
-    [SerializeField] private Button readyButton;
     [SerializeField] private Button startButton;
     [SerializeField] private TextMeshProUGUI startText;
 
@@ -25,6 +25,8 @@ public class RoomController : MonoBehaviourPunCallbacks
     private List<PlayerItem> playersList = new List<PlayerItem>();
 
     private Player[] playersOnline;
+    private int cachedPlayerOneCharacter;
+    private int cachedPlayerTwoCharacter;
 
     private PhotonView view;
 
@@ -42,28 +44,57 @@ public class RoomController : MonoBehaviourPunCallbacks
 
         if (Input.GetKeyDown(KeyCode.G)) StartGameButton();
 
-        int readyCount = 0;
-
-        for (int i = 0; i < playersList.Count; i++)
+        playersList[0].SetPlayerCharacter(cachedPlayerOneCharacter);
+        if (playersList.Count >= 2)
         {
-            if (playersList[i].ready) readyCount++;
+            playersList[1].SetPlayerCharacter(cachedPlayerTwoCharacter);
         }
 
-        if (readyCount >= PhotonNetwork.CurrentRoom.MaxPlayers)
+        if (playersOnline.Length >= 2)
         {
-            startButton.interactable = true;
-            startText.text = "Start Game";
+            if (cachedPlayerOneCharacter != 0 && cachedPlayerTwoCharacter != 0 && cachedPlayerOneCharacter != cachedPlayerTwoCharacter)
+            {
+                startButton.interactable = true;
+                startText.text = "Start Game";
+            }
+            else
+            {
+                startButton.interactable = false;
+                startText.text = "Invalid";
+            }
         }
         else
         {
             startButton.interactable = false;
-            startText.text = readyCount + "/" + PhotonNetwork.CurrentRoom.MaxPlayers;
+            startText.text = "Invalid";
         }
     }
 
     public void EnterRoom()
     {
+        ExitGames.Client.Photon.Hashtable playerConfig = PhotonNetwork.LocalPlayer.CustomProperties;
+
+        if(playerConfig.ContainsKey("c"))
+        {
+            playerConfig["c"] = 0;
+        }
+        else
+        {
+            playerConfig.Add("c", 0);
+        }
         
+
+        if(PhotonNetwork.LocalPlayer.IsMasterClient)
+        {
+            cachedPlayerOneCharacter = (int)playerConfig["c"];
+        }
+        else
+        {
+            cachedPlayerTwoCharacter = (int)playerConfig["c"];
+        }
+
+        PhotonNetwork.LocalPlayer.SetCustomProperties(playerConfig);
+
         lobby.HideLobby();
         roomAreaObj.SetActive(true);
     }
@@ -76,6 +107,7 @@ public class RoomController : MonoBehaviourPunCallbacks
         lobby.EnterLobby(false);
     }
 
+    #region Callbacks
     public override void OnJoinedRoom()
     {
         EnterRoom();
@@ -99,13 +131,30 @@ public class RoomController : MonoBehaviourPunCallbacks
     {
         playersOnline = PhotonNetwork.PlayerList;
         UpdateUI();
+
+        for (int i = 0; i < playersOnline.Length; i++)
+        {
+            playersOnline[i].CustomProperties["c"] = 0;
+        }
+
     }
+    public override void OnPlayerPropertiesUpdate(Player targetPlayer, ExitGames.Client.Photon.Hashtable changedProps)
+    {
+        if (targetPlayer.IsMasterClient)
+        {
+            cachedPlayerOneCharacter = (int)changedProps["c"];
+        }
+        else
+        {
+            cachedPlayerTwoCharacter = (int)changedProps["c"];
+        }
+    }
+    #endregion
 
     private void UpdateUI()
     {
         roomNameText.text = PhotonNetwork.CurrentRoom.Name;
         UpdatePlayerList();
-        readyButton.gameObject.SetActive(!PhotonNetwork.IsMasterClient);
         startButton.gameObject.SetActive(PhotonNetwork.IsMasterClient);
     }
     private void UpdatePlayerList()
@@ -122,7 +171,6 @@ public class RoomController : MonoBehaviourPunCallbacks
         PlayerItem item = Instantiate(playerItemPrefab, playersPlacement);
         item.SetPlayer(PhotonNetwork.MasterClient);
         item.SetIsMaster(false, true);
-        item.SetIsOwner(PhotonNetwork.IsMasterClient);
         item.ready = true;
         playersList.Add(item);
 
@@ -135,7 +183,6 @@ public class RoomController : MonoBehaviourPunCallbacks
                 PlayerItem pi = Instantiate(playerItemPrefab, playersPlacement);
                 pi.SetPlayer(playersOnline[i]);
                 pi.SetIsMaster(PhotonNetwork.IsMasterClient, false);
-                pi.SetIsOwner((playersOnline[i] == PhotonNetwork.LocalPlayer));
                 playersList.Add(pi);
             }
         }
@@ -158,26 +205,10 @@ public class RoomController : MonoBehaviourPunCallbacks
 
     public void SetPlayerCharacter(int character)
     {
-        CallSetPlayerCharacter(PhotonNetwork.LocalPlayer, character);
-    }
-
-    private void CallSetPlayerCharacter(Player player, int character)
-    {
-        ExitGames.Client.Photon.Hashtable customProp = player.CustomProperties;
+        ExitGames.Client.Photon.Hashtable customProp = PhotonNetwork.LocalPlayer.CustomProperties;
+        if ((int)customProp["c"] == character) character = 0;
         customProp["c"] = character;
-        player.SetCustomProperties(customProp);
-    }
-
-    private Player GetOtherPlayer(Player thePlayer)
-    {
-        Player result = null;
-
-        for (int i = 0; i < playersOnline.Length; i++)
-        {
-            if(playersOnline[i] != thePlayer) result = playersOnline[i];
-        }
-
-        return result;
+        PhotonNetwork.LocalPlayer.SetCustomProperties(customProp);
     }
 
     public PlayerItem GetPlayerItem(string playername) 
@@ -198,6 +229,7 @@ public class RoomController : MonoBehaviourPunCallbacks
     }
 
     #region RPCs
+
     [PunRPC]
     public void RPC_ReadyButton(string playerName)
     {

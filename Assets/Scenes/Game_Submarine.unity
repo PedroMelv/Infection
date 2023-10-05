@@ -1046,7 +1046,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c086646d1840e894897349ea17597a09, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  playerPrefab: Player
+  playerChris: {fileID: 4937341285037132329, guid: 9461167ce3d5a4240933581973de4865,
+    type: 3}
+  playerPenny: {fileID: 5493738902295201733, guid: c995b4204cf550149937a700e4d45888,
+    type: 3}
   cameraPrefab: {fileID: 3254984109021065003, guid: d54cf65f3f4396048896984e6332e208,
     type: 3}
   spawnPos: {x: -42, y: -25.86, z: 0}

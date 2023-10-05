@@ -13,13 +13,19 @@ public class PlayerCombat : MonoBehaviour
     public bool IsAiming { get { return isAiming; } private set { } }
     private PlayerInput pInput;
 
+    bool canUseWeapon = false;
+
     private void Awake()
     {
         pInput = GetComponent<PlayerInput>();
+
+        canUseWeapon = ((int)PhotonNetwork.LocalPlayer.CustomProperties["c"] == 1);
     }
 
     private void Update()
     {
+        if (!canUseWeapon) return;
+        
         isAiming = pInput.rightMouseInput;
 
         if(isAiming && pInput.leftMouseInputPressed)
@@ -42,7 +48,7 @@ public class PlayerCombat : MonoBehaviour
                 }  
 
                 GameObject mark = PhotonNetwork.Instantiate(bulletMark.name, hit.point, Quaternion.FromToRotation(Vector3.forward, hit.normal));
-                mark.transform.position += mark.transform.forward * 0.01f;
+                mark.transform.position += mark.transform.forward * 0.025f;
                 Destroy(mark, 5f);
             }
         }

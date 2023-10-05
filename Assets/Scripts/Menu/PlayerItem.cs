@@ -35,9 +35,20 @@ public class PlayerItem : MonoBehaviourPun
         ready = !ready;
     }
 
-    public void SetIsOwner(bool isOwner)
+    public void SetPlayerCharacter(int character)
     {
-        
+        switch (character)
+        {
+            case 0:
+                playerNameText.alignment = TextAlignmentOptions.Center;
+            break;
+            case 1:
+                playerNameText.alignment = TextAlignmentOptions.Left;
+            break;
+            case 2:
+                playerNameText.alignment = TextAlignmentOptions.Right;
+            break;
+        }
     }
 
     public void KickPlayer()
