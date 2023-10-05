@@ -6,7 +6,6 @@ using Photon.Pun;
 using Photon.Realtime;
 using TMPro;
 using UnityEngine.UI;
-using ExitGames.Client.Photon;
 
 public class LobbyController : MonoBehaviourPunCallbacks
 {
@@ -153,12 +152,6 @@ public class LobbyController : MonoBehaviourPunCallbacks
             options.MaxPlayers = 2;
             options.IsVisible = true;
             options.IsOpen = true;
-
-            ExitGames.Client.Photon.Hashtable playerConfig = PhotonNetwork.LocalPlayer.CustomProperties;
-
-            playerConfig.Add("c", 0);
-
-            PhotonNetwork.LocalPlayer.SetCustomProperties(playerConfig);
 
             PhotonNetwork.JoinOrCreateRoom(roomNameField.text, options, null);
         }
