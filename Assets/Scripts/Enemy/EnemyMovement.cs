@@ -278,7 +278,7 @@ public class EnemyMovement : MovementBase
 
                 if (lostVision) lostVisionTimer -= Time.deltaTime; else lostVisionTimer = .25f;
 
-                if (!lostVision || lostVisionTimer > 0f) SetDestination(target.position, null);
+                if (!lostVision || lostVisionTimer > 0f && !target.GetComponent<PlayerMovement>().isHidden) SetDestination(target.position, null);
             }
         }
     }

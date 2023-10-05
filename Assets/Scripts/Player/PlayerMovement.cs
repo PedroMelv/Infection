@@ -23,7 +23,7 @@ public class PlayerMovement : MovementBase
     [SerializeField] private MoveStates curMoveState;
     public MoveStates GetMoveState { get { return curMoveState; } }
 
-    
+    public bool isHidden;
 
     [Header("Movement")]
     private float speed;
@@ -106,6 +106,8 @@ public class PlayerMovement : MovementBase
     private void Update()
     {
         if(photonView.IsMine == false) return;
+
+        isHidden = (grounded && isCrawling && !CanGoUp());
 
         ductLeaveTimer += Time.deltaTime;
         HandleStamina();
