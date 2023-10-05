@@ -63,12 +63,14 @@ public class RoomController : MonoBehaviourPunCallbacks
 
     public void EnterRoom()
     {
+        
         lobby.HideLobby();
         roomAreaObj.SetActive(true);
     }
 
     public void QuitRoom()
     {
+        
         roomAreaObj.SetActive(false);
         PhotonNetwork.LeaveRoom();
         lobby.EnterLobby(false);
@@ -156,7 +158,26 @@ public class RoomController : MonoBehaviourPunCallbacks
 
     public void SetPlayerCharacter(int character)
     {
+        CallSetPlayerCharacter(PhotonNetwork.LocalPlayer, character);
+    }
 
+    private void CallSetPlayerCharacter(Player player, int character)
+    {
+        ExitGames.Client.Photon.Hashtable customProp = player.CustomProperties;
+        customProp["c"] = character;
+        player.SetCustomProperties(customProp);
+    }
+
+    private Player GetOtherPlayer(Player thePlayer)
+    {
+        Player result = null;
+
+        for (int i = 0; i < playersOnline.Length; i++)
+        {
+            if(playersOnline[i] != thePlayer) result = playersOnline[i];
+        }
+
+        return result;
     }
 
     public PlayerItem GetPlayerItem(string playername) 
