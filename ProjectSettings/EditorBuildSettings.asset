@@ -17,4 +17,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/AITesting.unity
     guid: de1ac934701b0e14db82031a487f38be
+  - enabled: 1
+    path: Assets/Scenes/Henrique.unity
+    guid: 91469e8453bff7348b8a11246da8e648
   m_configObjects: {}
