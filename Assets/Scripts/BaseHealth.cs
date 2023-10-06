@@ -31,7 +31,9 @@ public class BaseHealth : MonoBehaviourPun
 
     public virtual void Update()
     {
-        if(canRegen && health < maxHealth && !isDead)
+        if (!photonView.IsMine)
+            return;
+        if (canRegen && health < maxHealth && !isDead)
         {
             if(regenTimer <= 0f)
             {

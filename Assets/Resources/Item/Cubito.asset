@@ -1,0 +1,18 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fdb9e8fc1626dfa47b7bc268ef6ce0ec, type: 3}
+  m_Name: Cubito
+  m_EditorClassIdentifier: 
+  item:
+    itemName: Cubito
+    itemPrefab: {fileID: 8144276644038425320, guid: 6ea0ec5c836e2b14582b34896fe1f595,
+      type: 3}

@@ -327,6 +327,7 @@ public class EnemyMovement : MovementBase
                 pathSet = true;
                 timeStunned = timeStunnedOnFlee;
                 SetDestination(furthestPoint);
+                Debug.Log("Setting Destination");
 
                 yield return new WaitForEndOfFrame();
             }

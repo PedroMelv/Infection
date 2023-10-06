@@ -17,6 +17,6 @@ public class PlayerHealth : BaseHealth
     {
         base.Update();
 
-        damageVolume.weight = Mathf.Lerp(damageVolume.weight, 1 - health / maxHealth, 5f * Time.deltaTime);
+        if(photonView.IsMine)damageVolume.weight = Mathf.Lerp(damageVolume.weight, 1 - health / maxHealth, 5f * Time.deltaTime);
     }
 }
