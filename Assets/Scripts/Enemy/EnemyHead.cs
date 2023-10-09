@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Photon.Pun;
 
 public class EnemyHead : MonoBehaviour
 {
@@ -28,6 +29,8 @@ public class EnemyHead : MonoBehaviour
 
     private void Update()
     {
+        if (!PhotonNetwork.LocalPlayer.IsMasterClient) return;
+
         HandleVision();
 
         brain.TriggerVision(detectedTarget);
@@ -97,14 +100,15 @@ public class EnemyHead : MonoBehaviour
             return;
         }
 
+
+        #endregion
+        
         if(first == null)
         {
             detectionValue = 0f;
             storedTarget = null;
             detectedTarget = null;
         }
-
-        #endregion
     }
 
     public Transform GetDetectedTarget()

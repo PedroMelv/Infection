@@ -111,7 +111,7 @@ public class WallHole : Interactable
         for (int i = 0; i < list.Count; i++)
         {
             float dist = Vector3.Distance(interactedPos, list[i].position);
-            Debug.Log(list[i].gameObject.name + " Distance: " + dist);
+            //Debug.Log(list[i].gameObject.name + " Distance: " + dist);
             if (distance > dist)
             {
                 distance = dist;

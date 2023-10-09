@@ -106,13 +106,13 @@ public class EnemyBrain : MonoBehaviour
             if (curBehaviour is WaitBehaviour && (curBehaviour as WaitBehaviour).timeIdling > 0f)
             {
                 (curBehaviour as WaitBehaviour).timeIdling -= Time.deltaTime;
-                Debug.Log((curBehaviour as WaitBehaviour).timeIdling);
+                //Debug.Log((curBehaviour as WaitBehaviour).timeIdling);
                 return;
             }
 
             if (curBehaviour.IsCompleted() && curBehaviour.behaviourApplied)
             {
-                Debug.Log("Finished");
+                //Debug.Log("Finished");
                 curBehaviour = null;
             }
         }
@@ -177,7 +177,7 @@ public class EnemyBrain : MonoBehaviour
 
         public virtual bool ReachedDestination()
         {
-            Debug.Log(Vector3.Distance(enemyPos.transform.position, targetPos));
+            //Debug.Log(Vector3.Distance(enemyPos.transform.position, targetPos));
             return Vector3.Distance(enemyPos.transform.position, targetPos) < 1.5f || enemyPos.GetComponent<EnemyMovement>().GetPathStored().Length == 0;
         }
 

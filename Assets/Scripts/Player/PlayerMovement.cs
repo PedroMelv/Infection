@@ -169,7 +169,7 @@ public class PlayerMovement : MovementBase
 
         if(OnSlope() && !exitingSlope)
         {
-            rb.AddForce(GetSlopeDirection() * speed * 20f, ForceMode.Force); //Move to the direction of the slope
+            rb.AddForce(GetSlopeDirection() * speed * 20f * rb.mass, ForceMode.Force); //Move to the direction of the slope
 
             if (rb.velocity.y > 0) //Keep it stuck on the slope if it's going up
             {
@@ -179,7 +179,7 @@ public class PlayerMovement : MovementBase
             return;
         }
 
-        rb.AddForce(moveDirection.normalized * speed * 10f, ForceMode.Force);
+        rb.AddForce(moveDirection.normalized * speed * 10f * rb.mass, ForceMode.Force);
     }
 
     private void HandleSpeedLimit()
@@ -354,12 +354,13 @@ public class PlayerMovement : MovementBase
 
     private bool CanGoUp()
     {
+        
         Collider[] cols = Physics.OverlapBox(transform.position + (Vector3.up * detectionSize.y / 2f) , detectionSize / 2f, Quaternion.identity, crouchCeilDetect);
-        Debug.Log(cols.Length);
+        //Debug.Log(cols.Length);
 
         for (int i = 0; i < cols.Length; i++)
         {
-            Debug.Log(cols[i].gameObject.name);
+            //Debug.Log(cols[i].gameObject.name);
         }
 
         return cols.Length <= 0;
@@ -481,7 +482,7 @@ public class PlayerMovement : MovementBase
         if(Physics.Raycast(transform.position , Vector3.down, out slopeHit, playerHeight * .5f + 0.3f, groundLayer))
         {
             float angle = Vector3.Angle(Vector3.up, slopeHit.normal);
-            Debug.Log(angle);
+            //Debug.Log(angle);
             return (angle < maxSlopeAngle && angle != 0f);
         }
         return false;

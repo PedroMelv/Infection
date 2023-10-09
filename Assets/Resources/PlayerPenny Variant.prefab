@@ -7,6 +7,16 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1109066270879768287, guid: f1ffac6fd23ac4540953448471ca4aad,
+        type: 3}
+      propertyPath: slots.Array.size
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1112068640492594529, guid: f1ffac6fd23ac4540953448471ca4aad,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0.33
+      objectReference: {fileID: 0}
     - target: {fileID: 1721449749161564764, guid: f1ffac6fd23ac4540953448471ca4aad,
         type: 3}
       propertyPath: m_RootOrder
@@ -66,6 +76,21 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: PlayerPenny Variant
+      objectReference: {fileID: 0}
+    - target: {fileID: 3906457530374875002, guid: f1ffac6fd23ac4540953448471ca4aad,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0.33
+      objectReference: {fileID: 0}
+    - target: {fileID: 5271851849815644598, guid: f1ffac6fd23ac4540953448471ca4aad,
+        type: 3}
+      propertyPath: isDead
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8612205419681235562, guid: f1ffac6fd23ac4540953448471ca4aad,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8739034638490398706, guid: f1ffac6fd23ac4540953448471ca4aad,
         type: 3}

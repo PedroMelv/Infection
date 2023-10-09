@@ -12,19 +12,19 @@ public class PlayerCombat : MonoBehaviour
     private bool isAiming = false;
     public bool IsAiming { get { return isAiming; } private set { } }
     private PlayerInput pInput;
+    private PlayerInventory pInventory;
 
     bool canUseWeapon = false;
 
     private void Awake()
     {
         pInput = GetComponent<PlayerInput>();
-
-        canUseWeapon = ((int)PhotonNetwork.LocalPlayer.CustomProperties["c"] == 1);
+        pInventory = GetComponent<PlayerInventory>();
     }
 
     private void Update()
     {
-        if (!canUseWeapon) return;
+        if (pInventory.GetSelectedItem() != null && pInventory.GetSelectedItem().specialUse != SpecialUseItem.GUN) return;
         
         isAiming = pInput.rightMouseInput;
 

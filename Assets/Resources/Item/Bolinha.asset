@@ -16,3 +16,5 @@ MonoBehaviour:
     itemName: Bolinha
     itemPrefab: {fileID: 7636558951006539458, guid: 277803ad4af30244c96457eec8d3e7d3,
       type: 3}
+    itemHandPrefab: {fileID: 2289422089807794055, guid: 10df0d10531ac7648a8199a1c1fa7414,
+      type: 3}

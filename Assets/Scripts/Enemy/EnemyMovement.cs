@@ -1,3 +1,4 @@
+using Photon.Pun;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
@@ -119,6 +120,8 @@ public class EnemyMovement : MovementBase
     }
     private void Update()
     {
+        if (!PhotonNetwork.LocalPlayer.IsMasterClient) return;
+
         closeToPlayer = false;
         if (!canMove)
         {
@@ -154,7 +157,9 @@ public class EnemyMovement : MovementBase
     }
     private void FixedUpdate()
     {
-        if(!canMove)
+        if (!PhotonNetwork.LocalPlayer.IsMasterClient) return;
+
+        if (!canMove)
         {
             rb.velocity = Vector3.zero;
             return;
@@ -218,8 +223,8 @@ public class EnemyMovement : MovementBase
                 }
                 else
                 {
-                    float horizontal = CalculateForce(moveDirection.normalized.x, rb.velocity.x, movementSpeed);
-                    float vertical = CalculateForce(moveDirection.normalized.z, rb.velocity.z, movementSpeed);
+                    float horizontal = CalculateForce(moveDirection.normalized.x, rb.velocity.x, movementSpeed * rb.mass);
+                    float vertical = CalculateForce(moveDirection.normalized.z, rb.velocity.z, movementSpeed * rb.mass);
 
                     Vector3 direction = new Vector3(horizontal, 0f, vertical);
                     rb.AddForce(direction, ForceMode.Force);
@@ -258,6 +263,13 @@ public class EnemyMovement : MovementBase
 
         if (target != null)
         {
+            if (target.GetComponent<PlayerHealth>().isDead) 
+            {
+                ChangeState(MovementAIStates.NONE);
+                target = null;
+                return;
+            }
+
             if (Vector3.Distance(transform.position, target.position) < 1.5f)
             {
                 SetRotation(target.position, 15f);

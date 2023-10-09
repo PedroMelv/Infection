@@ -8,6 +8,7 @@ public class PlayerCamera : MonoBehaviour
     [SerializeField] private PlayerInput pInput;
     [SerializeField] private PlayerMovement pMove;
     [SerializeField] private PlayerCombat pCombat;
+    [SerializeField] private PlayerInventoryVisual pInvVisual;
 
 
     [Header("Camera Parameters")]
@@ -28,6 +29,7 @@ public class PlayerCamera : MonoBehaviour
     [SerializeField] private Transform cameraPos;
     [SerializeField] private Transform playerBody;
     [SerializeField] private Transform orientation;
+    [SerializeField] private Transform[] hands;
 
     private Camera camera;
 
@@ -59,10 +61,14 @@ public class PlayerCamera : MonoBehaviour
         pInput = input;
 
         pMove = pInput.gameObject.GetComponent<PlayerMovement>();
+        pMove = pInput.gameObject.GetComponent<PlayerMovement>();
         pCombat = pInput.gameObject.GetComponent<PlayerCombat>();
+        pInvVisual = pInput.gameObject.GetComponent<PlayerInventoryVisual>();
 
         pInput.myCamera = GetComponent<Camera>();
         camera = pInput.myCamera;
+
+        pInvVisual.SetHands(hands);
 
         orientation = pInput.orientation;
         playerBody = pInput.playerBody;

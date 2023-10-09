@@ -12,5 +12,16 @@ public class ItemSO : ScriptableObject
 public class Item
 {
     public string itemName;
+    public bool canDrop = true;
+    public SpecialUseItem specialUse;
+    [Space]
     public GameObject itemPrefab;
+    public GameObject itemHandPrefab;
+
+}
+
+public enum SpecialUseItem
+{
+    NORMAL,
+    GUN
 }

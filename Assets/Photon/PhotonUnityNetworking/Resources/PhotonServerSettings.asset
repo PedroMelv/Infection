@@ -46,6 +46,10 @@ MonoBehaviour:
   - HeresWhy
   - RPC_TakeDamage
   - RPC_ForceHeal
+  - RPC_SetHandParent
+  - RPC_AddItemToHand
+  - RPC_Destroy
+  - RPC_OnDie
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 1

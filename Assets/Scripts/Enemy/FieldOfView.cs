@@ -1,3 +1,4 @@
+using Photon.Pun;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -16,6 +17,7 @@ public class FieldOfView : MonoBehaviour
 
     private void Start()
     {
+        if (!PhotonNetwork.LocalPlayer.IsMasterClient) return;
         StartCoroutine(FindTargetsDelayed(.2f));
     }
 
@@ -41,7 +43,7 @@ public class FieldOfView : MonoBehaviour
             if(Vector3.Angle(transform.forward, dirToTarget) < viewAngle / 2)
             {
                 float dstToTarget = Vector3.Distance(transform.position, target.position);
-                if(!Physics.Raycast(transform.position, dirToTarget, dstToTarget, obstacleMask))
+                if(!Physics.Raycast(transform.position, dirToTarget, dstToTarget, obstacleMask) && !target.GetComponent<PlayerHealth>().isDead)
                 {
                     visibleTargets.Add(target);
                 }

@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 7636558951006212793}
   - component: {fileID: 7636558951006212798}
   - component: {fileID: 7636558951006212799}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Sphere
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -94,7 +94,9 @@ GameObject:
   - component: {fileID: 7636558951006539457}
   - component: {fileID: 932705482510517614}
   - component: {fileID: 4970550939606088608}
-  m_Layer: 0
+  - component: {fileID: -6539036803012093477}
+  - component: {fileID: 1283895837227228911}
+  m_Layer: 7
   m_Name: Bolinha
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -146,3 +148,41 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
+--- !u!114 &-6539036803012093477
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7636558951006539458}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ObservedComponentsFoldoutOpen: 1
+  Group: 0
+  prefixField: -1
+  Synchronization: 3
+  OwnershipTransfer: 0
+  observableSearch: 2
+  ObservedComponents: []
+  sceneViewId: 0
+  InstantiationId: 0
+  isRuntimeInstantiated: 0
+--- !u!114 &1283895837227228911
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7636558951006539458}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4d721e3209023574f9b7012b2dd2550e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  OnInteract:
+    m_PersistentCalls:
+      m_Calls: []
+  item: {fileID: 11400000, guid: 997d5ff6d50a3c54d92a4a483df7831f, type: 2}

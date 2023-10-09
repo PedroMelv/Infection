@@ -6,7 +6,7 @@ using UnityEngine;
 
 public class PlayerInput : MonoBehaviourPun
 {
-    public Camera myCamera;
+    public Camera    myCamera;
     public Transform cameraPos;
     public Transform playerBody;
     public Transform orientation;
@@ -17,7 +17,9 @@ public class PlayerInput : MonoBehaviourPun
     public float mouse_x_input;
     public float mouse_y_input;
 
-    public bool sprintInput;
+    public float mouse_scroll;
+
+    public bool  sprintInput;
 
     public Action OnInteractPress;
     public Action OnInteractHold;
@@ -34,6 +36,8 @@ public class PlayerInput : MonoBehaviourPun
     public bool crawlInputPressed;
     public bool crawlInputReleased;
 
+    public bool dropInputPressed;
+
     public bool leftMouseInput;
     public bool leftMouseInputPressed;
     public bool leftMouseInputReleased;
@@ -42,6 +46,14 @@ public class PlayerInput : MonoBehaviourPun
     public bool rightMouseInputPressed;
     public bool rightMouseInputReleased;
 
+    public Action OnTabPressed;
+
+    private PlayerHealth pHealth;
+
+    private void Awake()
+    {
+        pHealth = GetComponent<PlayerHealth>();
+    }
 
     private void Start()
     {
@@ -52,13 +64,53 @@ public class PlayerInput : MonoBehaviourPun
     {
         if (photonView.IsMine == false) return;
 
+        if(pHealth.isDead)
+        {
+            move_x_input = 0f;
+            move_y_input = 0f;
+
+            mouse_x_input = 0f;
+            mouse_y_input = 0f;
+
+            mouse_scroll = 0f;
+
+            sprintInput = false;
+            dropInputPressed = false;
+
+            jumpInput = false;
+            jumpInputPressed = false;
+            jumpInputReleased = false;
+
+            crawlInput = false;
+            crawlInputPressed = false;
+            crawlInputReleased = false;
+
+            strafeLeftInput = false;
+            strafeRightInput = false;
+
+            leftMouseInput = false;
+            leftMouseInputPressed = false;
+            leftMouseInputReleased = false;
+
+            rightMouseInput = false;
+            rightMouseInputPressed = false;
+            rightMouseInputReleased = false;
+
+            OnInteractRelease?.Invoke();
+            
+            return;
+        }
+
         move_x_input = Input.GetAxisRaw("Horizontal");
         move_y_input = Input.GetAxisRaw("Vertical");
 
         mouse_x_input = Input.GetAxisRaw("Mouse X");
         mouse_y_input = Input.GetAxisRaw("Mouse Y");
 
+        mouse_scroll = Input.mouseScrollDelta.y;
+
         sprintInput = Input.GetKey(KeyCode.LeftShift);
+        dropInputPressed = Input.GetKeyDown(KeyCode.Mouse2);
 
         jumpInput = Input.GetKey(KeyCode.Space);
         jumpInputPressed = Input.GetKeyDown(KeyCode.Space);
@@ -79,9 +131,11 @@ public class PlayerInput : MonoBehaviourPun
         rightMouseInputPressed = Input.GetKeyDown(KeyCode.Mouse1);
         rightMouseInputReleased = Input.GetKeyUp(KeyCode.Mouse1);
 
-        if (Input.GetKeyDown(KeyCode.F)) OnInteractPress?.Invoke();
-        if (Input.GetKey(KeyCode.F))     OnInteractHold?.Invoke();
-        if (Input.GetKeyUp(KeyCode.F))   OnInteractRelease?.Invoke();
+        if (Input.GetKeyDown(KeyCode.Tab)) OnTabPressed?.Invoke();
+        
+        if (Input.GetKeyDown(KeyCode.F))   OnInteractPress?.Invoke();
+        if (Input.GetKey(KeyCode.F))       OnInteractHold?.Invoke();
+        if (Input.GetKeyUp(KeyCode.F))     OnInteractRelease?.Invoke();
     }
 
     public Vector2 MoveInput()

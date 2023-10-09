@@ -74,7 +74,7 @@ public class RoomController : MonoBehaviourPunCallbacks
     {
         ExitGames.Client.Photon.Hashtable playerConfig = PhotonNetwork.LocalPlayer.CustomProperties;
 
-        if(playerConfig.ContainsKey("c"))
+        if (playerConfig.ContainsKey("c"))
         {
             playerConfig["c"] = 0;
         }
@@ -82,16 +82,22 @@ public class RoomController : MonoBehaviourPunCallbacks
         {
             playerConfig.Add("c", 0);
         }
-        
 
-        if(PhotonNetwork.LocalPlayer.IsMasterClient)
+        for (int i = 0; i < playersOnline.Length; i++)
         {
-            cachedPlayerOneCharacter = (int)playerConfig["c"];
+            ExitGames.Client.Photon.Hashtable config = playersOnline[i].CustomProperties;
+
+            if (playersOnline[i].IsMasterClient)
+            {
+                cachedPlayerOneCharacter = (int)config["c"];
+            }
+            else
+            {
+                cachedPlayerTwoCharacter = (int)config["c"];
+            }
         }
-        else
-        {
-            cachedPlayerTwoCharacter = (int)playerConfig["c"];
-        }
+
+        
 
         PhotonNetwork.LocalPlayer.SetCustomProperties(playerConfig);
 
@@ -110,8 +116,8 @@ public class RoomController : MonoBehaviourPunCallbacks
     #region Callbacks
     public override void OnJoinedRoom()
     {
-        EnterRoom();
         playersOnline = PhotonNetwork.PlayerList;
+        EnterRoom();
         UpdateUI();
     }
 

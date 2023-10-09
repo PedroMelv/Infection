@@ -7,6 +7,8 @@ public class PlayerInteract : MonoBehaviour
     [SerializeField] private float interactRange;
     [SerializeField] private LayerMask interactLayer;
 
+    private Interactable holdingInteractable;
+
     private PlayerInput pInput;
     private PlayerMovement pMove;
 
@@ -32,10 +34,12 @@ public class PlayerInteract : MonoBehaviour
         pInput = GetComponent<PlayerInput>();
         if (pInput != null) 
         {
-            pInput.OnInteractPress += () => HandleInteraction();
+            pInput.OnInteractPress   += () => HandleInteractionPress();
+            pInput.OnInteractHold    += () => HandleInteractionHold();
+            pInput.OnInteractRelease += () => HandleInteractionRelease();
         }
     }
-    private void HandleInteraction()
+    private void HandleInteractionPress()
     {
         mouseRay = pInput.myCamera.ScreenPointToRay(Input.mousePosition);
 
@@ -48,10 +52,36 @@ public class PlayerInteract : MonoBehaviour
                 detectedInteractable.Interact(this.gameObject);
 
                 HandleCustomInteractions(detectedInteractable);
-            }
-
-            
+            }       
         }
+    }
+    private void HandleInteractionHold()
+    {
+        mouseRay = pInput.myCamera.ScreenPointToRay(Input.mousePosition);
+
+        if (Physics.Raycast(mouseRay, out RaycastHit hit, interactRange, interactLayer))
+        {
+            Interactable detectedInteractable = hit.collider.GetComponent<Interactable>();
+
+            if (detectedInteractable != null)
+            {
+                holdingInteractable = detectedInteractable;
+                detectedInteractable.InteractHold(this.gameObject);
+
+                HandleCustomInteractions(detectedInteractable);
+            }
+            else
+                if (holdingInteractable != null)
+                    holdingInteractable.InteractRelease(this.gameObject);
+        }
+        else
+            if (holdingInteractable != null)
+                holdingInteractable.InteractRelease(this.gameObject);
+    }
+    private void HandleInteractionRelease()
+    {
+        if (holdingInteractable != null)
+            holdingInteractable.InteractRelease(this.gameObject);
     }
 
     private void HandleCustomInteractions(Interactable interactable)

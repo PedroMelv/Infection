@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Drawing;
 using UnityEngine;
+using Photon.Pun;
 
 
 
@@ -21,6 +22,8 @@ public class P0_EnemyBrain : EnemyBrain
 
     public override void Start()
     {
+        if (!PhotonNetwork.LocalPlayer.IsMasterClient) return;
+
         base.Start();
 
         attackCooldown = attackMaxCooldown;
@@ -44,6 +47,8 @@ public class P0_EnemyBrain : EnemyBrain
 
     public override void Update()
     {
+        if (!PhotonNetwork.LocalPlayer.IsMasterClient) return;
+
         BehaviourHandling();
 
 
@@ -51,7 +56,10 @@ public class P0_EnemyBrain : EnemyBrain
         {
             if(attackCooldown <= 0f)
             {
-                currentTarget.GetComponent<PlayerHealth>().CallTakeDamage(1, Vector3.zero);
+                if(currentTarget != null)
+                {
+                    currentTarget.GetComponent<PlayerHealth>().CallTakeDamage(1, Vector3.zero);
+                }
                 attackCooldown = attackMaxCooldown;
             }
             else
@@ -134,7 +142,9 @@ public class P0_EnemyBrain : EnemyBrain
 
         public void Run()
         {
-            if(brain == null)
+            if (!PhotonNetwork.LocalPlayer.IsMasterClient) return;
+
+            if (brain == null)
             {
                 Debug.LogError("Brain não existe!");
                 return;
@@ -144,6 +154,8 @@ public class P0_EnemyBrain : EnemyBrain
         
         public TemplateBehaviour ChangeState(MovementAIStates state)
         {
+            if (!PhotonNetwork.LocalPlayer.IsMasterClient) return this;
+
             actionQueue += () => brain.AddChangeMoveStateBehaviour(state);
 
             return this;
@@ -151,6 +163,8 @@ public class P0_EnemyBrain : EnemyBrain
 
         public TemplateBehaviour MoveToRandomPoint()
         {
+            if (!PhotonNetwork.LocalPlayer.IsMasterClient) return this;
+
             RoomPoint point = GameDirector.instance.GetRandomPointOnMap();
 
             actionQueue += () =>
@@ -164,6 +178,8 @@ public class P0_EnemyBrain : EnemyBrain
 
         public TemplateBehaviour MoveToClosestRoom(float waitTimePerPoints = 1f)
         {
+            if (!PhotonNetwork.LocalPlayer.IsMasterClient) return this;
+
             RoomPoint[] points = GameDirector.instance.GetClosestPoints(brain.transform.position, 5, 4f, true, 0, 3, 1f);
 
             actionQueue += () =>
@@ -180,6 +196,7 @@ public class P0_EnemyBrain : EnemyBrain
         
         public TemplateBehaviour MoveToFurthestRoom(float waitTimePerPoints = 1f)
         {
+            if (!PhotonNetwork.LocalPlayer.IsMasterClient) return this;
             RoomPoint[] points = GameDirector.instance.GetFurthestPoints(brain.transform.position, 5, 4f, true, 0, 3, 1f);
 
             actionQueue += () =>
@@ -195,6 +212,7 @@ public class P0_EnemyBrain : EnemyBrain
         }
         public TemplateBehaviour MoveToRandomRoom(float waitTimePerPoints = 1f)
         {
+            if (!PhotonNetwork.LocalPlayer.IsMasterClient) return this;
             RoomPoint[] points = GameDirector.instance.GetRandomPoints(5, 4f, true, 0, 3, 1f);
 
             actionQueue += () =>
@@ -211,6 +229,9 @@ public class P0_EnemyBrain : EnemyBrain
 
         public TemplateBehaviour Wait(float waitTime)
         {
+            if (!PhotonNetwork.LocalPlayer.IsMasterClient)
+                return this;
+
             actionQueue += () =>
             {
                 brain.AddWaitBehaviour(waitTime);
