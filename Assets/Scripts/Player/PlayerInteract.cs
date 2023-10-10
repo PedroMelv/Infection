@@ -26,6 +26,8 @@ public class PlayerInteract : MonoBehaviour
 
     private void Update()
     {
+        mouseRay = pInput.myCamera.ScreenPointToRay(Input.mousePosition);
+
         Debug.DrawRay(mouseRay.origin, mouseRay.direction * interactRange, Color.red);
     }
 
@@ -41,7 +43,7 @@ public class PlayerInteract : MonoBehaviour
     }
     private void HandleInteractionPress()
     {
-        mouseRay = pInput.myCamera.ScreenPointToRay(Input.mousePosition);
+        
 
         if(Physics.Raycast(mouseRay, out RaycastHit hit, interactRange, interactLayer))
         {
@@ -57,8 +59,6 @@ public class PlayerInteract : MonoBehaviour
     }
     private void HandleInteractionHold()
     {
-        mouseRay = pInput.myCamera.ScreenPointToRay(Input.mousePosition);
-
         if (Physics.Raycast(mouseRay, out RaycastHit hit, interactRange, interactLayer))
         {
             Interactable detectedInteractable = hit.collider.GetComponent<Interactable>();

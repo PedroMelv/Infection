@@ -78,6 +78,19 @@ public class PlayerInventory : MonoBehaviour
         OnAddItem?.Invoke(couldAdd, addItem);
         return couldAdd;
     }
+    public void DestroyItem()
+    {
+        DestroyItem(ref slots[itemSlotSelected]);
+    }
+    public void DestroyItem(ref Item slot)
+    {
+        if (slot != null && slot.itemPrefab != null)
+        {
+            slot = new Item();
+            OnDropItem?.Invoke();
+        }
+    }
+
     public void DropItem(bool useForward = true)
     {
         DropItem(ref slots[itemSlotSelected], useForward);

@@ -6,11 +6,28 @@ using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Events;
 
+public enum CharacterInteract
+{
+    ANYONE = 0,
+    CHRIS = 1,
+    PENNY = 2
+}
+
 public class Interactable : MonoBehaviourPunCallbacks
 {
     public Action<GameObject> OnInteractAction;
     [SerializeField]protected UnityEvent<GameObject> OnInteract;
     private bool interacting;
+
+    [SerializeField] private CharacterInteract characterToInteract;
+
+    [Space]
+    [Header("Item Interaction")]
+    [SerializeField] private bool needItem;
+    [SerializeField] private ItemSO itemToInteract;
+    [SerializeField] private bool removeItem;
+    [SerializeField] private bool andAddAnother;
+    [SerializeField] private ItemSO itemToAdd;
 
     [Space]
     [Header("FillInteraction")]
@@ -42,12 +59,51 @@ public class Interactable : MonoBehaviourPunCallbacks
     {
         if (fillInteraction) return;
 
+        int curPlayer = (int)PhotonNetwork.LocalPlayer.CustomProperties["c"];
+        if (characterToInteract != CharacterInteract.ANYONE && curPlayer != (int)characterToInteract) return;
+
+        if(needItem)
+        {
+            PlayerInventory pInventory = whoInteracted.GetComponent<PlayerInventory>();
+
+            if(pInventory != null)
+            {
+                Item curItem = pInventory.GetSelectedItem();
+            
+                if(curItem == itemToInteract.item)
+                {
+                    if(removeItem)
+                    {
+                        pInventory.DestroyItem();
+                        if(andAddAnother)
+                        {
+                            pInventory.AddItem(itemToAdd.item);
+                        }
+                    }
+                }
+                else
+                {
+                    return;
+                }
+            }
+            else
+            {
+                return;
+            }
+        }
+
         interacting = true;
         OnInteractAction?.Invoke(whoInteracted);
     }
 
     public virtual void InteractHold(GameObject whoInteracted)
     {
+        //TODO: adicionar opção de needItem
+        if (needItem) return;
+
+        int curPlayer = (int)PhotonNetwork.LocalPlayer.CustomProperties["c"];
+        if (characterToInteract != CharacterInteract.ANYONE && curPlayer != (int)characterToInteract) return;
+
         if (!fillInteraction) return;
 
         interacting = true;

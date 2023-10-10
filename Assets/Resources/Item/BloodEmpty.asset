@@ -10,11 +10,13 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: fdb9e8fc1626dfa47b7bc268ef6ce0ec, type: 3}
-  m_Name: Bolinha
+  m_Name: BloodEmpty
   m_EditorClassIdentifier: 
   item:
-    itemName: Bolinha
-    itemPrefab: {fileID: 7636558951006539458, guid: 277803ad4af30244c96457eec8d3e7d3,
+    itemName: BloodEmpty
+    canDrop: 1
+    specialUse: 2
+    itemPrefab: {fileID: 8144276644038425320, guid: 6ea0ec5c836e2b14582b34896fe1f595,
       type: 3}
-    itemHandPrefab: {fileID: 2289422089807794055, guid: 10df0d10531ac7648a8199a1c1fa7414,
+    itemHandPrefab: {fileID: 364206235096166959, guid: 9e55eaa4a9515204894fc1e15d4ae606,
       type: 3}

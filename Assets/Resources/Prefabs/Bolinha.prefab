@@ -185,4 +185,13 @@ MonoBehaviour:
   OnInteract:
     m_PersistentCalls:
       m_Calls: []
+  characterToInteract: 0
+  needItem: 0
+  itemToInteract: {fileID: 0}
+  removeItem: 0
+  andAddAnother: 0
+  itemToAdd: {fileID: 0}
+  fillInteraction: 0
+  fillSpeed: 1
+  fillLossSpeed: 1
   item: {fileID: 11400000, guid: 997d5ff6d50a3c54d92a4a483df7831f, type: 2}

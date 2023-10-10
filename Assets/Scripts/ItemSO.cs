@@ -23,5 +23,7 @@ public class Item
 public enum SpecialUseItem
 {
     NORMAL,
-    GUN
+    GUN,
+    BLOOD_SPLICER_EMPTY,
+    BLOOD_SPLICER_FULL
 }

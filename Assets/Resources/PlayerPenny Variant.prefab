@@ -85,7 +85,7 @@ PrefabInstance:
     - target: {fileID: 5271851849815644598, guid: f1ffac6fd23ac4540953448471ca4aad,
         type: 3}
       propertyPath: isDead
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8612205419681235562, guid: f1ffac6fd23ac4540953448471ca4aad,
         type: 3}
