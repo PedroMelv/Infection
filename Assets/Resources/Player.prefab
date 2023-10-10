@@ -215,7 +215,7 @@ MonoBehaviour:
   ductHeight: 0.125
   crouchCeilDetect:
     serializedVersion: 2
-    m_Bits: 9
+    m_Bits: 521
   jumpForce: 10
   jumpCutMultiplier: 0.282
   playerHeight: 2
