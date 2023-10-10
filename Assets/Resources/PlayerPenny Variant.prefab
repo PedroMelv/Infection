@@ -77,6 +77,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: PlayerPenny Variant
       objectReference: {fileID: 0}
+    - target: {fileID: 1972528552291207583, guid: f1ffac6fd23ac4540953448471ca4aad,
+        type: 3}
+      propertyPath: m_IsTrigger
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 3906457530374875002, guid: f1ffac6fd23ac4540953448471ca4aad,
         type: 3}
       propertyPath: m_LocalPosition.y
@@ -87,10 +92,15 @@ PrefabInstance:
       propertyPath: isDead
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 5619744575064700032, guid: f1ffac6fd23ac4540953448471ca4aad,
+        type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 8612205419681235562, guid: f1ffac6fd23ac4540953448471ca4aad,
         type: 3}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8739034638490398706, guid: f1ffac6fd23ac4540953448471ca4aad,
         type: 3}

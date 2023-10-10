@@ -1,8 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Photon.Pun;
 
-public class PlayerInteract : MonoBehaviour
+public class PlayerInteract : MonoBehaviourPun
 {
     [SerializeField] private float interactRange;
     [SerializeField] private LayerMask interactLayer;
@@ -26,6 +27,8 @@ public class PlayerInteract : MonoBehaviour
 
     private void Update()
     {
+        if (!photonView.IsMine)
+            return;
         mouseRay = pInput.myCamera.ScreenPointToRay(Input.mousePosition);
 
         Debug.DrawRay(mouseRay.origin, mouseRay.direction * interactRange, Color.red);

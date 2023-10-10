@@ -113,11 +113,11 @@ public class BaseHealth : MonoBehaviourPun
 
     protected void CallUpdateHealth(float to)
     {
-        photonView.RPC(nameof(RPC_UpdateHealth), RpcTarget.All, to);
+        if (PhotonNetwork.InRoom) photonView.RPC(nameof(RPC_UpdateHealth), RpcTarget.All, to); else health = to;
     }
 
     [PunRPC]
-    private void RPC_UpdateHealth(float to)
+    public void RPC_UpdateHealth(float to)
     {
         health = to;
     }
