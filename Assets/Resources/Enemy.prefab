@@ -42,7 +42,8 @@ Transform:
   m_LocalPosition: {x: 2.31, y: 0.857, z: -3.29}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children: []
+  m_Children:
+  - {fileID: 3593177182870325352}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -165,7 +166,7 @@ MonoBehaviour:
   minSearchDuration: 2.5
   maxSearchDuration: 4
   closeToPlayer: 0
-  timeStunnedOnFlee: 0
+  timeStunnedOnFlee: 20
   baseSpeed: 3
   sprintMultiplier: 1.33
   acceleration: 6
@@ -211,11 +212,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6da19d95829203f479c7359de7f7d17f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  playerDriven: 0
   maxHealth: 4
   isDead: 0
   canRegen: 1
   regenAmountPerSecond: 4
   timeToStartRegen: 2
+  collectBloodTrigger: {fileID: 3358737525911692435}
 --- !u!114 &1376725786569719526
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -360,3 +363,73 @@ MonoBehaviour:
   m_SynchronizeAngularVelocity: 0
   m_TeleportEnabled: 1
   m_TeleportIfDistanceGreaterThan: 3
+--- !u!1 &3358737525911692435
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 3593177182870325352}
+  - component: {fileID: 3716346306840935051}
+  - component: {fileID: 4321871756581445857}
+  m_Layer: 7
+  m_Name: GetBloodTrigger
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 0
+--- !u!4 &3593177182870325352
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3358737525911692435}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 2, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1376725786569719523}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!65 &3716346306840935051
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3358737525911692435}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 1, y: 1, z: 1}
+  m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &4321871756581445857
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3358737525911692435}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ec46582b44758a945b12cc679e218236, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  OnInteract:
+    m_PersistentCalls:
+      m_Calls: []
+  characterToInteract: 2
+  needItem: 1
+  itemToInteract: {fileID: 11400000, guid: aecd8ca27897ea0488f105b143862bcb, type: 2}
+  removeItem: 1
+  andAddAnother: 1
+  itemToAdd: {fileID: 11400000, guid: 997d5ff6d50a3c54d92a4a483df7831f, type: 2}
+  fillInteraction: 0
+  fillSpeed: 1
+  fillLossSpeed: 1

@@ -50,6 +50,8 @@ MonoBehaviour:
   - RPC_AddItemToHand
   - RPC_Destroy
   - RPC_OnDie
+  - RPC_UpdateHealth
+  - RPC_ChangeCollectBlood
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 1

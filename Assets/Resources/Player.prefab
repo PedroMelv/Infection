@@ -175,6 +175,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c9fae5696bd3d534bb047523d7cb6cc6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  playerDriven: 1
   maxHealth: 3
   isDead: 0
   canRegen: 1
@@ -202,7 +203,7 @@ MonoBehaviour:
   curMoveState: 0
   isHidden: 0
   moveSpeed: 5
-  sprintMultiplier: 1.35
+  sprintMultiplier: 1.6
   groundDrag: 10
   tiredMoveMultiplier: 0.65
   timeToRegenStamina: 1.2
@@ -766,6 +767,12 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+  characterToInteract: 0
+  needItem: 0
+  itemToInteract: {fileID: 0}
+  removeItem: 0
+  andAddAnother: 0
+  itemToAdd: {fileID: 0}
   fillInteraction: 1
   fillSpeed: 1
   fillLossSpeed: 1

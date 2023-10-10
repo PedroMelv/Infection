@@ -8,7 +8,13 @@ public class BaseHealth : MonoBehaviourPun
 {
     [Header("Health Basics")]
     protected float health;
+    public float SetCurrentHealth { get { return GetCurrentHealth; } set
+        {
+            CallUpdateHealth(value);
+        } }
     public float GetCurrentHealth { get { return health; } set { } }
+
+    [SerializeField] protected bool playerDriven = false;
 
     [SerializeField] protected float maxHealth;
     public float GetMaxHealth { get { return maxHealth; } set { } }
@@ -16,6 +22,7 @@ public class BaseHealth : MonoBehaviourPun
     public bool isDead = false;
     public Action<Vector3> OnTakeDamage;
     public Action OnDie;
+    public Action OnHeal;
     public Action OnFullHealth;
     
     [Header("Regen")]
@@ -31,8 +38,9 @@ public class BaseHealth : MonoBehaviourPun
 
     public virtual void Update()
     {
-        if (!photonView.IsMine)
+        if (!photonView.IsMine && playerDriven)
             return;
+
         if (canRegen && health < maxHealth && !isDead)
         {
             if(regenTimer <= 0f)
@@ -43,6 +51,8 @@ public class BaseHealth : MonoBehaviourPun
                     health = maxHealth;
                     OnFullHealth?.Invoke();
                 }
+
+                SetCurrentHealth = health;
             }
             else
             {
@@ -80,12 +90,14 @@ public class BaseHealth : MonoBehaviourPun
         if (PhotonNetwork.InRoom) this.photonView.RPC(nameof(RPC_TakeDamage), RpcTarget.All, damage, damageCameFrom); else TakeDamage(damage, damageCameFrom);
     }
 
-    protected void ForceHeal(float percentage = 1f)
+    protected virtual void ForceHeal(float percentage = 1f)
     {
         isDead = false;
         health += maxHealth * percentage;
 
         health = Mathf.Clamp(health, 0, maxHealth);
+
+        OnHeal?.Invoke();
     }
 
     [PunRPC]
@@ -97,5 +109,16 @@ public class BaseHealth : MonoBehaviourPun
     public void CallForceHeal(float percentage = 1f)
     {
         if (PhotonNetwork.InRoom) this.photonView.RPC(nameof(RPC_ForceHeal), RpcTarget.All, percentage); else ForceHeal(percentage);
+    }
+
+    protected void CallUpdateHealth(float to)
+    {
+        photonView.RPC(nameof(RPC_UpdateHealth), RpcTarget.All, to);
+    }
+
+    [PunRPC]
+    private void RPC_UpdateHealth(float to)
+    {
+        health = to;
     }
 }
