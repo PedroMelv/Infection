@@ -3,11 +3,13 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PlayerCombat : MonoBehaviour
+public class PlayerCombat : MonoBehaviourPun
 {
     [SerializeField] private LayerMask hitLayer;
 
     [SerializeField] private GameObject bulletMark;
+
+    [SerializeField] private AudioClip shootSound;
 
     private bool isAiming = false;
     public bool IsAiming { get { return isAiming; } private set { } }
@@ -33,7 +35,9 @@ public class PlayerCombat : MonoBehaviour
             Ray mouseRay = pInput.myCamera.ScreenPointToRay(Input.mousePosition);
             bool collided = Physics.Raycast(mouseRay, out RaycastHit hit, 100f, hitLayer);
 
-            if(collided)
+            PlayShootSound();
+
+            if (collided)
             {
                 BaseHealth hp = hit.collider.gameObject.GetComponent<BaseHealth>();
 
@@ -52,5 +56,32 @@ public class PlayerCombat : MonoBehaviour
                 Destroy(mark, 5f);
             }
         }
+    }
+
+    private void PlayShootSound()
+    {
+        photonView.RPC(nameof(RPC_PlayShootSound), RpcTarget.All);
+    }
+
+    [PunRPC]
+    private void RPC_PlayShootSound()
+    {
+        AudioClip stepClip = shootSound;
+
+        GameObject stepSound = new GameObject(stepClip.name);
+
+        stepSound.transform.position = transform.position - Vector3.down;
+
+        AudioSource source = stepSound.AddComponent<AudioSource>();
+
+        source.clip = stepClip;
+        source.volume = .5f;
+
+        source.maxDistance = 20f;
+        source.spatialBlend = 1f;
+
+        source.Play();
+
+        Destroy(stepSound, stepClip.length + .1f);
     }
 }

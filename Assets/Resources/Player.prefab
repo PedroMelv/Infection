@@ -296,9 +296,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   hitLayer:
     serializedVersion: 2
-    m_Bits: 2057
+    m_Bits: 2569
   bulletMark: {fileID: 3787753064261802207, guid: cf75ad506f32e874baa1e2d56b1d1ed4,
     type: 3}
+  shootSound: {fileID: 8300000, guid: a48e8171c4d98f54182fbb62cf83e578, type: 3}
 --- !u!114 &1109066270879768287
 MonoBehaviour:
   m_ObjectHideFlags: 0
