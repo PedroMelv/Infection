@@ -55,6 +55,8 @@ public class EnemyMovement : MovementBase
     private bool hasPath = false;
 
     private EnemyHealth health;
+    private Animator anim;
+    private StepSoundEffect stepSoundEffect;
     //Pathfinding
 
     public struct PathNode
@@ -110,6 +112,8 @@ public class EnemyMovement : MovementBase
     {
         base.Awake();
         health = GetComponent<EnemyHealth>();
+        anim = GetComponentInChildren<Animator>();
+        stepSoundEffect = GetComponent<StepSoundEffect>();
     }
     private void Start()
     {
@@ -268,23 +272,30 @@ public class EnemyMovement : MovementBase
                 return;
             }
 
-            if (Vector3.Distance(transform.position, target.position) < 1.5f)
+            MusicHandler.instance.CallPlayMusic("Chasing");
+
+            Vector3 dirToTarget = target.position - transform.position;
+            float targetDst = Vector3.Distance(target.position, transform.position);
+            lostVision = Physics.Raycast(transform.position, dirToTarget, targetDst, visionBlockerLayer);
+
+            if (Vector3.Distance(transform.position, target.position) < 2.5f)
             {
+                stepSoundEffect.playStepTimer = false;
+                anim.SetBool("IsWalking", false);
                 SetRotation(target.position, 15f);
 
                 pathStored = new PathNode[0];
                 hasPath = false;
 
-                closeToPlayer = true;
+                if(!lostVision)closeToPlayer = true; else closeToPlayer = false;
             }
             else
             {
+
+                stepSoundEffect.playStepTimer = true;
+                anim.SetBool("IsWalking", true);
                 SetRotation(curTarget.moveTo, 15f);
 
-                Vector3 dirToTarget = target.position - transform.position;
-                float targetDst = Vector3.Distance(target.position, transform.position);
-
-                lostVision = Physics.Raycast(transform.position, dirToTarget, targetDst, visionBlockerLayer);
 
                 if (lostVision) lostVisionTimer -= Time.deltaTime; else lostVisionTimer = .25f;
 
@@ -316,7 +327,9 @@ public class EnemyMovement : MovementBase
 
     private void FleeState()
     {
-        sprinting = true;     
+        sprinting = true;
+
+        
 
         StartCoroutine(EFleeState());
     }
@@ -328,12 +341,17 @@ public class EnemyMovement : MovementBase
         bool pathSet = false;
         fleeing = true;
 
+        
+
         Vector3 furthestPoint = GameDirector.instance.GetFurthestPoints(transform.position, 1, 1, false, 0, 2, 1)[0].pos;
 
         while (true)
         {
+            stepSoundEffect.playSpeed = 3f;
             if (pathSet == false)
             {
+                MusicHandler.instance.CallPlayMusic("PostChase");
+                MusicHandler.instance.Enqueue("Default");
                 pathSet = true;
                 timeStunned = timeStunnedOnFlee;
                 SetDestination(furthestPoint);
@@ -561,14 +579,25 @@ public class EnemyMovement : MovementBase
             switch (curTarget.type)
             {
                 case PathNode.PathNodeType.MOVE:
-
+                    anim.SetBool("IsWalking", true);
+                    stepSoundEffect.playStepTimer = true;
                     if (Vector3.Distance(transform.position, curTarget.moveTo) <= maxDetectPointDistance * (GetCurVelocity() / (baseSpeed * sprintMultiplier)))
                     {
+                        
                         Debug.Log("Reached point");
                         if (corners.Count == 0)
                         {
+                            anim.SetBool("IsWalking", false);
+                            stepSoundEffect.playStepTimer = false;
                             pathStored = new PathNode[0];
                             hasPath = false;
+
+                            if(moveStates == MovementAIStates.CHASING)
+                            {
+                                MusicHandler.instance.CallPlayMusic("PostChase");
+                                MusicHandler.instance.Enqueue("Default");
+                                ChangeState(MovementAIStates.NONE);
+                            }
                         }
                         else
                         {
@@ -578,6 +607,8 @@ public class EnemyMovement : MovementBase
 
                     break;
                 case PathNode.PathNodeType.WALLHOLE:
+                    anim.SetBool("IsWalking", false);
+                    stepSoundEffect.playStepTimer = true;
 
                     if (Vector3.Distance(transform.position, curTarget.moveTo) <= 2f)
                     {
@@ -586,6 +617,7 @@ public class EnemyMovement : MovementBase
                             Debug.Log("Reached point");
                             if (corners.Count == 0)
                             {
+                                
                                 pathStored = new PathNode[0];
                                 hasPath = false;
                             }
@@ -610,7 +642,14 @@ public class EnemyMovement : MovementBase
     private void HandleSpeed()
     {
         speed = baseSpeed;
-        if(sprinting) speed *= sprintMultiplier;
+
+        stepSoundEffect.playSpeed = 2f;
+
+        if (sprinting)
+        {
+            stepSoundEffect.playSpeed = 1f;
+            speed *= sprintMultiplier;
+        }
     }
 
     private void LimitSpeed()

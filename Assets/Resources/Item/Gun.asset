@@ -16,7 +16,7 @@ MonoBehaviour:
     itemName: Gun
     canDrop: 0
     specialUse: 1
-    itemPrefab: {fileID: 7636558951006539458, guid: 277803ad4af30244c96457eec8d3e7d3,
+    itemPrefab: {fileID: 6797931675319848211, guid: 6857e85cb54a0d749b580c93821a76e3,
       type: 3}
-    itemHandPrefab: {fileID: 364206235096166959, guid: 9e55eaa4a9515204894fc1e15d4ae606,
+    itemHandPrefab: {fileID: 2664360798222678833, guid: 9ad88c2baf5e5124fb6bffd1750fbee5,
       type: 3}

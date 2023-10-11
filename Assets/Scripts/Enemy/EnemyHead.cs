@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Photon.Pun;
 
-public class EnemyHead : MonoBehaviour
+public class EnemyHead : MonoBehaviourPun
 {
     [SerializeField] private FieldOfView focusedView;
 

@@ -101,6 +101,7 @@ GameObject:
   - component: {fileID: 3622921710946648271}
   - component: {fileID: 1109066270879768287}
   - component: {fileID: 7252193602505299157}
+  - component: {fileID: 4816586725772152454}
   - component: {fileID: 8739034638490398706}
   - component: {fileID: 6420955845419879261}
   - component: {fileID: -6756625047172380564}
@@ -327,6 +328,29 @@ MonoBehaviour:
   hands:
   - {fileID: 0}
   - {fileID: 0}
+--- !u!114 &4816586725772152454
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1721449749161564765}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7cba98a6500810a4eac94872dd8d50d9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  stepClips:
+  - {fileID: 8300000, guid: c7278328cbf77734386f9e8afe6139d8, type: 3}
+  - {fileID: 8300000, guid: 1150b4b2181602a4a8d67c52b1b14b1b, type: 3}
+  - {fileID: 8300000, guid: 6315243267081a247a073ee8b20762e6, type: 3}
+  timeToStep: 1
+  stepAmount: 2
+  volume: 0.113
+  spatialBlend: 0.365
+  maxDistance: 10
+  playStepTimer: 0
+  playSpeed: 1
 --- !u!114 &8739034638490398706
 MonoBehaviour:
   m_ObjectHideFlags: 0

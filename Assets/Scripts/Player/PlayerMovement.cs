@@ -83,11 +83,13 @@ public class PlayerMovement : MovementBase
     private bool exitingSlope;
 
     private PlayerInput pInput;
+    private StepSoundEffect stepSoundEffect;
 
     public override void Awake()
     {
         base.Awake();        
         pInput = GetComponent<PlayerInput>();
+        stepSoundEffect = GetComponent<StepSoundEffect>();
     }
 
     private void Start()
@@ -134,6 +136,7 @@ public class PlayerMovement : MovementBase
         {
             rb.velocity = Vector3.zero;
             rb.angularVelocity = Vector3.zero;
+            stepSoundEffect.playStepTimer = false;
             return;
         }
         rb.useGravity = (!OnSlope());
@@ -164,7 +167,9 @@ public class PlayerMovement : MovementBase
 
         moveDirection = orientation.forward * pInput.move_y_input + orientation.right * pInput.move_x_input;
 
-        if(OnSlope() && !exitingSlope)
+        stepSoundEffect.playStepTimer = (moveDirection != Vector3.zero);
+
+        if (OnSlope() && !exitingSlope)
         {
             rb.AddForce(GetSlopeDirection() * speed * 20f * rb.mass, ForceMode.Force); //Move to the direction of the slope
 
@@ -186,23 +191,27 @@ public class PlayerMovement : MovementBase
         if(pInput.sprintInput && grounded)
         {
             speed = moveSpeed * sprintMultiplier;
+            stepSoundEffect.playSpeed = 2f;
             curMoveState = MoveStates.RUNNING;
         }
         else
         {
             speed = moveSpeed;
+            stepSoundEffect.playSpeed = 1f;
             curMoveState = MoveStates.WALKING;
         }
 
         if(tired)
         {
             speed = moveSpeed * tiredMoveMultiplier;
+            stepSoundEffect.playSpeed = .75f;
             curMoveState = MoveStates.WALKING;
         }
 
         if((isCrawling && grounded)|| inDuct) 
         {
             speed = moveSpeed * crawlMultiplier;
+            stepSoundEffect.playSpeed = .5f;
             curMoveState = MoveStates.CRAWLING;
         }
 

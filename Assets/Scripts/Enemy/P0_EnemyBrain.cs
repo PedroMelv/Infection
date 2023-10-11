@@ -18,7 +18,12 @@ public class P0_EnemyBrain : EnemyBrain
 
     [SerializeField] private float attackMaxCooldown;
     private float attackCooldown;
+    
+    [SerializeField] private float screamMaxCooldown;
+    private float screamCooldown;
 
+    [SerializeField] private AudioClip screamSound;
+    [SerializeField] private AudioClip[] attackSound;
 
     public override void Start()
     {
@@ -26,6 +31,7 @@ public class P0_EnemyBrain : EnemyBrain
 
         base.Start();
 
+        screamCooldown = screamMaxCooldown;
         attackCooldown = attackMaxCooldown;
 
         GetComponent<EnemyHealth>().OnDie += () =>
@@ -58,6 +64,7 @@ public class P0_EnemyBrain : EnemyBrain
             {
                 if(currentTarget != null)
                 {
+                    CallPlayAttack();
                     currentTarget.GetComponent<PlayerHealth>().CallTakeDamage(1, Vector3.zero);
                 }
                 attackCooldown = attackMaxCooldown;
@@ -65,6 +72,18 @@ public class P0_EnemyBrain : EnemyBrain
             else
             {
                 attackCooldown -= Time.deltaTime;
+            }
+        }else if(enemyMovement.closeToPlayer == false && enemyMovement.GetMoveStates() == MovementAIStates.CHASING)
+        {
+            if(screamCooldown <= 0f)
+            {
+                screamCooldown = UnityEngine.Random.Range(2f, screamMaxCooldown);
+
+                CallPlayScream();
+            }
+            else
+            {
+                screamCooldown -= Time.deltaTime;
             }
         }
     }
@@ -281,4 +300,61 @@ public class P0_EnemyBrain : EnemyBrain
     public override void TriggerVision(Vector3 pos)
     {
     }
+
+    private void CallPlayAttack()
+    {
+        photonView.RPC(nameof(RPC_PlayAttackSound), RpcTarget.All);
+    }
+
+    private void CallPlayScream()
+    {
+        photonView.RPC(nameof(RPC_PlayScreamSound), RpcTarget.All);
+    }
+
+    #region RPC
+
+    [PunRPC]
+    public void RPC_PlayAttackSound()
+    {
+        AudioClip stepClip = attackSound[UnityEngine.Random.Range(0, attackSound.Length)];
+
+        GameObject stepSound = new GameObject(stepClip.name);
+
+        stepSound.transform.position = transform.position - Vector3.down;
+
+        AudioSource source = stepSound.AddComponent<AudioSource>();
+
+        source.clip = stepClip;
+        source.volume = .35f;
+
+        source.maxDistance = 15f;
+        source.spatialBlend = 1f;
+
+        source.Play();
+
+        Destroy(stepSound, stepClip.length + .1f);
+    }
+    [PunRPC]
+    public void RPC_PlayScreamSound()
+    {
+        AudioClip stepClip = screamSound;
+
+        GameObject stepSound = new GameObject(stepClip.name);
+
+        stepSound.transform.position = transform.position - Vector3.down;
+
+        AudioSource source = stepSound.AddComponent<AudioSource>();
+
+        source.clip = stepClip;
+        source.volume = .35f;
+
+        source.maxDistance = 15f;
+        source.spatialBlend = 1f;
+
+        source.Play();
+
+        Destroy(stepSound, stepClip.length + .1f);
+    }
+
+    #endregion
 }

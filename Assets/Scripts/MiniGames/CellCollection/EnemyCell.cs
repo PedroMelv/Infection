@@ -40,18 +40,19 @@ public class EnemyCell : Cell
         }
         else
         {
-            speed = Random.Range(30f, 90f);
+            speed = Random.Range(70f, 150f);
         }
     }
 
     private void Update()
     {
         cellImg.color = new Color(cellImg.color.r, cellImg.color.g, cellImg.color.b, (activated ? 1f : .33f));
+        //if(!activated) return;
 
         switch (cellType)
         {
             case CellType.WALK:
-                transform.position = new Vector3(Mathf.Clamp(transform.position.x, -65f, 34f), Mathf.Clamp(transform.position.y, -38f, 38f), 0f);
+                //transform.position = new Vector3(Mathf.Clamp(transform.position.x, -220f, 220f), Mathf.Clamp(transform.position.y, -200f, 200f), 0f);
                 transform.position = Vector3.MoveTowards(transform.position, targetPos, speed * Time.deltaTime);
                 break;
             case CellType.SPIN:
@@ -65,8 +66,8 @@ public class EnemyCell : Cell
 
     private void SetTarget()
     {
-        speed = Random.Range(5f, 30f);
-        targetPos = transform.position + Random.insideUnitSphere * Random.Range(25f,50f);
+        speed = Random.Range(50f, 130f);
+        targetPos = transform.position + Random.insideUnitSphere * Random.Range(100f,175f);
         //targetPos.z = 0f;
     }
 

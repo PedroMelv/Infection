@@ -71,7 +71,7 @@ public class PlayerInventoryVisual : MonoBehaviourPun
                 
                 if (itemHandPrefab != null)
                 {
-                    GameObject newItem = Instantiate(itemHandPrefab, hands[i].position, Quaternion.identity);
+                    GameObject newItem = Instantiate(itemHandPrefab, hands[i].position, hands[i].rotation);
                     newItem.transform.SetParent(hands[i]);
                 }
             }

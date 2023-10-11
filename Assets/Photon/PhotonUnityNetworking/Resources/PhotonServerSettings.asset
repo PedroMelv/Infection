@@ -52,6 +52,10 @@ MonoBehaviour:
   - RPC_OnDie
   - RPC_UpdateHealth
   - RPC_ChangeCollectBlood
+  - RPC_PlayMusic
+  - RPC_PlayStepSound
+  - RPC_PlayAttackSound
+  - RPC_PlayScreamSound
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 1
