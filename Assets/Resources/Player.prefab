@@ -347,7 +347,7 @@ MonoBehaviour:
   timeToStep: 1
   stepAmount: 2
   volume: 0.113
-  spatialBlend: 0.365
+  spatialBlend: 1
   maxDistance: 10
   playStepTimer: 0
   playSpeed: 1

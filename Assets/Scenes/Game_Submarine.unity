@@ -2938,6 +2938,25 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 81952faf8247b37478323dc4c84877df, type: 3}
+--- !u!1 &669148508 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: 81952faf8247b37478323dc4c84877df,
+    type: 3}
+  m_PrefabInstance: {fileID: 669148507}
+  m_PrefabAsset: {fileID: 0}
+--- !u!65 &669148509
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 669148508}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 0.1732051, y: 16, z: 2.1999998}
+  m_Center: {x: 0.0000000037252903, y: 0.0054495335, z: 0.000000059604645}
 --- !u!64 &677279069
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -3423,6 +3442,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: Seringa
+      objectReference: {fileID: 0}
+    - target: {fileID: 8144276644038425320, guid: 6ea0ec5c836e2b14582b34896fe1f595,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 6ea0ec5c836e2b14582b34896fe1f595, type: 3}
@@ -4403,7 +4427,7 @@ PrefabInstance:
     - target: {fileID: -8679921383154817045, guid: 294dbc2e7f8515a4f8966772b2529de7,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: 2.0299988
+      value: 1.73
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 294dbc2e7f8515a4f8966772b2529de7,
         type: 3}
@@ -5443,7 +5467,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &1508855446
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6250,6 +6274,11 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: -8125460383559926409, guid: 1814036742c59064ea379f1fb0cce720,
+        type: 3}
+      propertyPath: m_Layer
+      value: 9
+      objectReference: {fileID: 0}
+    - target: {fileID: -7443356763537910656, guid: 1814036742c59064ea379f1fb0cce720,
         type: 3}
       propertyPath: m_Layer
       value: 9
