@@ -54,7 +54,6 @@ public class EnemyMovement : MovementBase
     private float speed;
     private bool hasPath = false;
 
-    private Rigidbody rb;
     private EnemyHealth health;
     //Pathfinding
 
@@ -110,7 +109,6 @@ public class EnemyMovement : MovementBase
     public override void Awake()
     {
         base.Awake();
-        rb = GetComponent<Rigidbody>();
         health = GetComponent<EnemyHealth>();
     }
     private void Start()

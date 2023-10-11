@@ -14,7 +14,7 @@ public class WallHole : Interactable
 
     private bool isUsing;
 
-    public override void Start()
+    protected override void Start()
     {
         base.Start();
         OnInteractAction += (GameObject who) => WallHoleInteract(who);

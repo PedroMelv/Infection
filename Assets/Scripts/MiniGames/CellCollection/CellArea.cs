@@ -3,9 +3,12 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using Photon.Pun;
 
-public class CellArea : MonoBehaviour, IPointerExitHandler, IPointerEnterHandler
+public class CellArea : MonoBehaviourPun
 {
+    [SerializeField] private GameObject minigameObj;
+    [SerializeField] private Transform cellPlacement;
     [SerializeField] private TextMeshProUGUI collectedText;
     [SerializeField] private GameObject enemyCell;
     [SerializeField] private GameObject enemySpinCell;
@@ -15,9 +18,15 @@ public class CellArea : MonoBehaviour, IPointerExitHandler, IPointerEnterHandler
     private List<GameObject> collectCells = new List<GameObject>();
     private List<GameObject> enemyCells = new List<GameObject>();
 
+    private GameObject whoInteracted;
+    private MicroInteractable whoCalled;
+
+    [SerializeField] private ItemSO resultItem;
+
     private int currentLevel = 0;
 
     private bool generated;
+    private bool minigameIsOpen;
 
     private Coroutine Generation;
 
@@ -25,35 +34,77 @@ public class CellArea : MonoBehaviour, IPointerExitHandler, IPointerEnterHandler
 
     private float timer = 3;
 
+    private Canvas canvas;
+
     public static CellArea i;
 
     private void Awake()
     {
         i = this;
     }
-
     private void Start()
     {
-        generated = true;
-        InitializeCell();
+        canvas = GetComponent<Canvas>();
         collectedText.SetText(
             "Fase " + currentLevel + "/5");
     }
-
     private void Update()
     {
-        if(collectCells.Count <= 0 && generated)
+        if(canvas != null && canvas.worldCamera == null && Camera.main != null)
         {
-            currentLevel++;
-            if(currentLevel > 5)
-            {
-                Debug.Log("Minigame acabou");
-                return;
-            }
-            collectedText.SetText(
-            "Fase " + currentLevel + "/5");
-            RestartCell();
+            canvas.worldCamera = Camera.main;
         }
+
+        if (!minigameIsOpen) return;
+
+        UpdateUI();
+
+        if(Input.GetKeyDown(KeyCode.Escape))
+        {
+            CloseMinigame();
+        }
+    }
+
+    public void StartMinigame(GameObject whoInteracted, MicroInteractable whoCalled)
+    {
+        if (canvas != null && canvas.worldCamera == null && Camera.main != null)
+        {
+            return;
+        }
+
+        this.whoCalled = whoCalled;
+
+        if (whoCalled.minigameWasTriggered)
+        {
+            OpenMinigame();
+            RestartCell();
+            return;
+        }
+
+        this.whoInteracted = whoInteracted;
+
+        OpenMinigame();
+
+        generated = true;
+        InitializeCell();
+    }
+    public void CloseMinigame()
+    {
+        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
+
+        minigameIsOpen = false;
+        whoInteracted.GetComponent<PlayerMovement>().UnlockMovement();
+        minigameObj.SetActive(false);
+    }
+    public void OpenMinigame()
+    {
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
+
+        minigameIsOpen = true;
+        whoInteracted.GetComponent<PlayerMovement>().LockMovement();
+        minigameObj.SetActive(true);
     }
 
     public void InitializeCell()
@@ -61,6 +112,28 @@ public class CellArea : MonoBehaviour, IPointerExitHandler, IPointerEnterHandler
         collectedCells = 0;
         currentLevel = 1;
         RestartCell();
+    }
+    private void UpdateUI()
+    {
+        if (collectCells.Count <= 0 && generated)
+        {
+            currentLevel++;
+            if (currentLevel > 5)
+            {
+                CloseMinigame();
+                whoCalled.minigameWasTriggered = false;
+
+                if (!whoInteracted.GetComponent<PlayerInventory>().AddItem(resultItem.item))
+                {
+                    PhotonNetwork.Instantiate("Prefabs/" + resultItem.item, transform.position + Vector3.up * 2f, Quaternion.identity);
+                }
+
+                return;
+            }
+            collectedText.SetText(
+            "Fase " + currentLevel + "/5");
+            RestartCell();
+        }
     }
     public void RestartCell()
     {
@@ -101,8 +174,8 @@ public class CellArea : MonoBehaviour, IPointerExitHandler, IPointerEnterHandler
 
         while (cellEnemyAmount < 10 * (1 + .5 * (currentLevel - 1)))
         {
-            float width = 550f;
-            float height = 420f;
+            float width = 425f;
+            float height = 400f;
 
             float randomWidth = Random.Range(-(width / 2), (width / 2));
             float randomHeight = Random.Range(-(height / 2), (height / 2));
@@ -116,8 +189,8 @@ public class CellArea : MonoBehaviour, IPointerExitHandler, IPointerEnterHandler
 
                 GameObject cell = Instantiate(spawnedCell, cellPos, Quaternion.identity);
 
-                cell.transform.SetParent(transform, true);
-                cell.transform.localPosition = cellPos;
+                //cell.transform.position = cellPos;
+                cell.transform.SetParent(cellPlacement, false);
                 cell.transform.localScale = Vector3.one;
 
                 enemyCells.Add(cell);
@@ -148,8 +221,8 @@ public class CellArea : MonoBehaviour, IPointerExitHandler, IPointerEnterHandler
 
         while (cellCollectAmount < currentLevel)
         {
-            float width = 550f;
-            float height = 420f;
+            float width = 425f;
+            float height = 400f;
 
             float randomWidth = Random.Range(-(width / 2), (width / 2));
             float randomHeight = Random.Range(-(height / 2), (height / 2));
@@ -159,8 +232,8 @@ public class CellArea : MonoBehaviour, IPointerExitHandler, IPointerEnterHandler
             if ((Vector3.Distance(lastCellPos, cellPos) > 5f || lastCellPos == Vector3.zero))
             {
                 GameObject cell = Instantiate(collectCell, cellPos, Quaternion.identity);
-                cell.transform.SetParent(transform, true);
-                cell.transform.localPosition = cellPos;
+                //cell.transform.position = cellPos;
+                cell.transform.SetParent(cellPlacement, false);
                 cell.transform.localScale = Vector3.one;
 
                 collectCells.Add(cell);
@@ -182,16 +255,4 @@ public class CellArea : MonoBehaviour, IPointerExitHandler, IPointerEnterHandler
         collectCells.Remove(cell);
     }
 
-    public void OnPointerExit(PointerEventData eventData)
-    {
-        //generated = true;
-        //InitializeCell();
-    }
-
-    public void OnPointerEnter(PointerEventData eventData)
-    {
-        //Debug.Log(eventData.fullyExited);
-        //generated = true;
-        //InitializeCell();
-    }
 }

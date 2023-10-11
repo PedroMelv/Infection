@@ -5,9 +5,10 @@ using UnityEngine;
 
 public class ItemInteractable : Interactable
 {
+    [Space]
     [SerializeField]private ItemSO item;
 
-    public override void Start()
+    protected override void Start()
     {
         OnInteractAction += (GameObject whoInteracted) => 
         {

@@ -9,8 +9,11 @@ public class MovementBase : MonoBehaviourPun
     public bool canMove = true;
     protected Collider[] cols;
 
+    protected Rigidbody rb;
+
     public virtual void Awake()
     {
+        rb = GetComponent<Rigidbody>();
         cols = GetComponents<Collider>();
     }
 
@@ -21,5 +24,21 @@ public class MovementBase : MonoBehaviourPun
         {
             cols[i].isTrigger = to;
         }
+    }
+
+    public virtual void LockMovement()
+    {
+        canMove = false;
+        SetCollisions(true);
+        rb.isKinematic = true;
+        rb.useGravity = false;
+    }
+
+    public virtual void UnlockMovement()
+    {
+        canMove = true;
+        SetCollisions(false);
+        rb.isKinematic = false;
+        rb.useGravity = true;
     }
 }

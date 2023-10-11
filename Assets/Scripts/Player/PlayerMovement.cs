@@ -82,14 +82,11 @@ public class PlayerMovement : MovementBase
     private RaycastHit slopeHit;
     private bool exitingSlope;
 
-    private Rigidbody rb;
     private PlayerInput pInput;
 
     public override void Awake()
     {
-        base.Awake();
-        rb = GetComponent<Rigidbody>();
-        
+        base.Awake();        
         pInput = GetComponent<PlayerInput>();
     }
 
@@ -132,7 +129,6 @@ public class PlayerMovement : MovementBase
     #region Movement
     private void HandleMovement()
     {
-        rb.useGravity = (!OnSlope());
 
         if (canMove == false)
         {
@@ -140,6 +136,7 @@ public class PlayerMovement : MovementBase
             rb.angularVelocity = Vector3.zero;
             return;
         }
+        rb.useGravity = (!OnSlope());
 
         if (climbingLadder)
         {

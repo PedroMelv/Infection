@@ -49,10 +49,12 @@ public class PlayerInput : MonoBehaviourPun
     public Action OnTabPressed;
 
     private PlayerHealth pHealth;
+    private PlayerMovement pMove;
 
     private void Awake()
     {
         pHealth = GetComponent<PlayerHealth>();
+        pMove = GetComponent<PlayerMovement>();
     }
 
     private void Start()
@@ -64,7 +66,7 @@ public class PlayerInput : MonoBehaviourPun
     {
         if (photonView.IsMine == false) return;
 
-        if(pHealth.isDead)
+        if(pHealth.isDead || !pMove.canMove)
         {
             move_x_input = 0f;
             move_y_input = 0f;

@@ -17,32 +17,32 @@ public class Interactable : MonoBehaviourPunCallbacks
 {
     public Action<GameObject> OnInteractAction;
     [SerializeField]protected UnityEvent<GameObject> OnInteract;
-    private bool interacting;
+    protected bool interacting;
 
-    [SerializeField] private CharacterInteract characterToInteract;
+    [SerializeField] protected CharacterInteract characterToInteract;
 
     [Space]
     [Header("Item Interaction")]
-    [SerializeField] private bool needItem;
-    [SerializeField] private ItemSO itemToInteract;
-    [SerializeField] private bool removeItem;
-    [SerializeField] private bool andAddAnother;
-    [SerializeField] private ItemSO itemToAdd;
+    [SerializeField] protected bool needItem;
+    [SerializeField] protected ItemSO itemToInteract;
+    [SerializeField] protected bool removeItem;
+    [SerializeField] protected bool andAddAnother;
+    [SerializeField] protected ItemSO itemToAdd;
 
     [Space]
     [Header("FillInteraction")]
-    [SerializeField] private bool fillInteraction;
-    [SerializeField, Range(0f,2f)] private float fillSpeed = 1f;
-    [SerializeField, Range(0f,1f)] private float fillLossSpeed = 1f;
-    private float fillCurrent = 0f;
-    private bool fillInteractionRunned;
+    [SerializeField] protected bool fillInteraction;
+    [SerializeField, Range(0f,2f)] protected float fillSpeed = 1f;
+    [SerializeField, Range(0f,1f)] protected float fillLossSpeed = 1f;
+    protected float fillCurrent = 0f;
+    protected bool fillInteractionRunned;
 
-    public virtual void Start()
+    protected virtual void Start()
     {
         OnInteractAction += (GameObject whoInteracted) => OnInteract?.Invoke(whoInteracted);
     }
 
-    private void Update()
+    protected virtual void Update()
     {
         if(!interacting && fillCurrent > 0f)
         {

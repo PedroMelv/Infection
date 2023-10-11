@@ -51,7 +51,7 @@ public class EnemyCell : Cell
         switch (cellType)
         {
             case CellType.WALK:
-                transform.position = new Vector3(Mathf.Clamp(transform.position.x, -65f, 34f), Mathf.Clamp(transform.position.y, -38f, 38f), startZ);
+                transform.position = new Vector3(Mathf.Clamp(transform.position.x, -65f, 34f), Mathf.Clamp(transform.position.y, -38f, 38f), 0f);
                 transform.position = Vector3.MoveTowards(transform.position, targetPos, speed * Time.deltaTime);
                 break;
             case CellType.SPIN:
