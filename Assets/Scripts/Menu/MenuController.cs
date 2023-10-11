@@ -5,6 +5,7 @@ using UnityEngine;
 public class MenuController : MonoBehaviour
 {
     [SerializeField] private GameObject mainMenuObj;
+    [SerializeField] private GameObject tutorialObj;
 
     private LobbyController lobby;
 
@@ -25,6 +26,18 @@ public class MenuController : MonoBehaviour
         QuitMenu();
     }
 
+    public void TutorialButton()
+    {
+        QuitMenu();
+        EnterTutorial();
+    }
+    
+    public void CloseTutorial()
+    {
+        EnterMenu();
+        QuitTutorial();
+    }
+
     public void QuitButton()
     {
         Application.Quit();
@@ -36,5 +49,14 @@ public class MenuController : MonoBehaviour
     public void QuitMenu()
     {
         mainMenuObj.SetActive(false);
+    }
+
+    public void EnterTutorial()
+    {
+        tutorialObj.SetActive(true);
+    }
+    public void QuitTutorial()
+    {
+        tutorialObj.SetActive(false);
     }
 }
