@@ -9,10 +9,10 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1017320098359332378}
-  - component: {fileID: 1014543834288567789}
   - component: {fileID: 3168965079278613979}
   - component: {fileID: 467073356164883459}
   - component: {fileID: 1651723638317967492}
+  - component: {fileID: 1243070395}
   m_Layer: 7
   m_Name: SeringaVazia
   m_TagString: Untagged
@@ -36,19 +36,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!65 &1014543834288567789
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8144276644038425320}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Size: {x: 0.125, y: 0.125, z: 0.125}
-  m_Center: {x: 0, y: 0, z: 0}
 --- !u!54 &3168965079278613979
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -112,6 +99,20 @@ MonoBehaviour:
   fillSpeed: 1
   fillLossSpeed: 1
   item: {fileID: 11400000, guid: aecd8ca27897ea0488f105b143862bcb, type: 2}
+--- !u!136 &1243070395
+CapsuleCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8144276644038425320}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  m_Radius: 0.11
+  m_Height: 1.11
+  m_Direction: 1
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1001 &5709638945551586978
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -132,7 +133,7 @@ PrefabInstance:
     - target: {fileID: -8679921383154817045, guid: cf3dc32320a9507419c69f3aaa940e5e,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0
+      value: -0.168
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: cf3dc32320a9507419c69f3aaa940e5e,
         type: 3}

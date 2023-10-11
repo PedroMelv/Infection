@@ -187,48 +187,6 @@ public class EnemyBrain : MonoBehaviourPun
         }
 
 
-        public void RPC_PlayAttackSound()
-        {
-            AudioClip stepClip = attackSound[UnityEngine.Random.Range(0, attackSound.Length)];
-
-            GameObject stepSound = new GameObject(stepClip.name);
-
-            stepSound.transform.position = transform.position - Vector3.down;
-
-            AudioSource source = stepSound.AddComponent<AudioSource>();
-
-            source.clip = stepClip;
-            source.volume = .35f;
-
-            source.maxDistance = 15f;
-            source.spatialBlend = 1f;
-
-            source.Play();
-
-            Destroy(stepSound, stepClip.length + .1f);
-        }
-
-        public void RPC_PlayScreamSound()
-        {
-            AudioClip stepClip = screamSound;
-
-            GameObject stepSound = new GameObject(stepClip.name);
-
-            stepSound.transform.position = transform.position - Vector3.down;
-
-            AudioSource source = stepSound.AddComponent<AudioSource>();
-
-            source.clip = stepClip;
-            source.volume = .35f;
-
-            source.maxDistance = 15f;
-            source.spatialBlend = 1f;
-
-            source.Play();
-
-            Destroy(stepSound, stepClip.length + .1f);
-        }
-
     }
 
 
