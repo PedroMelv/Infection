@@ -7,7 +7,6 @@ using Photon.Realtime;
 using UnityEngine.UI;
 using TMPro;
 using UnityEngine.SceneManagement;
-using static UnityEditor.Progress;
 
 [RequireComponent(typeof(PhotonView))]
 public class RoomController : MonoBehaviourPunCallbacks
