@@ -77,7 +77,7 @@ public class P0_EnemyBrain : EnemyBrain
         {
             if(screamCooldown <= 0f)
             {
-                screamCooldown = UnityEngine.Random.Range(2f, screamMaxCooldown);
+                screamCooldown = UnityEngine.Random.Range(1f, screamMaxCooldown);
 
                 CallPlayScream();
             }
@@ -311,6 +311,11 @@ public class P0_EnemyBrain : EnemyBrain
         photonView.RPC(nameof(RPC_PlayScreamSound), RpcTarget.All);
     }
 
+    public void GoToMenu()
+    {
+        UnityEngine.SceneManagement.SceneManager.LoadScene("MainMenu");
+    }
+
     #region RPC
 
     [PunRPC]
@@ -346,9 +351,9 @@ public class P0_EnemyBrain : EnemyBrain
         AudioSource source = stepSound.AddComponent<AudioSource>();
 
         source.clip = stepClip;
-        source.volume = .35f;
+        source.volume = 1f;
 
-        source.maxDistance = 15f;
+        source.maxDistance = 35f;
         source.spatialBlend = 1f;
 
         source.Play();

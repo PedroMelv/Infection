@@ -50,14 +50,17 @@ public class PlayerInteract : MonoBehaviourPun
 
         if(Physics.Raycast(mouseRay, out RaycastHit hit, interactRange, interactLayer))
         {
-            Interactable detectedInteractable = hit.collider.GetComponent<Interactable>();
+            Interactable[] detectedInteractable = hit.collider.GetComponents<Interactable>();
 
-            if(detectedInteractable != null) 
+            for (int i = 0; i < detectedInteractable.Length; i++)
             {
-                detectedInteractable.Interact(this.gameObject);
+                if(detectedInteractable[i] != null) 
+                {
+                    detectedInteractable[i].Interact(this.gameObject);
 
-                HandleCustomInteractions(detectedInteractable);
-            }       
+                    HandleCustomInteractions(detectedInteractable[i]);
+                }       
+            }
         }
     }
     private void HandleInteractionHold()

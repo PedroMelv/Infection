@@ -45,6 +45,7 @@ public class EnemyMovement : MovementBase
     [SerializeField] private float acceleration;
     [SerializeField] private float deacceleration;
     [SerializeField, Range(0f, 1f)] private float velPower;
+    [SerializeField, Range(0f, 1f)] private float friction;
 
     [SerializeField] private bool sprinting = false;
     [SerializeField] private LayerMask groundLayer;
@@ -169,6 +170,8 @@ public class EnemyMovement : MovementBase
         rb.useGravity = !OnSlope();
 
         HandlePhysicMovement();
+        HandleFriction(moveDirection.x, false);
+        HandleFriction(moveDirection.z, true);
 
     }
 
@@ -310,7 +313,10 @@ public class EnemyMovement : MovementBase
         {
             if(Random.value > .75f)
             {
-                SetDestination(transform.position + new Vector3(Random.Range(-3f, 3f), 0f, Random.Range(-3f, 3f)));
+                while(!SetDestination(transform.position + new Vector3(Random.Range(-3f, 3f), 0f, Random.Range(-3f, 3f))))
+                {
+                    Debug.Log("Caminho falho");
+                }
             }
             else
             {
@@ -340,8 +346,6 @@ public class EnemyMovement : MovementBase
 
         bool pathSet = false;
         fleeing = true;
-
-        
 
         Vector3 furthestPoint = GameDirector.instance.GetFurthestPoints(transform.position, 1, 1, false, 0, 2, 1)[0].pos;
 
@@ -442,15 +446,29 @@ public class EnemyMovement : MovementBase
             return;
         }
 
+        Vector3 myPosition = transform.position;
+        Vector3 targetPosition = pos;
+
+        NavMeshHit navHit;
+        if (NavMesh.SamplePosition(myPosition, out navHit, 10.0f, NavMesh.AllAreas))
+        {
+            myPosition = navHit.position;
+        }
+        
+        if (NavMesh.SamplePosition(targetPosition, out navHit, 10.0f, NavMesh.AllAreas))
+        {
+            targetPosition = navHit.position;
+        }
+
         if(castTarget)
         {
-            Physics.Raycast(pos, Vector3.down, out RaycastHit hit, 100f, groundLayer);
+            Physics.Raycast(targetPosition, Vector3.down, out RaycastHit hit, 100f, groundLayer);
 
-            NavMesh.CalculatePath(transform.position, hit.point, NavMesh.AllAreas, path);
+            NavMesh.CalculatePath(myPosition, hit.point, NavMesh.AllAreas, path);
         }
         else
         {
-            NavMesh.CalculatePath(transform.position, pos, NavMesh.AllAreas, path);
+            NavMesh.CalculatePath(myPosition, targetPosition, NavMesh.AllAreas, path);
         }
 
 
@@ -571,7 +589,17 @@ public class EnemyMovement : MovementBase
 
         rb.drag = drag;
     }
+    private void HandleFriction(float input, bool up)
+    {
+        if (Mathf.Abs(input) < 0.01f)
+        {
+            float amount = Mathf.Min(Mathf.Abs((up) ? rb.velocity.z : rb.velocity.x), Mathf.Abs(friction));
 
+            amount *= Mathf.Sign((up) ? rb.velocity.z : rb.velocity.x);
+
+            rb.AddForce(((up) ? Vector3.forward : Vector3.right) * -amount, ForceMode.Impulse);
+        }
+    }
     private void HandleMovement()
     {
         if (hasPath)
@@ -607,12 +635,14 @@ public class EnemyMovement : MovementBase
 
                     break;
                 case PathNode.PathNodeType.WALLHOLE:
-                    anim.SetBool("IsWalking", false);
-                    stepSoundEffect.playStepTimer = true;
+                    
+                    
 
                     if (Vector3.Distance(transform.position, curTarget.moveTo) <= 2f)
                     {
-                        if(curTarget.wallHole.WallHoleInteract(this.gameObject, Vector3.up))
+                        stepSoundEffect.playStepTimer = false;
+                        anim.SetBool("IsWalking", false);
+                        if (curTarget.wallHole.WallHoleInteract(this.gameObject, Vector3.up))
                         {
                             Debug.Log("Reached point");
                             if (corners.Count == 0)
@@ -630,6 +660,11 @@ public class EnemyMovement : MovementBase
                                 }
                             }
                         }
+                    }
+                    else
+                    {
+                        stepSoundEffect.playStepTimer = true;
+                        anim.SetBool("IsWalking", true);
                     }
 
                     break;

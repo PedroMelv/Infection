@@ -38,7 +38,7 @@ public class StepSoundEffect : MonoBehaviourPun
 
     private void PlayStepSound()
     {
-        photonView.RPC(nameof(RPC_PlayStepSound), RpcTarget.All);
+        if (PhotonNetwork.InRoom) photonView.RPC(nameof(RPC_PlayStepSound), RpcTarget.All); else RPC_PlayStepSound();
     }
 
     [PunRPC]
