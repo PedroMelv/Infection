@@ -17,6 +17,8 @@ public class Item
     [Space]
     public GameObject itemPrefab;
     public GameObject itemHandPrefab;
+    [Space]
+    public float reloadTime;
 
 }
 

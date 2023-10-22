@@ -6,6 +6,38 @@ using UnityEngine;
 
 public class GameDirector : MonoBehaviour
 {
+    [Header("Heatmap")]
+    [SerializeField] private int maxHeatmapTrackAmount;
+    [SerializeField] private float heatmapTrackTimer;
+    [SerializeField] private List<HeatmapData> heatmaps = new List<HeatmapData>();
+    private float heatmapTimer;
+    private class HeatmapData
+    {
+        public GameObject playerTrackObj;
+
+        public List<Vector3> positions = new List<Vector3>();
+
+        public Vector3 GetHeatmapPos()
+        {
+            if(positions.Count < 15) return Vector3.zero;
+
+            int minTrack = Random.Range(0, positions.Count - 10);
+            int maxTrack = Random.Range(minTrack, positions.Count);
+            int amountOfTracking = maxTrack - minTrack;
+
+            Vector3 totalPositions = Vector3.zero;
+
+            for (int i = minTrack; i < maxTrack; i++)
+            {
+                totalPositions += positions[i];
+            }
+
+            totalPositions = totalPositions / amountOfTracking;
+
+            return totalPositions;
+        }
+    }
+
     [Header("Areas")]
     [SerializeField] private RoomArea wholeArea;
     [SerializeField] private List<RoomArea> areas;
@@ -27,6 +59,61 @@ public class GameDirector : MonoBehaviour
         GetAreas();
     }
 
+    private void Update()
+    {
+        UpdateHeatmapTracking();
+    }
+
+    private void StartHeatmap()
+    {
+
+    }
+    private void UpdateHeatmapTracking()
+    {
+        if(heatmapTimer <= 0f)
+        {
+            if (heatmaps.Count == 0)
+            {
+                GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
+                if (players.Length == 2)
+                {
+                    for (int i = 0; i < players.Length; i++)
+                    {
+                        HeatmapData data = new HeatmapData();
+                        data.playerTrackObj = players[i];
+                        heatmaps.Add(data);
+                    }
+                }
+            }
+            else
+            {
+                for (int i = 0; i < heatmaps.Count; i++)
+                {
+                    Vector3 randomIncrease = Random.insideUnitSphere * 5f;
+                    randomIncrease.y = 0f;
+                    heatmaps[i].positions.Add(heatmaps[i].playerTrackObj.transform.position + randomIncrease);
+                }
+                if (heatmaps.Count >= maxHeatmapTrackAmount)
+                {
+                    heatmaps.RemoveAt(0);
+                }
+            }
+
+            heatmapTimer = heatmapTrackTimer;
+        }
+        else
+        {
+            heatmapTimer -= Time.deltaTime;
+        }
+
+        
+    }
+
+    public Vector3 GetHeatmapPos(int trackIndex)
+    {
+        return heatmaps[trackIndex].GetHeatmapPos();
+    }
+
     private void GetAreas()
     {
         GameObject[] objs = GameObject.FindGameObjectsWithTag("GameArea");
@@ -44,6 +131,7 @@ public class GameDirector : MonoBehaviour
             
         }
     }
+
 
     public RoomPoint[] GetPoints(RoomArea area,int amount, float minDist = 1f, bool hasExtra = false, int extraMin = 0, int extraMax = 2, float extraMaxDist = 1f)
     {
@@ -63,8 +151,7 @@ public class GameDirector : MonoBehaviour
     public RoomPoint[] GetRandomPoints(int amount, float minDist = 1f, bool hasExtra = false, int extraMin = 0, int extraMax = 2, float extraMaxDist = 1f)
     {
         return GetPoints(GetRandomRoom(), amount, minDist, hasExtra, extraMin, extraMax, extraMaxDist);
-    }
-    
+    } 
     public RoomPoint GetRandomPointOnMap()
     {
         int selected = 0;

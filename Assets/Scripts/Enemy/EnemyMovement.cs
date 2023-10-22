@@ -654,7 +654,7 @@ public class EnemyMovement : MovementBase
                             else
                             {
                                 curTarget = corners.Dequeue();
-                                while(Vector3.Distance(curTarget.moveTo, transform.position) <= 2f)
+                                while(Vector3.Distance(curTarget.moveTo, transform.position) <= 2f && corners.Count > 0)
                                 {
                                     curTarget = corners.Dequeue();
                                 }

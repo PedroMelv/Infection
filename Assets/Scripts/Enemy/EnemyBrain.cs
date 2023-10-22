@@ -36,6 +36,10 @@ public class EnemyBrain : MonoBehaviourPun
 
     public virtual void Update()
     {
+        if (PhotonNetwork.InRoom && PhotonNetwork.IsMasterClient == false)
+        {
+            return;
+        }
         listBehaviours = behaviours.ToArray();
     }
 

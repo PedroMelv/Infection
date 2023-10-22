@@ -1,35 +1,17 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Burst.CompilerServices;
 using UnityEngine;
+using UnityEngine.AI;
 
 public class SubmarineTest : MonoBehaviour
 {
-    public float rotateSpeed;
-    [SerializeField] private float moveSpeed;
-    private Rigidbody rb;
-
-    private void Awake()
+    private void OnDrawGizmos()
     {
-        rb = GetComponent<Rigidbody>();
-    }
-    private void Start()
-    {
-        InvokeRepeating("SubmarineInputMovement", 0f, 5f);
-        InvokeRepeating("SubmarineInputRotation", 0f, 5f);
-    }
-    void FixedUpdate()
-    {
-        transform.position += transform.forward * moveSpeed * Time.fixedDeltaTime;
-        transform.Rotate( Vector3.up * rotateSpeed * Time.fixedDeltaTime);
-    }
-
-    private void SubmarineInputRotation()
-    {
-        rotateSpeed = Random.Range(-60f, 60f);
-    }
-
-    private void SubmarineInputMovement()
-    {
-        moveSpeed = Random.Range(-8f, 8f);
+        NavMeshHit hit;
+        if (NavMesh.SamplePosition(transform.position, out hit, 10.0f, NavMesh.AllAreas))
+        {
+            Gizmos.DrawWireSphere(hit.position, 1f);
+        }
     }
 }

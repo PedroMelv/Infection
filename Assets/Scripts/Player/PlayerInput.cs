@@ -46,6 +46,8 @@ public class PlayerInput : MonoBehaviourPun
     public bool rightMouseInputPressed;
     public bool rightMouseInputReleased;
 
+    public bool reloadInputPressed;
+
     public Action OnTabPressed;
 
     private PlayerHealth pHealth;
@@ -98,6 +100,8 @@ public class PlayerInput : MonoBehaviourPun
             rightMouseInputPressed = false;
             rightMouseInputReleased = false;
 
+            reloadInputPressed = false;
+
             OnInteractRelease?.Invoke();
             
             return;
@@ -132,6 +136,8 @@ public class PlayerInput : MonoBehaviourPun
         rightMouseInput = Input.GetKey(KeyCode.Mouse1);
         rightMouseInputPressed = Input.GetKeyDown(KeyCode.Mouse1);
         rightMouseInputReleased = Input.GetKeyUp(KeyCode.Mouse1);
+
+        reloadInputPressed = Input.GetKeyDown(KeyCode.R);
 
         if (Input.GetKeyDown(KeyCode.Tab)) OnTabPressed?.Invoke();
         
