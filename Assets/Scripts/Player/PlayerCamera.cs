@@ -29,6 +29,7 @@ public class PlayerCamera : MonoBehaviour
     [SerializeField] private Transform cameraPos;
     [SerializeField] private Transform playerBody;
     [SerializeField] private Transform orientation;
+    [SerializeField] private Transform playerLookingDir;
     [SerializeField] private Transform[] hands;
 
     private Camera camera;
@@ -70,6 +71,7 @@ public class PlayerCamera : MonoBehaviour
 
         pInvVisual.SetHands(hands);
 
+        playerLookingDir = pInput.playerLookingDir;
         orientation = pInput.orientation;
         playerBody = pInput.playerBody;
         cameraPos = pInput.cameraPos;
@@ -102,6 +104,8 @@ public class PlayerCamera : MonoBehaviour
         
         orientation.rotation = Quaternion.Euler(0f, yRotation, 0f);
         playerBody.rotation = Quaternion.Euler(0f, yRotation, 0f);
+
+        playerLookingDir.transform.rotation = cameraRotationTarget;
 
         Vector3 dir = orientation.right;
 

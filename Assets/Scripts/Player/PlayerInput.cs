@@ -10,6 +10,7 @@ public class PlayerInput : MonoBehaviourPun
     public Transform cameraPos;
     public Transform playerBody;
     public Transform orientation;
+    public Transform playerLookingDir;
 
     public float move_x_input;
     public float move_y_input;
