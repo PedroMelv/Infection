@@ -57,6 +57,7 @@ MonoBehaviour:
   - RPC_PlayAttackSound
   - RPC_PlayScreamSound
   - RPC_PlayShootSound
+  - RPC_DestroyMe
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 1

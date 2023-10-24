@@ -13,6 +13,7 @@ public enum CharacterInteract
     PENNY = 2
 }
 
+[RequireComponent(typeof(PhotonView))]
 public class Interactable : MonoBehaviourPunCallbacks
 {
     public Action<GameObject> OnInteractAction;

@@ -1,0 +1,23 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fdb9e8fc1626dfa47b7bc268ef6ce0ec, type: 3}
+  m_Name: AmmoBox
+  m_EditorClassIdentifier: 
+  item:
+    itemName: AmmoBox
+    canDrop: 1
+    specialUse: 0
+    itemPrefab: {fileID: 5597897542283403523, guid: 938741d13a0ce764e8ec2698ee05c584,
+      type: 3}
+    itemHandPrefab: {fileID: 9088915713557764984, guid: 4a9af695868dd9b4a90d04d319cd6ac3,
+      type: 3}
+    reloadTime: 0

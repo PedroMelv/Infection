@@ -133,6 +133,10 @@ public class PlayerCombat : MonoBehaviourPun
         totalAmmoText.SetText(totalAmmo.ToString("00"));
     }
 
+    public void GetAmmo()
+    {
+        totalAmmo += 3;
+    }
     private void GetAmmoUI()
     {
         int iterations = 0;

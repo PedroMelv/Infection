@@ -10,21 +10,29 @@ public class ItemInteractable : Interactable
 
     protected override void Start()
     {
-        OnInteractAction += (GameObject whoInteracted) => 
-        {
-            PlayerInventory pInventory = whoInteracted.gameObject.GetComponent<PlayerInventory>();
+        OnInteractAction += GrabItem;
+    }
 
-            if (pInventory != null)
-            {
-                pInventory.AddItem(item.item);
-                photonView.RPC(nameof(RPC_Destroy), RpcTarget.All);
-            }
-        };
+    protected virtual void GrabItem(GameObject whoInteracted)
+    {
+        PlayerInventory pInventory = whoInteracted.gameObject.GetComponent<PlayerInventory>();
+
+        if (pInventory != null)
+        {
+            pInventory.AddItem(item.item);
+            CallDestroy();
+        }
+    }
+
+    protected void CallDestroy()
+    {
+        photonView.RPC(nameof(RPC_DestroyMe), RpcTarget.All);
     }
 
     [PunRPC]
-    private void RPC_Destroy()
+    private void RPC_DestroyMe()
     {
         Destroy(this.gameObject);
     }
+
 }
