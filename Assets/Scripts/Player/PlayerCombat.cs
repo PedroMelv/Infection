@@ -52,10 +52,11 @@ public class PlayerCombat : MonoBehaviourPun
 
     private void HandleGun()
     {
+        if (!ammoUI.activeSelf) return;
 
         IsAiming = pInput.rightMouseInput;
 
-        if(pInput.reloadInputPressed)
+        if (pInput.reloadInputPressed)
         {
             currentAmmo = 6;
         }
@@ -90,11 +91,8 @@ public class PlayerCombat : MonoBehaviourPun
 
                 GameObject mark = PhotonNetwork.Instantiate(bulletMark.name, hit.point, Quaternion.FromToRotation(Vector3.forward, hit.normal));
                 mark.transform.position += mark.transform.forward * 0.025f;
-                Destroy(mark, 5f);
             }
         }
-
-        
     }
 
     private void PlayShootSound()
