@@ -90,7 +90,7 @@ public class PlayerCombat : MonoBehaviourPun
                 }
 
                 GameObject mark = PhotonNetwork.Instantiate(bulletMark.name, hit.point, Quaternion.FromToRotation(Vector3.forward, hit.normal));
-                mark.transform.position += mark.transform.forward * 0.025f;
+                //mark.transform.position += mark.transform.forward * 0.025f;
             }
         }
     }
