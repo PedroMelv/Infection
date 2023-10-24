@@ -10,7 +10,7 @@ public class PlayerCombat : MonoBehaviourPun
     [SerializeField] private GameObject bulletMark;
     [SerializeField] private AudioClip shootSound;
 
-    private float reloadingTimer;
+    private bool reloading;
     private int currentAmmo;
     private int totalAmmo;
     
@@ -43,8 +43,6 @@ public class PlayerCombat : MonoBehaviourPun
     {
         if (!photonView.IsMine) return;
 
-        
-
         HandleAmmoUI();
 
         HandleGun();
@@ -52,14 +50,12 @@ public class PlayerCombat : MonoBehaviourPun
 
     private void HandleGun()
     {
-        if (!ammoUI.activeSelf) return;
+        if (!ammoUI.activeSelf || reloading) return;
+
 
         IsAiming = pInput.rightMouseInput;
 
-        if (pInput.reloadInputPressed)
-        {
-            currentAmmo = 6;
-        }
+        HandleReload();
 
         if (IsAiming && pInput.leftMouseInputPressed)
         {
@@ -94,6 +90,31 @@ public class PlayerCombat : MonoBehaviourPun
             }
         }
     }
+
+    private void HandleReload()
+    {
+        if (pInput.reloadInputPressed)
+        {
+            if(totalAmmo > 0)
+            {
+                StartCoroutine(EReload());
+            }
+        }
+    }
+
+    private IEnumerator EReload()
+    {
+        reloading = true;
+        yield return new WaitForSeconds(pInventory.GetSelectedItem().reloadTime);
+
+        int reloadAmount = Mathf.Min(totalAmmo, 6);
+
+        totalAmmo -= reloadAmount;
+        currentAmmo += reloadAmount;
+
+        reloading = false;
+    }
+
 
     private void PlayShootSound()
     {
@@ -152,5 +173,10 @@ public class PlayerCombat : MonoBehaviourPun
             }
             iterations++;
         }
+    }
+
+    public bool IsReloading()
+    {
+        return reloading;
     }
 }

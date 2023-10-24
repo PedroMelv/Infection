@@ -22,6 +22,8 @@ public class Interactable : MonoBehaviourPunCallbacks
 
     [SerializeField] protected CharacterInteract characterToInteract;
 
+    public bool canInteract = true;
+
     [Space]
     [Header("Item Interaction")]
     [SerializeField] protected bool needItem;
@@ -45,6 +47,8 @@ public class Interactable : MonoBehaviourPunCallbacks
 
     protected virtual void Update()
     {
+        if (!canInteract) return;
+
         if(!interacting && fillCurrent > 0f)
         {
             fillCurrent -= Time.deltaTime * fillLossSpeed;
@@ -58,6 +62,7 @@ public class Interactable : MonoBehaviourPunCallbacks
 
     public virtual void Interact(GameObject whoInteracted)
     {
+        if (!canInteract) return;
         if (fillInteraction) return;
 
         int curPlayer = (int)PhotonNetwork.LocalPlayer.CustomProperties["c"];
@@ -99,6 +104,7 @@ public class Interactable : MonoBehaviourPunCallbacks
 
     public virtual void InteractHold(GameObject whoInteracted)
     {
+        if (!canInteract) return;
         //TODO: adicionar opção de needItem
         if (needItem) return;
 
@@ -126,8 +132,21 @@ public class Interactable : MonoBehaviourPunCallbacks
 
     public virtual void InteractRelease(GameObject whoInteracted)
     {
+        if (!canInteract) return;
         interacting = false;
         if (fillInteraction) return;
         fillInteractionRunned = false;
+    }
+
+    [PunRPC]
+    public void RPC_DestroyMe()
+    {
+        Destroy(this.gameObject);
+    }
+
+    [PunRPC]
+    public void RPC_InteractDrawer()
+    {
+        (this as DrawerInteractable).InteractDrawer();
     }
 }

@@ -20,3 +20,4 @@ MonoBehaviour:
       type: 3}
     itemHandPrefab: {fileID: 2664360798222678833, guid: 9ad88c2baf5e5124fb6bffd1750fbee5,
       type: 3}
+    reloadTime: 1.5

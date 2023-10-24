@@ -29,10 +29,6 @@ public class ItemInteractable : Interactable
         photonView.RPC(nameof(RPC_DestroyMe), RpcTarget.All);
     }
 
-    [PunRPC]
-    private void RPC_DestroyMe()
-    {
-        Destroy(this.gameObject);
-    }
+    
 
 }

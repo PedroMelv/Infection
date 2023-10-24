@@ -58,6 +58,7 @@ MonoBehaviour:
   - RPC_PlayScreamSound
   - RPC_PlayShootSound
   - RPC_DestroyMe
+  - RPC_InteractDrawer
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 1

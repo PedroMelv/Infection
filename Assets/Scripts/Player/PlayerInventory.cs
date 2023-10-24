@@ -18,12 +18,14 @@ public class PlayerInventory : MonoBehaviour
 
     private PlayerInput pInput;
     private PlayerHealth pHealth;
+    private PlayerCombat pCombat;
 
 
     private void Awake()
     {
-        pInput = GetComponent<PlayerInput>();
+        pInput  = GetComponent<PlayerInput>();
         pHealth = GetComponent<PlayerHealth>();
+        pCombat = GetComponent<PlayerCombat>();
 
         slots = new Item[slotsAmount];
 
@@ -34,8 +36,6 @@ public class PlayerInventory : MonoBehaviour
     }
     private void Start()
     {
-        
-
         pInput.OnTabPressed += () => ChangeItemSlot();
 
         bool hasWeapon = ((int)PhotonNetwork.LocalPlayer.CustomProperties["c"] == 1);
@@ -50,7 +50,7 @@ public class PlayerInventory : MonoBehaviour
     private void Update()
     {
         if (pInput.dropInputPressed) DropItem();
-        if (pInput.mouse_scroll != 0f) ChangeItemSlot();
+        if (pInput.mouse_scroll != 0f && !pCombat.IsReloading()) ChangeItemSlot();
     }
 
     public void ChangeItemSlot()
