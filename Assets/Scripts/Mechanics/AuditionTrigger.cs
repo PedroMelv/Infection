@@ -25,7 +25,13 @@ public class AuditionTrigger : MonoBehaviourPun
 
     private void DestroyMe()
     {
-        PhotonNetwork.Destroy(gameObject);
+        photonView.RPC(nameof(RPC_Destroy), RpcTarget.All);
+    }
+
+    [PunRPC]
+    private void RPC_Destroy()
+    {
+        Destroy(gameObject);
     }
 
     public static void InstantiateAuditionTrigger(Vector3 position, float range, float timer)
