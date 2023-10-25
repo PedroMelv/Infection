@@ -11,15 +11,29 @@ public class PlayerInventoryVisual : MonoBehaviourPun
     private List<GameObject> visualItens = new List<GameObject>();
 
     private PlayerInventory pInventory;
+    private PlayerCombat pCombat;
+    private PlayerInput pInput;
 
     private void Awake()
     {
+        pInput = GetComponent<PlayerInput>();
         pInventory = GetComponent<PlayerInventory>();
+        pCombat = GetComponent<PlayerCombat>();
     }
 
     private void Start()
     {
         if (!photonView.IsMine) return;
+
+        if(pCombat != null)
+        {
+            pCombat.IsAimingChanged += AimingHand;
+            pCombat.OnShoot += Shooting;
+        }
+        else
+        {
+            Debug.Log("Não tem PlayerCombat");
+        }
 
         if (pInventory != null)
         {
@@ -78,6 +92,22 @@ public class PlayerInventoryVisual : MonoBehaviourPun
         }
     }
 
+    private void AimingHand(bool isAiming)
+    {
+        if(isAiming)
+        {
+            hands[0].LeanMove(pInput.cameraPos.position + pInput.playerLookingDir.forward * .66f + Vector3.down * .33f, .05f);
+        }
+        else
+        {
+            UpdateVisual();
+        }
+    }
+
+    private void Shooting()
+    {
+        hands[0].GetChild(0).GetComponent<Animator>().SetTrigger("Shoot");
+    }
 
     private void OnDrawGizmos()
     {

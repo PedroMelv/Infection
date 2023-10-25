@@ -6,6 +6,8 @@ using UnityEngine;
 public class StepSoundEffect : MonoBehaviourPun
 {
     [SerializeField] private AudioClip[] stepClips;
+    public bool useAuditionTrigger;
+    public float auditionRange;
     
     [Space]
 
@@ -39,6 +41,8 @@ public class StepSoundEffect : MonoBehaviourPun
     private void PlayStepSound()
     {
         if (PhotonNetwork.InRoom) photonView.RPC(nameof(RPC_PlayStepSound), RpcTarget.All); else RPC_PlayStepSound();
+
+        if(useAuditionTrigger)AuditionTrigger.InstantiateAuditionTrigger(transform.position, auditionRange, .15f);
     }
 
     [PunRPC]

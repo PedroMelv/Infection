@@ -1,4 +1,5 @@
 using Photon.Pun;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
@@ -11,17 +12,22 @@ public class PlayerCombat : MonoBehaviourPun
     [SerializeField] private AudioClip shootSound;
 
     private bool reloading;
-    private int currentAmmo;
+    [SerializeField]private int currentAmmo;
     private int totalAmmo;
     
 
     private bool isAiming = false;
+    private bool lastIsAiming = false;
 
     private GameObject ammoUI;
     private TextMeshProUGUI currentAmmoText;
     private TextMeshProUGUI totalAmmoText;
 
     public bool IsAiming { get { return isAiming; } private set { isAiming = value; } }
+
+    public Action OnShoot;
+    public Action<bool> IsAimingChanged;
+
     private PlayerInput pInput;
     private PlayerInventory pInventory;
 
@@ -50,12 +56,18 @@ public class PlayerCombat : MonoBehaviourPun
 
     private void HandleGun()
     {
-        if (!ammoUI.activeSelf || reloading) return;
+        HandleAiming();
 
+        if (!ammoUI.activeSelf || reloading)
+        {
+            isAiming = false;
+            return;
+        }
 
         IsAiming = pInput.rightMouseInput;
 
         HandleReload();
+
 
         if (IsAiming && pInput.leftMouseInputPressed)
         {
@@ -64,6 +76,10 @@ public class PlayerCombat : MonoBehaviourPun
                 Debug.Log("No Ammo");
                 return;
             }
+
+            OnShoot?.Invoke();
+
+            AuditionTrigger.InstantiateAuditionTrigger(transform.position, 20f, .15f);
 
             currentAmmo--;
             Ray mouseRay = pInput.myCamera.ScreenPointToRay(Input.mousePosition);
@@ -88,6 +104,15 @@ public class PlayerCombat : MonoBehaviourPun
                 GameObject mark = PhotonNetwork.Instantiate(bulletMark.name, hit.point, Quaternion.FromToRotation(Vector3.forward, hit.normal));
                 //mark.transform.position += mark.transform.forward * 0.025f;
             }
+        }
+    }
+
+    private void HandleAiming()
+    {
+        if (lastIsAiming != isAiming)
+        {
+            lastIsAiming = isAiming;
+            IsAimingChanged?.Invoke(isAiming);
         }
     }
 

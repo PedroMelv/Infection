@@ -2572,16 +2572,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: Enemy
       objectReference: {fileID: 0}
-    - target: {fileID: 1376725786569719520, guid: 20bd282ea346bc345ad546817eceb987,
-        type: 3}
-      propertyPath: viewRadius
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 1376725786569719521, guid: 20bd282ea346bc345ad546817eceb987,
-        type: 3}
-      propertyPath: viewRadius
-      value: 0
-      objectReference: {fileID: 0}
     - target: {fileID: 1376725786569719523, guid: 20bd282ea346bc345ad546817eceb987,
         type: 3}
       propertyPath: m_RootOrder
@@ -2642,15 +2632,15 @@ PrefabInstance:
       propertyPath: m_Enabled
       value: 1
       objectReference: {fileID: 0}
-    - target: {fileID: 1376725786569719526, guid: 20bd282ea346bc345ad546817eceb987,
+    - target: {fileID: 1376725786569719525, guid: 20bd282ea346bc345ad546817eceb987,
         type: 3}
-      propertyPath: viewRadius
-      value: 0
+      propertyPath: auditionRange
+      value: 10
       objectReference: {fileID: 0}
-    - target: {fileID: 1376725786569719527, guid: 20bd282ea346bc345ad546817eceb987,
+    - target: {fileID: 1376725786569719525, guid: 20bd282ea346bc345ad546817eceb987,
         type: 3}
-      propertyPath: viewRadius
-      value: 0
+      propertyPath: auditionLayerMask.m_Bits
+      value: 8192
       objectReference: {fileID: 0}
     - target: {fileID: 1376725786569719530, guid: 20bd282ea346bc345ad546817eceb987,
         type: 3}

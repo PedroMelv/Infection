@@ -94,7 +94,7 @@ public class P0_EnemyBrain : EnemyBrain
         {
             //Sem ações para fazer
 
-            if (enemyMovement.GetMoveStates() == MovementAIStates.FLEEING || enemyMovement.GetMoveStates() == MovementAIStates.CHASING) return;
+            if (enemyMovement.GetMoveStates() == MovementAIStates.FLEEING || enemyMovement.GetMoveStates() == MovementAIStates.FAKE_CHASING || enemyMovement.GetMoveStates() == MovementAIStates.CHASING) return;
 
             if (idlingTime <= 0f)
             {
@@ -141,7 +141,7 @@ public class P0_EnemyBrain : EnemyBrain
     {
         if (enemyMovement.GetMoveStates() == MovementAIStates.FLEEING) return;
 
-        if (enemyMovement.GetMoveStates() == MovementAIStates.CHASING || enemyMovement.GetMoveStates() == MovementAIStates.FLEEING)
+        if (enemyMovement.GetMoveStates() == MovementAIStates.CHASING || enemyMovement.GetMoveStates() == MovementAIStates.FAKE_CHASING || enemyMovement.GetMoveStates() == MovementAIStates.FLEEING)
         {
             RemoveBehaviours();
             return;
@@ -299,6 +299,9 @@ public class P0_EnemyBrain : EnemyBrain
     }
     public override void TriggerVision(Vector3 pos)
     {
+        if (enemyMovement.GetMoveStates() == MovementAIStates.FLEEING || enemyMovement.GetMoveStates() == MovementAIStates.CHASING) return;
+
+        enemyMovement.SetTarget(pos);
     }
 
     private void CallPlayAttack()

@@ -12,7 +12,8 @@ public enum MovementAIStates
     NONE,
     SEARCHING,
     CHASING,
-    FLEEING
+    FLEEING,
+    FAKE_CHASING
 }
 
 public class EnemyMovement : MovementBase
@@ -150,6 +151,9 @@ public class EnemyMovement : MovementBase
                 break;
             case MovementAIStates.CHASING:
                 ChaseState();
+                break;
+            case MovementAIStates.FAKE_CHASING:
+                FakeChaseState();
                 break;
             case MovementAIStates.FLEEING:
                 FleeState();
@@ -306,6 +310,10 @@ public class EnemyMovement : MovementBase
             }
         }
     }
+    private void FakeChaseState()
+    {
+        sprinting = true;
+    }
 
     private void SearchState()
     {
@@ -394,6 +402,12 @@ public class EnemyMovement : MovementBase
 
         ChangeState(MovementAIStates.CHASING);
         this.target = target;
+    }
+
+    public void SetTarget(Vector3 target)
+    {
+        SetDestination(target);
+        ChangeState(MovementAIStates.FAKE_CHASING);
     }
 
     public bool SetDestination(Vector3 pos, System.Action<bool, bool> pathCallback = null)

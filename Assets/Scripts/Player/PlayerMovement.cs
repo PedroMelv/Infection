@@ -90,6 +90,7 @@ public class PlayerMovement : MovementBase
         base.Awake();        
         pInput = GetComponent<PlayerInput>();
         stepSoundEffect = GetComponent<StepSoundEffect>();
+        stepSoundEffect.useAuditionTrigger = true;
     }
 
     private void Start()
@@ -192,12 +193,14 @@ public class PlayerMovement : MovementBase
         {
             speed = moveSpeed * sprintMultiplier;
             stepSoundEffect.playSpeed = 2f;
+            stepSoundEffect.auditionRange = 12f;
             curMoveState = MoveStates.RUNNING;
         }
         else
         {
             speed = moveSpeed;
             stepSoundEffect.playSpeed = 1f;
+            stepSoundEffect.auditionRange = 6f;
             curMoveState = MoveStates.WALKING;
         }
 
@@ -205,6 +208,7 @@ public class PlayerMovement : MovementBase
         {
             speed = moveSpeed * tiredMoveMultiplier;
             stepSoundEffect.playSpeed = .75f;
+            stepSoundEffect.auditionRange = 3f;
             curMoveState = MoveStates.WALKING;
         }
 
@@ -212,6 +216,7 @@ public class PlayerMovement : MovementBase
         {
             speed = moveSpeed * crawlMultiplier;
             stepSoundEffect.playSpeed = .5f;
+            stepSoundEffect.auditionRange = 3f;
             curMoveState = MoveStates.CRAWLING;
         }
 

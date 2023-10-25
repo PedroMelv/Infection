@@ -5,6 +5,7 @@ using Photon.Pun;
 
 public class EnemyHead : MonoBehaviourPun
 {
+    [Header("Sight")]
     [SerializeField] private FieldOfView focusedView;
 
     [SerializeField] private FieldOfView unfocusedView;
@@ -16,6 +17,11 @@ public class EnemyHead : MonoBehaviourPun
 
     [SerializeField] private float detectionMaxValue;
     [SerializeField] private float detectionValue;
+
+    [Header("Audition")]
+    [SerializeField] private float auditionRange;
+    [SerializeField] private LayerMask auditionLayerMask;
+    
 
     private Transform detectedTarget;
     private Transform storedTarget;
@@ -32,8 +38,35 @@ public class EnemyHead : MonoBehaviourPun
         if (!PhotonNetwork.LocalPlayer.IsMasterClient) return;
 
         HandleVision();
+        HandleAudition();
 
         brain.TriggerVision(detectedTarget);
+    }
+
+
+    private void HandleAudition()
+    {
+        Collider[] auditionDetection = Physics.OverlapSphere(transform.position, auditionRange, auditionLayerMask);
+
+        int closest = -1;
+        float dist = float.MaxValue;
+
+        if(auditionDetection.Length == 0 )
+        {
+            return;
+        }
+
+        for (int i = 0; i < auditionDetection.Length; i++)
+        {
+            float curDistance = Vector3.Distance(auditionDetection[i].transform.position, transform.position);
+            if (curDistance < dist)
+            {
+                dist = curDistance;
+                closest = i;
+            }
+        }
+
+        brain.TriggerVision(auditionDetection[closest].transform.position);
     }
 
     private void HandleVision()
