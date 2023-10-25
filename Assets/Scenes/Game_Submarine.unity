@@ -2659,6 +2659,61 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 20bd282ea346bc345ad546817eceb987, type: 3}
+--- !u!1 &550454561 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 3358737525911692435, guid: 20bd282ea346bc345ad546817eceb987,
+    type: 3}
+  m_PrefabInstance: {fileID: 550454560}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &550454562
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 550454561}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 87d90ea4fe7326f4ba283bea6e0a2ff7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &550454563
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 550454561}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ec46582b44758a945b12cc679e218236, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  OnInteract:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 550454562}
+        m_TargetAssemblyTypeName: CustomEvents, Assembly-CSharp
+        m_MethodName: GoBackToMenu
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  characterToInteract: 2
+  canInteract: 1
+  needItem: 1
+  itemToInteract: {fileID: 11400000, guid: c3d5e88ec7c0b3a409be3e92d9543c79, type: 2}
+  removeItem: 1
+  andAddAnother: 0
+  itemToAdd: {fileID: 0}
+  fillInteraction: 0
+  fillSpeed: 1
+  fillLossSpeed: 1
 --- !u!1001 &570473491
 PrefabInstance:
   m_ObjectHideFlags: 0

@@ -46,7 +46,6 @@ public class PlayerInteract : MonoBehaviourPun
     }
     private void HandleInteractionPress()
     {
-        
 
         if(Physics.Raycast(mouseRay, out RaycastHit hit, interactRange, interactLayer))
         {

@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Photon.Realtime;
+using UnityEngine.SceneManagement;
 
 public class GameNetwork : MonoBehaviourPunCallbacks
 {
@@ -28,6 +29,28 @@ public class GameNetwork : MonoBehaviourPunCallbacks
         }
     }
 
+    private void Update()
+    {
+        CheckHealthy();
+    }
+
+    private void CheckHealthy()
+    {
+        if (!PhotonNetwork.IsMasterClient) return;
+        if (playerObjects == null || playerObjects.Count == 0) return;
+
+        bool everyoneIsDead = true;
+        for (int i = 0; i < playerObjects.Count; i++)
+        {
+            if (!playerObjects[i].GetComponent<BaseHealth>().isDead)
+            {
+                everyoneIsDead = false;
+            }
+        }
+
+        if (everyoneIsDead) { SceneManager.LoadScene(1); }
+    }
+
     [PunRPC]
     public void RPC_CreatePlayer(int index)
     {
@@ -48,7 +71,8 @@ public class GameNetwork : MonoBehaviourPunCallbacks
         GameObject cameraHolder = Instantiate(cameraPrefab, transform.position, Quaternion.identity);
 
         cameraHolder.GetComponentInChildren<PlayerCamera>().SetOwner(playerObj.GetComponent<PlayerInput>());
-        
+
+        playerObjects.Add(playerObj);
     }
 
     
