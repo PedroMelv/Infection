@@ -317,6 +317,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   gunItem: {fileID: 11400000, guid: ba9efe7fde14afe4aa58e98f68159547, type: 2}
   slots: []
+  dropLayerMask:
+    serializedVersion: 2
+    m_Bits: 4744
 --- !u!114 &7252193602505299157
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -908,6 +911,7 @@ GameObject:
   - component: {fileID: 4346942373557021948}
   - component: {fileID: 1972528552291207583}
   - component: {fileID: 5619744575064700032}
+  - component: {fileID: 5995916174505545838}
   m_Layer: 7
   m_Name: InteractSymbol
   m_TagString: Untagged
@@ -979,6 +983,7 @@ MonoBehaviour:
           m_BoolArgument: 0
         m_CallState: 2
   characterToInteract: 0
+  canInteract: 1
   needItem: 0
   itemToInteract: {fileID: 0}
   removeItem: 0
@@ -987,3 +992,25 @@ MonoBehaviour:
   fillInteraction: 1
   fillSpeed: 1
   fillLossSpeed: 1
+--- !u!114 &5995916174505545838
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8612205419681235562}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ObservedComponentsFoldoutOpen: 1
+  Group: 0
+  prefixField: -1
+  Synchronization: 3
+  OwnershipTransfer: 0
+  observableSearch: 2
+  ObservedComponents: []
+  sceneViewId: 0
+  InstantiationId: 0
+  isRuntimeInstantiated: 0

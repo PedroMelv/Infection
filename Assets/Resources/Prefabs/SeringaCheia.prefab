@@ -9,10 +9,10 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7636558951006539457}
-  - component: {fileID: 932705482510517614}
   - component: {fileID: 4970550939606088608}
   - component: {fileID: -6539036803012093477}
   - component: {fileID: 1283895837227228911}
+  - component: {fileID: 5560897558692835287}
   m_Layer: 7
   m_Name: SeringaCheia
   m_TagString: Untagged
@@ -36,19 +36,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!135 &932705482510517614
-SphereCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7636558951006539458}
-  m_Material: {fileID: 13400000, guid: 410680bc4377801469ed0fe04203b846, type: 2}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Radius: 0.125
-  m_Center: {x: 0, y: 0, z: 0}
 --- !u!54 &4970550939606088608
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -103,6 +90,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   characterToInteract: 0
+  canInteract: 1
   needItem: 0
   itemToInteract: {fileID: 0}
   removeItem: 0
@@ -112,6 +100,20 @@ MonoBehaviour:
   fillSpeed: 1
   fillLossSpeed: 1
   item: {fileID: 11400000, guid: 997d5ff6d50a3c54d92a4a483df7831f, type: 2}
+--- !u!136 &5560897558692835287
+CapsuleCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7636558951006539458}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  m_Radius: 0.13
+  m_Height: 1
+  m_Direction: 2
+  m_Center: {x: 0, y: 0, z: 0.09}
 --- !u!1001 &4610944128057348101
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -142,27 +144,27 @@ PrefabInstance:
     - target: {fileID: -8679921383154817045, guid: cf3dc32320a9507419c69f3aaa940e5e,
         type: 3}
       propertyPath: m_LocalRotation.w
-      value: 1
+      value: 0.7071068
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: cf3dc32320a9507419c69f3aaa940e5e,
         type: 3}
       propertyPath: m_LocalRotation.x
-      value: 0
+      value: 0.7071068
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: cf3dc32320a9507419c69f3aaa940e5e,
         type: 3}
       propertyPath: m_LocalRotation.y
-      value: -0
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: cf3dc32320a9507419c69f3aaa940e5e,
         type: 3}
       propertyPath: m_LocalRotation.z
-      value: -0
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: cf3dc32320a9507419c69f3aaa940e5e,
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
-      value: 0
+      value: 90
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: cf3dc32320a9507419c69f3aaa940e5e,
         type: 3}

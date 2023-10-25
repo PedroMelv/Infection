@@ -12,6 +12,8 @@ public class PlayerInventory : MonoBehaviour
     [SerializeField] private ItemSO gunItem;
     [SerializeField] private Item[] slots;
 
+    [SerializeField] private LayerMask dropLayerMask;
+
     public Action<bool, Item> OnAddItem;
     public Action<int> OnItemSlotChange;
     public Action OnDropItem;
@@ -99,20 +101,37 @@ public class PlayerInventory : MonoBehaviour
     {
         if (slot != null && slot.itemPrefab != null && slot.canDrop) 
         {
-            Vector3 dir = (useForward) ? pInput.myCamera.transform.forward : Vector3.up;
+            Transform cameraTransform = pInput.cameraPos.transform;
+            Vector3 playerForward = pInput.playerLookingDir.forward;
+            
+            Vector3 dir = (useForward) ? playerForward * 2.25f : Vector3.up;
 
-            float dstToTarget = Vector3.Distance(transform.position, transform.position + dir * 1.25f);
-            bool hit = Physics.Raycast(transform.position, dir * 1.25f, dstToTarget);
 
-            Debug.Log("Hitted: " + hit);
+            float dstToTarget = Vector3.Distance(cameraTransform.position, cameraTransform.position + dir);
+            bool hittedAnything = Physics.Raycast(cameraTransform.position, dir, out RaycastHit hit, dstToTarget, dropLayerMask);
+            Debug.DrawLine(cameraTransform.position, cameraTransform.position + dir, Color.green, 300f);
 
-            if (!hit)
+            Vector3 spawnPos = cameraTransform.position + dir;
+
+            if (hittedAnything)
             {
-                PhotonNetwork.Instantiate("Prefabs/" + slot.itemPrefab.name, transform.position + dir * 1.25f, Quaternion.identity);
+                //Debug.Log(hit.normal);
+                spawnPos = hit.point + hit.normal * .5f;
+                Debug.Log("Hitted: " + spawnPos);
 
-                slot = new Item();
-                OnDropItem?.Invoke();
+                Vector3 spawnPosDir = spawnPos - cameraTransform.position;
+
+                //spawnPos -= spawnPosDir;
+
+                
             }
+
+            
+
+            PhotonNetwork.Instantiate("Prefabs/" + slot.itemPrefab.name, spawnPos, Quaternion.identity);
+
+            slot = new Item();
+            OnDropItem?.Invoke();
         }
     }
 
