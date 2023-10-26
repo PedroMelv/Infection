@@ -105,7 +105,6 @@ GameObject:
   - component: {fileID: 8739034638490398706}
   - component: {fileID: 6420955845419879261}
   - component: {fileID: -6756625047172380564}
-  - component: {fileID: -2942008657952282343}
   m_Layer: 8
   m_Name: Player
   m_TagString: Untagged
@@ -303,6 +302,7 @@ MonoBehaviour:
   bulletMark: {fileID: 3787753064261802207, guid: cf75ad506f32e874baa1e2d56b1d1ed4,
     type: 3}
   shootSound: {fileID: 8300000, guid: a48e8171c4d98f54182fbb62cf83e578, type: 3}
+  currentAmmo: 0
 --- !u!114 &1109066270879768287
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -351,6 +351,8 @@ MonoBehaviour:
   - {fileID: 8300000, guid: c7278328cbf77734386f9e8afe6139d8, type: 3}
   - {fileID: 8300000, guid: 1150b4b2181602a4a8d67c52b1b14b1b, type: 3}
   - {fileID: 8300000, guid: 6315243267081a247a073ee8b20762e6, type: 3}
+  useAuditionTrigger: 0
+  auditionRange: 0
   timeToStep: 1
   stepAmount: 2
   volume: 0.113
@@ -417,18 +419,6 @@ MonoBehaviour:
   m_SynchronizeAngularVelocity: 0
   m_TeleportEnabled: 1
   m_TeleportIfDistanceGreaterThan: 3
---- !u!114 &-2942008657952282343
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1721449749161564765}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 126494ae2a10a34499272ed97a6c9f5d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &1721449749241359650
 GameObject:
   m_ObjectHideFlags: 0

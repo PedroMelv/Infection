@@ -54,6 +54,8 @@ public class PlayerInput : MonoBehaviourPun
     private PlayerHealth pHealth;
     private PlayerMovement pMove;
 
+    public bool canInput = true;
+
     private void Awake()
     {
         pHealth = GetComponent<PlayerHealth>();
@@ -69,7 +71,7 @@ public class PlayerInput : MonoBehaviourPun
     {
         if (photonView.IsMine == false) return;
 
-        if(pHealth.isDead || !pMove.canMove)
+        if(pHealth.isDead || !pMove.canMove || !canInput)
         {
             move_x_input = 0f;
             move_y_input = 0f;
