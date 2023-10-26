@@ -124,7 +124,7 @@ public class EnemyMovement : MovementBase
     }
     private void Update()
     {
-        if (!PhotonNetwork.LocalPlayer.IsMasterClient) return;
+        if (PhotonNetwork.InRoom && !PhotonNetwork.LocalPlayer.IsMasterClient) return;
 
         closeToPlayer = false;
         if (!canMove)
@@ -164,7 +164,7 @@ public class EnemyMovement : MovementBase
     }
     private void FixedUpdate()
     {
-        if (!PhotonNetwork.LocalPlayer.IsMasterClient) return;
+        if (PhotonNetwork.InRoom && !PhotonNetwork.LocalPlayer.IsMasterClient) return;
 
         if (!canMove)
         {
@@ -474,81 +474,111 @@ public class EnemyMovement : MovementBase
             targetPosition = navHit.position;
         }
 
-        if(castTarget)
+        bool pathIsBlocked = true;
+
+        int iterations = 0;
+        int maxIterations = 10000;
+
+        while (pathIsBlocked && iterations < maxIterations)
         {
-            Physics.Raycast(targetPosition, Vector3.down, out RaycastHit hit, 100f, groundLayer);
+            iterations++;
+            corners = new Queue<PathNode>();
 
-            NavMesh.CalculatePath(myPosition, hit.point, NavMesh.AllAreas, path);
+            if (castTarget)
+            {
+                Physics.Raycast(targetPosition, Vector3.down, out RaycastHit hit, 100f, groundLayer);
+
+                NavMesh.CalculatePath(myPosition, hit.point, NavMesh.AllAreas, path);
+            }
+            else
+            {
+                NavMesh.CalculatePath(myPosition, targetPosition, NavMesh.AllAreas, path);
+            }
+
+            Debug.Log("Corners: " + path.corners.Length);
+
+            if (path.corners.Length == 2)
+            {
+                Vector3 pointA = path.corners[1] + Vector3.up;
+                Vector3 pointB = transform.position;
+
+                float dist = Vector3.Distance(pointA, pointB);
+                Vector3 dir = (pointA - pointB).normalized;
+
+                RaycastHit hit;
+
+                if (Physics.Raycast(pointB, dir, dist, visionBlockerLayer))
+                {
+                    Debug.DrawLine(pointA, pointB, Color.green, 300f);
+                    Debug.Log("Blocking");
+                    break;
+                }
+
+
+                if (Physics.Raycast(pointB, dir, out hit, dist, wallHoleLayer) && hit.collider.TryGetComponent(out WallHole wallHole))
+                {
+                    PathNode node = new PathNode(wallHole, pointB);
+
+                    corners.Enqueue(node);
+                }
+
+                PathNode nodeBase = new PathNode(pointA);
+
+                corners.Enqueue(nodeBase);
+
+
+            }
+            else
+            {
+                for (int i = 1; i < path.corners.Length; i++)
+                {
+                    Vector3 pointA = path.corners[i];
+                    Vector3 pointB = path.corners[i - 1];
+
+                    pointA += Vector3.up;
+                    pointB += Vector3.up;
+
+                    float dist = Vector3.Distance(pointA, pointB);
+                    Vector3 dir = (pointA - pointB).normalized;
+
+                    if (Physics.Raycast(pointB, dir, dist, visionBlockerLayer))
+                    {
+                        Debug.DrawLine(pointA, pointB, Color.green, 300f);
+                        Debug.Log("Blocking");
+                        break;
+                    }
+
+                    if (Physics.Raycast(pointB, dir, out RaycastHit hit, dist, wallHoleLayer) && hit.collider.TryGetComponent(out WallHole wallHole))
+                    {
+                        //Debug.DrawLine(pointA, pointB, Color.yellow, 1000f);
+
+                        PathNode node = new PathNode(wallHole, pointB);
+
+                        corners.Enqueue(node);
+
+                        node = new PathNode(pointA);
+
+                        corners.Enqueue(node);
+                    }
+                    else
+                    {
+
+                        PathNode node = new PathNode(pointA);
+
+                        corners.Enqueue(node);
+                    }
+                }
+            }
+            pathIsBlocked = false;
         }
-        else
-        {
-            NavMesh.CalculatePath(myPosition, targetPosition, NavMesh.AllAreas, path);
-        }
 
-
-        if(path.corners.Length == 0)
+        if(pathIsBlocked || corners.Count == 0)
         {
             isLock = false;
             Debug.Log("Impossible path");
             pathCallback?.Invoke(false, true);
             return;
         }
-
-        corners = new Queue<PathNode>();
-
-        if(path.corners.Length == 1)
-        {
-            Vector3 pointA = path.corners[0] + Vector3.up;
-            Vector3 pointB = transform.position;
-
-            float dist = Vector3.Distance(pointA, pointB);
-            Vector3 dir = (pointA - pointB).normalized;
-
-            if (Physics.Raycast(pointB, dir, out RaycastHit hit, dist, wallHoleLayer) && hit.collider.TryGetComponent(out WallHole wallHole))
-            {
-                PathNode node = new PathNode(wallHole, pointB);
-
-                corners.Enqueue(node);
-            }
-
-            PathNode nodeBase = new PathNode(pointA);
-
-            corners.Enqueue(nodeBase);
-
-
-        }
-        else
-        {
-            for (int i = 1; i < path.corners.Length; i++)
-            {
-                Vector3 pointA = path.corners[i];
-                Vector3 pointB = path.corners[i - 1];
-
-                pointA += Vector3.up;
-                pointB += Vector3.up;
-
-                float dist = Vector3.Distance(pointA, pointB);
-                Vector3 dir = (pointA - pointB).normalized;
-
-                if (Physics.Raycast(pointB, dir, out RaycastHit hit, dist, wallHoleLayer) && hit.collider.TryGetComponent(out WallHole wallHole))
-                {
-                    Debug.DrawLine(pointA, pointB, Color.yellow, 1000f);
-
-                    PathNode node = new PathNode(wallHole, pointB);
-
-                    corners.Enqueue(node);
-                }
-                else
-                {
-                    
-                    PathNode node = new PathNode(pointA);
-
-                    corners.Enqueue(node);
-                }
-            }
-        }
-        
-        
 
         pathStored = corners.ToArray();
 

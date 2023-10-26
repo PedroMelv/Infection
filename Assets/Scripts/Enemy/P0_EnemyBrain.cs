@@ -25,6 +25,9 @@ public class P0_EnemyBrain : EnemyBrain
     [SerializeField] private AudioClip screamSound;
     [SerializeField] private AudioClip[] attackSound;
 
+    [SerializeField] private bool enemyDebugging;
+    [SerializeField] private Transform followDebug;
+
     public override void Start()
     {
         if (!PhotonNetwork.LocalPlayer.IsMasterClient) return;
@@ -53,7 +56,12 @@ public class P0_EnemyBrain : EnemyBrain
 
     public override void Update()
     {
-        if (!PhotonNetwork.LocalPlayer.IsMasterClient) return;
+        if (enemyDebugging)
+        {
+            enemyMovement.SetDestination(followDebug);
+            return;
+        }
+        base.Update();
 
         BehaviourHandling();
 
@@ -200,6 +208,7 @@ public class P0_EnemyBrain : EnemyBrain
             if (!PhotonNetwork.LocalPlayer.IsMasterClient) return this;
 
             RoomPoint[] points = GameDirector.instance.GetClosestPoints(brain.transform.position, 5, 4f, true, 0, 3, 1f);
+
 
             actionQueue += () =>
             {

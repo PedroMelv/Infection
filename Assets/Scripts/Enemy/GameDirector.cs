@@ -11,6 +11,9 @@ public class GameDirector : MonoBehaviour
     [SerializeField] private float heatmapTrackTimer;
     [SerializeField] private List<HeatmapData> heatmaps = new List<HeatmapData>();
     private float heatmapTimer;
+
+    private RoomArea lastRoomArea;
+
     private class HeatmapData
     {
         public GameObject playerTrackObj;
@@ -174,14 +177,19 @@ public class GameDirector : MonoBehaviour
         RoomArea selRoom = null;
         float dist = int.MaxValue;
 
-        for (int i = 0; i < areas.Count; i++)
+        List<RoomArea> listAreas = new List<RoomArea>(areas);
+        if(lastRoomArea != null) listAreas.Remove(lastRoomArea);
+
+        for (int i = 0; i < listAreas.Count; i++)
         {
-            if (Vector3.Distance(areas[i].transform.position, from) < dist)
+            if (Vector3.Distance(listAreas[i].transform.position, from) < dist)
             {
-                selRoom = areas[i];
-                dist = Vector3.Distance(areas[i].transform.position, from);
+                selRoom = listAreas[i];
+                dist = Vector3.Distance(listAreas[i].transform.position, from);
             }
         }
+
+        lastRoomArea = selRoom;
 
         return selRoom;
     }
