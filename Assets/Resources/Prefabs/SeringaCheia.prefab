@@ -91,6 +91,7 @@ MonoBehaviour:
       m_Calls: []
   characterToInteract: 0
   canInteract: 1
+  interactionName: Seringa com Sangue
   needItem: 0
   itemToInteract: {fileID: 0}
   removeItem: 0
@@ -99,7 +100,9 @@ MonoBehaviour:
   fillInteraction: 0
   fillSpeed: 1
   fillLossSpeed: 1
-  item: {fileID: 11400000, guid: 997d5ff6d50a3c54d92a4a483df7831f, type: 2}
+  destroyOnUse: 1
+  itemScriptableObject: {fileID: 11400000, guid: 997d5ff6d50a3c54d92a4a483df7831f,
+    type: 2}
 --- !u!136 &5560897558692835287
 CapsuleCollider:
   m_ObjectHideFlags: 0

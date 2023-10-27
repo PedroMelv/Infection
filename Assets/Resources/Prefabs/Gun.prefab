@@ -91,6 +91,7 @@ MonoBehaviour:
       m_Calls: []
   characterToInteract: 1
   canInteract: 1
+  interactionName: Arma
   needItem: 0
   itemToInteract: {fileID: 0}
   removeItem: 0
@@ -99,7 +100,9 @@ MonoBehaviour:
   fillInteraction: 0
   fillSpeed: 1
   fillLossSpeed: 1
-  item: {fileID: 11400000, guid: ba9efe7fde14afe4aa58e98f68159547, type: 2}
+  destroyOnUse: 1
+  itemScriptableObject: {fileID: 11400000, guid: ba9efe7fde14afe4aa58e98f68159547,
+    type: 2}
 --- !u!65 &6715282082260804712
 BoxCollider:
   m_ObjectHideFlags: 0

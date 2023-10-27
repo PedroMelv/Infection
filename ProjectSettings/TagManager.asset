@@ -8,6 +8,7 @@ TagManager:
   - StaminaVolume
   - DamageVolume
   - AmmoUI
+  - InteractText
   layers:
   - Default
   - TransparentFX

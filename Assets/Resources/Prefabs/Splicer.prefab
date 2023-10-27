@@ -104,6 +104,7 @@ MonoBehaviour:
       m_Calls: []
   characterToInteract: 0
   canInteract: 1
+  interactionName: Amostra
   needItem: 0
   itemToInteract: {fileID: 0}
   removeItem: 0
@@ -112,7 +113,9 @@ MonoBehaviour:
   fillInteraction: 0
   fillSpeed: 1
   fillLossSpeed: 1
-  item: {fileID: 11400000, guid: c3d5e88ec7c0b3a409be3e92d9543c79, type: 2}
+  destroyOnUse: 1
+  itemScriptableObject: {fileID: 11400000, guid: c3d5e88ec7c0b3a409be3e92d9543c79,
+    type: 2}
 --- !u!1 &3565114306308989678
 GameObject:
   m_ObjectHideFlags: 0

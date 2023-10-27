@@ -26,6 +26,7 @@ public class Interactable : MonoBehaviourPunCallbacks
 
     [Space]
     [Header("Item Interaction")]
+    public string interactionName;
     [SerializeField] protected bool needItem;
     [SerializeField] protected ItemSO itemToInteract;
     [SerializeField] protected bool removeItem;

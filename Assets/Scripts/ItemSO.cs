@@ -20,6 +20,9 @@ public class Item
     [Space]
     public float reloadTime;
 
+    #region Overloading Operators
+    
+    #endregion
 }
 
 public enum SpecialUseItem
@@ -27,5 +30,6 @@ public enum SpecialUseItem
     NORMAL,
     GUN,
     BLOOD_SPLICER_EMPTY,
-    BLOOD_SPLICER_FULL
+    BLOOD_SPLICER_FULL,
+    PLANT
 }

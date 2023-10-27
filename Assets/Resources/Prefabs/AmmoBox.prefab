@@ -66,6 +66,7 @@ MonoBehaviour:
       m_Calls: []
   characterToInteract: 0
   canInteract: 1
+  interactionName: "Muni\xE7\xE3o"
   needItem: 0
   itemToInteract: {fileID: 0}
   removeItem: 0
@@ -74,7 +75,9 @@ MonoBehaviour:
   fillInteraction: 0
   fillSpeed: 1
   fillLossSpeed: 1
-  item: {fileID: 11400000, guid: cb272688e678e734b93a8c6113fd9b44, type: 2}
+  destroyOnUse: 1
+  itemScriptableObject: {fileID: 11400000, guid: cb272688e678e734b93a8c6113fd9b44,
+    type: 2}
 --- !u!54 &6743285767351520128
 Rigidbody:
   m_ObjectHideFlags: 0

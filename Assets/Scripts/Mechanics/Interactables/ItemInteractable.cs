@@ -6,10 +6,12 @@ using UnityEngine;
 public class ItemInteractable : Interactable
 {
     [Space]
-    [SerializeField]private ItemSO item;
+    [SerializeField] private bool destroyOnUse = true;
+    [SerializeField] private ItemSO itemScriptableObject;
 
     protected override void Start()
     {
+        base.Start();
         OnInteractAction += GrabItem;
     }
 
@@ -19,8 +21,8 @@ public class ItemInteractable : Interactable
 
         if (pInventory != null)
         {
-            pInventory.AddItem(item.item);
-            CallDestroy();
+            pInventory.AddItem(itemScriptableObject.item);
+            if(destroyOnUse) CallDestroy();
         }
     }
 
@@ -30,5 +32,16 @@ public class ItemInteractable : Interactable
     }
 
     
+    public void SetItem(int itemIndex)
+    {
+        if(PhotonNetwork.InRoom)photonView.RPC(nameof(RPC_SetItem), RpcTarget.All,itemIndex); 
+        else
+            itemScriptableObject = ItemsManager.Instance.items[itemIndex];
+    }
 
+    [PunRPC]
+    public void RPC_SetItem(int itemIndex)
+    {
+        itemScriptableObject = ItemsManager.Instance.items[itemIndex];
+    }
 }

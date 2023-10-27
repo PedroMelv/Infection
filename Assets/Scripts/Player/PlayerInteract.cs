@@ -2,11 +2,13 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Photon.Pun;
+using TMPro;
 
 public class PlayerInteract : MonoBehaviourPun
 {
     [SerializeField] private float interactRange;
     [SerializeField] private LayerMask interactLayer;
+    private TextMeshProUGUI interactText;
 
     private Interactable holdingInteractable;
 
@@ -22,6 +24,8 @@ public class PlayerInteract : MonoBehaviourPun
     }
     private void Start()
     {
+        interactText = GameObject.FindGameObjectWithTag("InteractText").GetComponent<TextMeshProUGUI>();
+        interactText.SetText("");
         InitializeInteractions();
     }
 
@@ -30,6 +34,8 @@ public class PlayerInteract : MonoBehaviourPun
         if (!photonView.IsMine)
             return;
         mouseRay = pInput.myCamera.ScreenPointToRay(Input.mousePosition);
+
+        HandleInteractionHover();
 
         Debug.DrawRay(mouseRay.origin, mouseRay.direction * interactRange, Color.red);
     }
@@ -44,9 +50,39 @@ public class PlayerInteract : MonoBehaviourPun
             pInput.OnInteractRelease += () => HandleInteractionRelease();
         }
     }
+
+    private void HandleInteractionHover()
+    {
+        if (Physics.Raycast(mouseRay, out RaycastHit hit, interactRange, interactLayer))
+        {
+            Interactable[] detectedInteractable = hit.collider.GetComponents<Interactable>();
+            string interactString = "";
+
+            for (int i = 0; i < detectedInteractable.Length; i++)
+            {
+                if (detectedInteractable[i] != null)
+                {
+                    if (detectedInteractable.Length == 1)
+                    {
+                        interactString += detectedInteractable[i].interactionName;
+                    }
+                    else
+                    {
+                        interactString += "-" + detectedInteractable[i].interactionName + ".\n";
+                    }
+                }
+            }
+
+            interactText.SetText(interactString);
+        }
+        else
+        {
+            interactText.SetText("");
+        }
+    }
+
     private void HandleInteractionPress()
     {
-
         if(Physics.Raycast(mouseRay, out RaycastHit hit, interactRange, interactLayer))
         {
             Interactable[] detectedInteractable = hit.collider.GetComponents<Interactable>();
@@ -56,8 +92,6 @@ public class PlayerInteract : MonoBehaviourPun
                 if(detectedInteractable[i] != null) 
                 {
                     detectedInteractable[i].Interact(this.gameObject);
-
-                    HandleCustomInteractions(detectedInteractable[i]);
                 }       
             }
         }
@@ -72,21 +106,22 @@ public class PlayerInteract : MonoBehaviourPun
             {
                 holdingInteractable = detectedInteractable;
                 detectedInteractable.InteractHold(this.gameObject);
-
-                HandleCustomInteractions(detectedInteractable);
+                interactText.SetText("Interacting...");
             }
             else
-                if (holdingInteractable != null)
-                    holdingInteractable.InteractRelease(this.gameObject);
+                HandleInteractionRelease();
         }
         else
-            if (holdingInteractable != null)
-                holdingInteractable.InteractRelease(this.gameObject);
+            HandleInteractionRelease();
     }
     private void HandleInteractionRelease()
     {
         if (holdingInteractable != null)
+        {
             holdingInteractable.InteractRelease(this.gameObject);
+        }
+
+        interactText.SetText("");
     }
 
     private void HandleCustomInteractions(Interactable interactable)

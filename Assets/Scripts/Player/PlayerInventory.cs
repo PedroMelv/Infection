@@ -80,6 +80,11 @@ public class PlayerInventory : MonoBehaviour
         OnAddItem?.Invoke(couldAdd, addItem);
         return couldAdd;
     }
+    
+    public void RemoveItemOnHand()
+    {
+        DestroyItem(ref slots[itemSlotSelected]);
+    }
     public void DestroyItem()
     {
         DestroyItem(ref slots[itemSlotSelected]);
@@ -125,10 +130,14 @@ public class PlayerInventory : MonoBehaviour
 
                 
             }
-
             
+            int itemIndex = ItemsManager.Instance.GetItemIndex(slot);
 
-            PhotonNetwork.Instantiate("Prefabs/" + slot.itemPrefab.name, spawnPos, Quaternion.identity);
+            if (itemIndex == -1) { Debug.Log("Item não existe na database"); return; }
+
+            GameObject droppedItem = PhotonNetwork.Instantiate("Prefabs/" + slot.itemPrefab.name, spawnPos, Quaternion.identity);
+
+            droppedItem.GetComponent<ItemInteractable>().SetItem(itemIndex);
 
             slot = new Item();
             OnDropItem?.Invoke();

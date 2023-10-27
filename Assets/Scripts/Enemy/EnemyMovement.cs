@@ -125,7 +125,7 @@ public class EnemyMovement : MovementBase
     private void Update()
     {
         if (PhotonNetwork.InRoom && !PhotonNetwork.LocalPlayer.IsMasterClient) return;
-
+        rb.useGravity = !OnSlope();
         closeToPlayer = false;
         if (!canMove)
         {
@@ -171,7 +171,8 @@ public class EnemyMovement : MovementBase
             rb.velocity = Vector3.zero;
             return;
         }
-        rb.useGravity = !OnSlope();
+        //
+        
 
         HandlePhysicMovement();
         HandleFriction(moveDirection.x, false);
@@ -183,12 +184,13 @@ public class EnemyMovement : MovementBase
     {
         if (hasPath && !isLock)
         {
-            moveDirection = curTarget.moveTo - transform.position;
+            moveDirection = (curTarget.moveTo - rb.position).normalized;
             Vector3 rotatePos = curTarget.moveTo;
 
 
             if (OnSlope())
             {
+                Debug.Log("Sloping");
                 Vector3 vel = new Vector3(rb.velocity.x, rb.velocity.y, rb.velocity.z);
 
                 float movementSpeed = speed * 15f;
@@ -228,12 +230,14 @@ public class EnemyMovement : MovementBase
 
                 if (vel.magnitude > movementSpeed)
                 {
+                    Debug.Log("limiting");
                     rb.velocity = vel.normalized * movementSpeed;
                 }
                 else
                 {
-                    float horizontal = CalculateForce(moveDirection.normalized.x, rb.velocity.x, movementSpeed * rb.mass);
-                    float vertical = CalculateForce(moveDirection.normalized.z, rb.velocity.z, movementSpeed * rb.mass);
+                    Debug.Log("not limiting");
+                    float horizontal = CalculateForce(moveDirection.x, rb.velocity.x, movementSpeed * rb.mass);
+                    float vertical = CalculateForce(moveDirection.z, rb.velocity.z, movementSpeed   * rb.mass);
 
                     Vector3 direction = new Vector3(horizontal, 0f, vertical);
                     rb.AddForce(direction, ForceMode.Force);
@@ -673,6 +677,7 @@ public class EnemyMovement : MovementBase
                         }
                         else
                         {
+                            //rb.velocity = Vector3.zero;
                             curTarget = corners.Dequeue();
                         }
                     }
@@ -777,7 +782,7 @@ public class EnemyMovement : MovementBase
     {
         //if (exitingSlope) return false;
 
-        if (Physics.Raycast(transform.position, Vector3.down, out slopeHit, 2f * .5f + 0.3f, groundLayer))
+        if (Physics.BoxCast(transform.position, Vector3.one, Vector3.down, out slopeHit, transform.rotation, 2f * .5f + 0.3f, groundLayer))
         {
             float angle = Vector3.Angle(Vector3.up, slopeHit.normal);
             return (angle < 75f && angle != 0f);

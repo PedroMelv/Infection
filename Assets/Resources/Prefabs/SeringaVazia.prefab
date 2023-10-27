@@ -91,6 +91,7 @@ MonoBehaviour:
       m_Calls: []
   characterToInteract: 0
   canInteract: 1
+  interactionName: Seringa
   needItem: 0
   itemToInteract: {fileID: 0}
   removeItem: 0
@@ -99,7 +100,9 @@ MonoBehaviour:
   fillInteraction: 0
   fillSpeed: 1
   fillLossSpeed: 1
-  item: {fileID: 11400000, guid: aecd8ca27897ea0488f105b143862bcb, type: 2}
+  destroyOnUse: 1
+  itemScriptableObject: {fileID: 11400000, guid: aecd8ca27897ea0488f105b143862bcb,
+    type: 2}
 --- !u!136 &1243070395
 CapsuleCollider:
   m_ObjectHideFlags: 0
