@@ -15,6 +15,7 @@ MonoBehaviour:
   item:
     itemName: AmmoBox
     canDrop: 1
+    canUseOnTrashbin: 0
     specialUse: 0
     itemPrefab: {fileID: 5597897542283403523, guid: 938741d13a0ce764e8ec2698ee05c584,
       type: 3}

@@ -36,6 +36,7 @@ public class EnemyMovement : MovementBase
     public bool closeToPlayer;
 
     //Flee
+    [SerializeField] private float fleeSpeedMultiplier = 5f;
     [SerializeField] private float timeStunnedOnFlee;
     private float timeStunned;
     private bool fleeing;
@@ -195,7 +196,7 @@ public class EnemyMovement : MovementBase
 
                 float movementSpeed = speed * 15f;
 
-                if (GetMoveStates() == MovementAIStates.FLEEING) movementSpeed *= 5f;
+                if (GetMoveStates() == MovementAIStates.FLEEING) movementSpeed *= fleeSpeedMultiplier;
                 
 
                 if (vel.magnitude > movementSpeed)
@@ -226,7 +227,7 @@ public class EnemyMovement : MovementBase
 
                 float movementSpeed = speed * 10f;
 
-                if (GetMoveStates() == MovementAIStates.FLEEING) movementSpeed *= 2.5f;
+                if (GetMoveStates() == MovementAIStates.FLEEING) movementSpeed *= fleeSpeedMultiplier;
 
                 if (vel.magnitude > movementSpeed)
                 {
@@ -272,7 +273,6 @@ public class EnemyMovement : MovementBase
     private void ChaseState()
     {
         sprinting = true;
-
 
         if (target != null)
         {

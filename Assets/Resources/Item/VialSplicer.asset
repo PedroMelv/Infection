@@ -15,8 +15,10 @@ MonoBehaviour:
   item:
     itemName: Parte da cura
     canDrop: 1
+    canUseOnTrashbin: 0
     specialUse: 0
     itemPrefab: {fileID: 3565114306308144790, guid: e98d0c7ad19353e4e96d0f6be4660254,
       type: 3}
     itemHandPrefab: {fileID: 6186278070989627505, guid: 95f61d2aefb2abe479310765bb135519,
       type: 3}
+    reloadTime: 0

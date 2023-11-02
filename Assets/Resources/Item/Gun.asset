@@ -15,6 +15,7 @@ MonoBehaviour:
   item:
     itemName: Gun
     canDrop: 0
+    canUseOnTrashbin: 0
     specialUse: 1
     itemPrefab: {fileID: 6797931675319848211, guid: 6857e85cb54a0d749b580c93821a76e3,
       type: 3}

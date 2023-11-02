@@ -15,8 +15,10 @@ MonoBehaviour:
   item:
     itemName: BloodEmpty
     canDrop: 1
+    canUseOnTrashbin: 0
     specialUse: 2
     itemPrefab: {fileID: 8144276644038425320, guid: 6ea0ec5c836e2b14582b34896fe1f595,
       type: 3}
     itemHandPrefab: {fileID: 364206235096166959, guid: 9e55eaa4a9515204894fc1e15d4ae606,
       type: 3}
+    reloadTime: 0

@@ -33,7 +33,7 @@ public class PlantMixer : MonoBehaviour
     {
         if(plantsInside.Count >= 3) 
         {
-            Debug.Log("Plants is full. now it's mixing");
+            Debug.Log("Plant is: " + PlantMixerRecipes.Instance.CheckPlantRecipe(plantsInside.ToArray()));
             plantsInside.Clear();
         }
     }

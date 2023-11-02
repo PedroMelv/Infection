@@ -203,13 +203,13 @@ MonoBehaviour:
     m_Bits: 256
   curMoveState: 0
   isHidden: 0
-  moveSpeed: 5
-  sprintMultiplier: 1.6
+  moveSpeed: 4
+  sprintMultiplier: 2.5
   groundDrag: 10
   tiredMoveMultiplier: 0.65
   timeToRegenStamina: 1.2
-  maxStamina: 100
-  staminaRegen: 10.2
+  maxStamina: 300
+  staminaRegen: 20.2
   crawlMultiplier: 0.35
   normalHeight: 1
   crawlHeight: 0.35
@@ -268,6 +268,7 @@ MonoBehaviour:
   rightMouseInputPressed: 0
   rightMouseInputReleased: 0
   reloadInputPressed: 0
+  canInput: 1
 --- !u!114 &3763245986587800236
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -974,6 +975,7 @@ MonoBehaviour:
         m_CallState: 2
   characterToInteract: 0
   canInteract: 1
+  interactionName: 
   needItem: 0
   itemToInteract: {fileID: 0}
   removeItem: 0

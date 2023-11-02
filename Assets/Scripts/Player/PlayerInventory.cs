@@ -98,11 +98,11 @@ public class PlayerInventory : MonoBehaviour
         }
     }
 
-    public void DropItem(bool useForward = true)
+    public GameObject DropItem(bool useForward = true)
     {
-        DropItem(ref slots[itemSlotSelected], useForward);
+        return DropItem(ref slots[itemSlotSelected], useForward);
     }
-    public void DropItem(ref Item slot, bool useForward = true)
+    public GameObject DropItem(ref Item slot, bool useForward = true)
     {
         if (slot != null && slot.itemPrefab != null && slot.canDrop) 
         {
@@ -120,20 +120,13 @@ public class PlayerInventory : MonoBehaviour
 
             if (hittedAnything)
             {
-                //Debug.Log(hit.normal);
                 spawnPos = hit.point + hit.normal * .5f;
                 Debug.Log("Hitted: " + spawnPos);
-
-                Vector3 spawnPosDir = spawnPos - cameraTransform.position;
-
-                //spawnPos -= spawnPosDir;
-
-                
             }
             
             int itemIndex = ItemsManager.Instance.GetItemIndex(slot);
 
-            if (itemIndex == -1) { Debug.Log("Item não existe na database"); return; }
+            if (itemIndex == -1) { Debug.Log("Item não existe na database"); return null; }
 
             GameObject droppedItem = PhotonNetwork.Instantiate("Prefabs/" + slot.itemPrefab.name, spawnPos, Quaternion.identity);
 
@@ -141,7 +134,10 @@ public class PlayerInventory : MonoBehaviour
 
             slot = new Item();
             OnDropItem?.Invoke();
+
+            return droppedItem;
         }
+        return null;
     }
 
     public void DropItems()

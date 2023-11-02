@@ -13,6 +13,7 @@ public class Item
 {
     public string itemName;
     public bool canDrop = true;
+    public bool canUseOnTrashbin = true;
     public SpecialUseItem specialUse;
     [Space]
     public GameObject itemPrefab;
