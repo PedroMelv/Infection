@@ -4018,7 +4018,7 @@ GameObject:
   - component: {fileID: 253555894}
   - component: {fileID: 253555893}
   m_Layer: 7
-  m_Name: Camera
+  m_Name: CameraTrigger
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
