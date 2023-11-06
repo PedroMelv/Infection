@@ -20,6 +20,8 @@ public class Interactable : MonoBehaviourPunCallbacks
     [SerializeField]protected UnityEvent<GameObject> OnInteract;
     protected bool interacting;
 
+    protected PlayerInput lastInteract;
+
     [SerializeField] protected CharacterInteract characterToInteract;
 
     public bool canInteract = true;
@@ -68,37 +70,32 @@ public class Interactable : MonoBehaviourPunCallbacks
 
         int curPlayer = (int)PhotonNetwork.LocalPlayer.CustomProperties["c"];
         if (characterToInteract != CharacterInteract.ANYONE && curPlayer != (int)characterToInteract) return;
+        
+        PlayerInput pInput = whoInteracted.GetComponent<PlayerInput>();
 
-        if(needItem)
+        if (needItem)
         {
             PlayerInventory pInventory = whoInteracted.GetComponent<PlayerInventory>();
-
-            if(pInventory != null)
-            {
-                Item curItem = pInventory.GetSelectedItem();
             
-                if(curItem == itemToInteract.item)
-                {
-                    if(removeItem)
-                    {
-                        pInventory.DestroyItem();
-                        if(andAddAnother)
-                        {
-                            pInventory.AddItem(itemToAdd.item);
-                        }
-                    }
-                }
-                else
-                {
-                    return;
-                }
-            }
-            else
+
+            if (pInventory == null) return;
+            
+            Item curItem = pInventory.GetSelectedItem();
+            if (curItem != itemToInteract.item) return;
+
+            
+
+            if (removeItem)
             {
-                return;
+                pInventory.DestroyItem();
+                if(andAddAnother)
+                {
+                    pInventory.AddItem(itemToAdd.item);
+                }
             }
         }
 
+        lastInteract = pInput;
         interacting = true;
         OnInteractAction?.Invoke(whoInteracted);
     }

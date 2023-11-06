@@ -98,21 +98,30 @@ public class PlantMixerRecipes : MonoBehaviourPun
         bool found = false;
         int currentRecipe = 0;
 
-        while(!found && currentRecipe < 0)
+        while(!found && currentRecipe < plantRecipes.Count)
         {
             List<Item> recipe = new List<Item>(plantRecipes[currentRecipe].plants);
 
             for (int i = 0; i < plants.Length; i++)
             {
-                if (recipe.Contains(plants[i]))
+                for (int j = 0; j < recipe.Count; j++)
                 {
-                    recipe.Remove(plants[i]);
+                    if (recipe[j].itemName == plants[i].itemName)
+                    {
+                        recipe.RemoveAt(j);
+                        break;
+                    }
                 }
+                
             }
 
-            if(recipe.Count == 0)
+            Debug.Log("RecipeIndex: " + currentRecipe + " recipe count: " + recipe.Count);
+            if (recipe.Count == 0)
             {
-                found = true; 
+                Debug.Log("Found plant");
+
+                if (!plantRecipes[currentRecipe].fakeRecipe)
+                    found = true; 
                 break;
             }
 

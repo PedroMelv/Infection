@@ -22,6 +22,7 @@ public class PlantMixer : MonoBehaviour
 
         if(item != null && item.specialUse == SpecialUseItem.PLANT)
         {
+            Debug.Log("Plant: " + item.itemName);
             plantsInside.Add(item);
             pInventory.RemoveItemOnHand();
 

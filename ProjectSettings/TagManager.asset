@@ -9,6 +9,7 @@ TagManager:
   - DamageVolume
   - AmmoUI
   - InteractText
+  - IgnoreLight
   layers:
   - Default
   - TransparentFX
@@ -24,7 +25,7 @@ TagManager:
   - Enemy
   - Drawer
   - AuditionTrigger
-  - 
+  - SecurityCamera
   - 
   - 
   - 

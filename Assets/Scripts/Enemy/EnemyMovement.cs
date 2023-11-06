@@ -363,6 +363,7 @@ public class EnemyMovement : MovementBase
 
         while (true)
         {
+            Debug.Log("PathSet: " + pathSet);
             stepSoundEffect.playSpeed = 3f;
             if (pathSet == false)
             {
@@ -373,11 +374,13 @@ public class EnemyMovement : MovementBase
                 SetDestination(furthestPoint);
                 Debug.Log("Setting Destination");
 
-                yield return new WaitForEndOfFrame();
-            }
-            else if (pathSet == true && Vector3.Distance(transform.position, furthestPoint) <= 4f)
-            {
+                furthestPoint.y = transform.position.y;
 
+                yield return null;
+            }
+            else if (pathSet == true && corners.Count == 0)
+            {
+                Debug.Log("Reached Destination");
                 if (timeStunned < 0f)
                 {
                     fleeing = false;
@@ -389,10 +392,8 @@ public class EnemyMovement : MovementBase
                 {
                     timeStunned -= Time.deltaTime;
                 }
-
-                yield return new WaitForEndOfFrame();
             }
-            yield return new WaitForEndOfFrame();
+            yield return null;
         }
     }
 
