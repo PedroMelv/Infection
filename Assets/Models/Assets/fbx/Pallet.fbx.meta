@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: a26560a7da08dc340a993a1c409baa4d
+guid: 8a3538e3e0fae4f4f8f287798762c393
 ModelImporter:
   serializedVersion: 21300
   internalIDToNameTable: []
@@ -7,13 +7,13 @@ ModelImporter:
   - first:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
-      name: Radio
-    second: {fileID: 2100000, guid: 70708e039978ab044a793b62c6658895, type: 2}
+      name: Pallet
+    second: {fileID: 2100000, guid: 7c3b11d67a96a6f429473851577352cd, type: 2}
   - first:
       type: UnityEngine:Texture2D
       assembly: UnityEngine.CoreModule
-      name: radio
-    second: {fileID: 2800000, guid: eab062980f94eb5489a5a2a753f5d5d2, type: 3}
+      name: Pallet
+    second: {fileID: 2800000, guid: 17a16d929af66c54ab78e65e591f20cb, type: 3}
   materials:
     materialImportMode: 2
     materialName: 0

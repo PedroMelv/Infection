@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: a26560a7da08dc340a993a1c409baa4d
+guid: 5065bcb4626e5a74aae24fcb7000a349
 ModelImporter:
   serializedVersion: 21300
   internalIDToNameTable: []
@@ -7,13 +7,23 @@ ModelImporter:
   - first:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
-      name: Radio
-    second: {fileID: 2100000, guid: 70708e039978ab044a793b62c6658895, type: 2}
+      name: Black details
+    second: {fileID: 2100000, guid: 853a36d88459af841b4a84f0c3da67b4, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Light
+    second: {fileID: 2100000, guid: d5aedd00e8033ab46901a82d1594510b, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Mixer
+    second: {fileID: 2100000, guid: 6d182e0ab494db543897a861d1730f7d, type: 2}
   - first:
       type: UnityEngine:Texture2D
       assembly: UnityEngine.CoreModule
-      name: radio
-    second: {fileID: 2800000, guid: eab062980f94eb5489a5a2a753f5d5d2, type: 3}
+      name: Mixer
+    second: {fileID: 2800000, guid: 67567a5d6af1bb849b253692f562d376, type: 3}
   materials:
     materialImportMode: 2
     materialName: 0

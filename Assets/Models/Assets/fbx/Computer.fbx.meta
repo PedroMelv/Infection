@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: a26560a7da08dc340a993a1c409baa4d
+guid: e450ae7b2252f31428fdeac435960a16
 ModelImporter:
   serializedVersion: 21300
   internalIDToNameTable: []
@@ -7,13 +7,18 @@ ModelImporter:
   - first:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
-      name: Radio
-    second: {fileID: 2100000, guid: 70708e039978ab044a793b62c6658895, type: 2}
+      name: Accessories
+    second: {fileID: 2100000, guid: 2fe2d4c738d0e3548a3bf7ef74a16ed1, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Screen
+    second: {fileID: 2100000, guid: e2585aa9b07434148b2986b77f529585, type: 2}
   - first:
       type: UnityEngine:Texture2D
       assembly: UnityEngine.CoreModule
-      name: radio
-    second: {fileID: 2800000, guid: eab062980f94eb5489a5a2a753f5d5d2, type: 3}
+      name: Computer
+    second: {fileID: 2800000, guid: 0ebdcdec733cb8348819c8365c28694d, type: 3}
   materials:
     materialImportMode: 2
     materialName: 0

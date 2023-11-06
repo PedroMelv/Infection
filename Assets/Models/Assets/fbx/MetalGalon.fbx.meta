@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: a26560a7da08dc340a993a1c409baa4d
+guid: b3d770834dd79064e94e61f2803204f4
 ModelImporter:
   serializedVersion: 21300
   internalIDToNameTable: []
@@ -7,13 +7,13 @@ ModelImporter:
   - first:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
-      name: Radio
-    second: {fileID: 2100000, guid: 70708e039978ab044a793b62c6658895, type: 2}
+      name: Galon
+    second: {fileID: 2100000, guid: ed1e36a0b6b6ec94ab6aa3bb3a38f6a4, type: 2}
   - first:
       type: UnityEngine:Texture2D
       assembly: UnityEngine.CoreModule
-      name: radio
-    second: {fileID: 2800000, guid: eab062980f94eb5489a5a2a753f5d5d2, type: 3}
+      name: MetalGalon
+    second: {fileID: 2800000, guid: 16a72f5ce01c0a548804afb5b79281df, type: 3}
   materials:
     materialImportMode: 2
     materialName: 0
