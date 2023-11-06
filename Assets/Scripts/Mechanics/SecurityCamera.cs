@@ -28,7 +28,7 @@ public class SecurityCamera : MonoBehaviour
         float input = GetMouseInput();
         yInput = Mathf.Lerp(yInput, input, 5f * Time.deltaTime);
 
-        yRotation += yInput * 2.5f;
+        yRotation += yInput * 2.5f * Time.deltaTime;
 
         yRotation = Mathf.Clamp(yRotation, 
             rotationCenter + rotationMinAngle + 45 , 
