@@ -9,6 +9,7 @@ public class PlayerInteract : MonoBehaviourPun
     [SerializeField] private float interactRange;
     [SerializeField] private LayerMask interactLayer;
     private TextMeshProUGUI interactText;
+    private Transform interactFillBar;
 
     private Interactable holdingInteractable;
 
@@ -25,7 +26,10 @@ public class PlayerInteract : MonoBehaviourPun
     private void Start()
     {
         interactText = GameObject.FindGameObjectWithTag("InteractText").GetComponent<TextMeshProUGUI>();
+        interactFillBar = GameObject.FindGameObjectWithTag("InteractFill").transform;
         interactText.SetText("");
+        interactFillBar.parent.gameObject.SetActive(false);
+
         InitializeInteractions();
     }
 
@@ -64,12 +68,27 @@ public class PlayerInteract : MonoBehaviourPun
                 {
                     if (detectedInteractable.Length == 1)
                     {
-                        interactString += detectedInteractable[i].interactionName;
+                        if (detectedInteractable[i].CanInteract(out string whoCanInteract))
+                        {
+                            interactString += detectedInteractable[i].interactionName;
+                        }
+                        else
+                        {
+                            interactString += "Eu não posso interagir, chame " + whoCanInteract + ".\n"; ;
+                        }
                     }
                     else
                     {
-                        interactString += "-" + detectedInteractable[i].interactionName + ".\n";
+                        if (detectedInteractable[i].CanInteract(out string whoCanInteract))
+                        {
+                            interactString += "-" + detectedInteractable[i].interactionName + ".\n";
+                        }
+                        else
+                        {
+                            interactString += "Eu não posso interagir, chame " + whoCanInteract + ".\n";
+                        }
                     }
+                    if(detectedInteractable[i].NeedItem(out string itemName)) interactString += "   -Precisa do item: " + itemName + ".\n"; ;
                 }
             }
 
@@ -105,8 +124,18 @@ public class PlayerInteract : MonoBehaviourPun
             if (detectedInteractable != null)
             {
                 holdingInteractable = detectedInteractable;
-                detectedInteractable.InteractHold(this.gameObject);
                 interactText.SetText("Interacting...");
+                float fillAmount = detectedInteractable.InteractHold(this.gameObject);
+            
+                if(fillAmount > 0f)
+                {
+                    interactFillBar.parent.gameObject.SetActive(true);
+                    interactFillBar.transform.localScale = new Vector3(fillAmount / 1f,1f,1f);
+                }
+                else
+                {
+                    interactFillBar.parent.gameObject.SetActive(false);
+                }
             }
             else
                 HandleInteractionRelease();
@@ -120,7 +149,7 @@ public class PlayerInteract : MonoBehaviourPun
         {
             holdingInteractable.InteractRelease(this.gameObject);
         }
-
+        interactFillBar.parent.gameObject.SetActive(false);
         interactText.SetText("");
     }
 

@@ -42,6 +42,7 @@ public class Interactable : MonoBehaviourPunCallbacks
     [SerializeField, Range(0f,1f)] protected float fillLossSpeed = 1f;
     protected float fillCurrent = 0f;
     protected bool fillInteractionRunned;
+    
 
     protected virtual void Start()
     {
@@ -54,6 +55,12 @@ public class Interactable : MonoBehaviourPunCallbacks
 
         if(!interacting && fillCurrent > 0f)
         {
+            if(fillLossSpeed == 0) 
+            {
+                fillCurrent = 0f;
+                fillInteractionRunned = false;
+                return;
+            }
             fillCurrent -= Time.deltaTime * fillLossSpeed;
         }
         else if(fillCurrent < 0f)
@@ -100,19 +107,19 @@ public class Interactable : MonoBehaviourPunCallbacks
         OnInteractAction?.Invoke(whoInteracted);
     }
 
-    public virtual void InteractHold(GameObject whoInteracted)
+    public virtual float InteractHold(GameObject whoInteracted)
     {
-        if (!canInteract) return;
+        if (!canInteract) return 0f;
         //TODO: adicionar opção de needItem
-        if (needItem) return;
+        if (needItem) return 0f;
+        if (!fillInteraction) return 0f;
 
         int curPlayer = (int)PhotonNetwork.LocalPlayer.CustomProperties["c"];
-        if (characterToInteract != CharacterInteract.ANYONE && curPlayer != (int)characterToInteract) return;
-
-        if (!fillInteraction) return;
+        if (characterToInteract != CharacterInteract.ANYONE && curPlayer != (int)characterToInteract) return 0f;
 
         interacting = true;
 
+        
         if (fillCurrent >= 1f)
         {
             //HandleInteraction
@@ -121,19 +128,39 @@ public class Interactable : MonoBehaviourPunCallbacks
                 OnInteractAction?.Invoke(whoInteracted);
                 fillInteractionRunned = true;
             }
+            else return 0f;
         }
         else
         {
             fillCurrent += Time.deltaTime * fillSpeed;
         }
+
+        return fillCurrent;
     }
 
     public virtual void InteractRelease(GameObject whoInteracted)
     {
         if (!canInteract) return;
         interacting = false;
-        if (fillInteraction) return;
+        
+        if (!fillInteraction) return;
         fillInteractionRunned = false;
+    }
+
+    public bool CanInteract(out string whoCanInteractName)
+    {
+        int curPlayer = (int)PhotonNetwork.LocalPlayer.CustomProperties["c"];
+
+        whoCanInteractName = ((int)characterToInteract == 1) ? "Chris" : "Penny"; 
+
+        if ((int)characterToInteract == 0) return true;
+        return curPlayer == (int)characterToInteract;
+    }
+
+    public bool NeedItem(out string itemName)
+    {
+        if (itemToInteract == null) itemName = ""; else itemName = itemToInteract.item.itemName;
+        return itemToInteract != null;
     }
 
     [PunRPC]

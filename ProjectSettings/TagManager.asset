@@ -10,6 +10,7 @@ TagManager:
   - AmmoUI
   - InteractText
   - IgnoreLight
+  - InteractFill
   layers:
   - Default
   - TransparentFX
