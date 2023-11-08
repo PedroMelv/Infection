@@ -3,7 +3,32 @@ guid: 40aa48b903d6a084db601270d6e9e9f3
 ModelImporter:
   serializedVersion: 21300
   internalIDToNameTable: []
-  externalObjects: {}
+  externalObjects:
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Cammo
+    second: {fileID: 2100000, guid: c17449ca809e88d47babe2877aa8bd58, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Gloves
+    second: {fileID: 2100000, guid: 24bfa3586700a3c4094573ef2ef40386, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Head
+    second: {fileID: 2100000, guid: 00c36d76c25daeb44aaf80d952d8b997, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Pants
+    second: {fileID: 2100000, guid: 36bd3cc842b7d644a9c24d7eeac32082, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Shoe
+    second: {fileID: 2100000, guid: 7689a18dc1ccc0e4285a4f96c1d09a6f, type: 2}
   materials:
     materialImportMode: 2
     materialName: 0

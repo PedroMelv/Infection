@@ -67,10 +67,14 @@ public class GameNetwork : MonoBehaviourPunCallbacks
 
         playerObj.GetComponent<PhotonView>().TransferOwnership(players[index]);
 
-        
-        GameObject cameraHolder = Instantiate(cameraPrefab, transform.position, Quaternion.identity);
+        PlayerInput pInput = playerObj.GetComponent<PlayerInput>();
 
-        cameraHolder.GetComponentInChildren<PlayerCamera>().SetOwner(playerObj.GetComponent<PlayerInput>());
+        
+        pInput.playerBody.GetChild(0).RecursiveSetLayer(LayerMask.NameToLayer("MyBody"));
+
+
+        GameObject cameraHolder = Instantiate(cameraPrefab, transform.position, Quaternion.identity);
+        cameraHolder.GetComponentInChildren<PlayerCamera>().SetOwner(pInput);
 
         playerObjects.Add(playerObj);
     }

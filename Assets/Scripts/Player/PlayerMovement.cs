@@ -83,11 +83,13 @@ public class PlayerMovement : MovementBase
     private bool exitingSlope;
 
     private PlayerInput pInput;
+    private PlayerAnimation pAnim;
     private StepSoundEffect stepSoundEffect;
 
     public override void Awake()
     {
-        base.Awake();        
+        base.Awake();
+        pAnim = GetComponent<PlayerAnimation>();
         pInput = GetComponent<PlayerInput>();
         stepSoundEffect = GetComponent<StepSoundEffect>();
         stepSoundEffect.useAuditionTrigger = true;
@@ -110,9 +112,10 @@ public class PlayerMovement : MovementBase
         isHidden = (grounded && isCrawling && !CanGoUp());
 
         ductLeaveTimer += Time.deltaTime;
+        HandleAnimation();
         HandleStamina();
         HandleJump();
-        HandleCrawl();
+        if ((int)PhotonNetwork.LocalPlayer.CustomProperties["c"] == 2) HandleCrawl();
         HandleGroundDrag();
         HandleSpeedLimit();
         HandleLadderDetection();
@@ -132,7 +135,6 @@ public class PlayerMovement : MovementBase
     #region Movement
     private void HandleMovement()
     {
-
         if (canMove == false)
         {
             rb.velocity = Vector3.zero;
@@ -505,6 +507,21 @@ public class PlayerMovement : MovementBase
     }
 
     #endregion
+
+    private void HandleAnimation()
+    {
+        bool isWalking = moveDirection != Vector3.zero;
+        bool isRunning = pInput.sprintInput;
+
+        if(canMove == false)
+        {
+            isWalking = false;
+            isRunning = false;
+        }
+
+        pAnim.SetWalking(isWalking);
+        pAnim.SetRunning(isRunning);
+    }
 
     private void OnDrawGizmos()
     {
