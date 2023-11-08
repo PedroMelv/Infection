@@ -14,11 +14,6 @@ ModelImporter:
       assembly: UnityEngine.CoreModule
       name: Skin
     second: {fileID: 2100000, guid: 09f72df848fd8d94bbea45db8c7f15a7, type: 2}
-  - first:
-      type: UnityEngine:Texture2D
-      assembly: UnityEngine.CoreModule
-      name: MonsterSkin
-    second: {fileID: 2800000, guid: e3b4b3080339b8c49a0e72028a07546a, type: 3}
   materials:
     materialImportMode: 2
     materialName: 0
