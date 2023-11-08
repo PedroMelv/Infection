@@ -25,18 +25,33 @@ public class PlayerInteract : MonoBehaviourPun
     }
     private void Start()
     {
-        interactText = GameObject.FindGameObjectWithTag("InteractText").GetComponent<TextMeshProUGUI>();
-        interactFillBar = GameObject.FindGameObjectWithTag("InteractFill").transform;
-        interactText.SetText("");
-        interactFillBar.parent.gameObject.SetActive(false);
+        GetUI();
 
         InitializeInteractions();
+    }
+
+    private void GetUI()
+    {
+        if(interactText == null)
+        {
+            interactText = GameObject.FindGameObjectWithTag("InteractText").GetComponent<TextMeshProUGUI>();
+            interactText.SetText("");
+        }
+
+        if(interactFillBar == null)
+        {
+            interactFillBar = GameObject.FindGameObjectWithTag("InteractFill").transform;
+            interactFillBar.parent.gameObject.SetActive(false);
+        }
     }
 
     private void Update()
     {
         if (!photonView.IsMine)
             return;
+
+        GetUI();
+
         mouseRay = pInput.myCamera.ScreenPointToRay(Input.mousePosition);
 
         HandleInteractionHover();
