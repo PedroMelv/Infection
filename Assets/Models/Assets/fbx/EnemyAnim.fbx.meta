@@ -8,17 +8,17 @@ ModelImporter:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
       name: Mouth
-    second: {fileID: 2100000, guid: 51525baf6f0ae6c499b61563eb55b142, type: 2}
+    second: {fileID: 2100000, guid: e380d9c481d6a644e90f713a9fb4c54b, type: 2}
   - first:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
       name: Skin
-    second: {fileID: 2100000, guid: 77d4b459f37e3d54d80bce299952c805, type: 2}
+    second: {fileID: 2100000, guid: 09f72df848fd8d94bbea45db8c7f15a7, type: 2}
   - first:
       type: UnityEngine:Texture2D
       assembly: UnityEngine.CoreModule
       name: MonsterSkin
-    second: {fileID: 2800000, guid: c03a220fa3d3a9746872aa9159d03d5b, type: 3}
+    second: {fileID: 2800000, guid: e3b4b3080339b8c49a0e72028a07546a, type: 3}
   materials:
     materialImportMode: 2
     materialName: 0
@@ -79,7 +79,7 @@ ModelImporter:
     - serializedVersion: 16
       name: Idle
       takeName: Armature|ArmatureAction
-      internalID: -2674958278859614444
+      internalID: -1246731831762816583
       firstFrame: 171
       lastFrame: 219
       wrapMode: 0
@@ -248,7 +248,7 @@ ModelImporter:
     armStretch: 0.05
     legStretch: 0.05
     feetSpacing: 0
-    globalScale: 0.44
+    globalScale: 0.0044
     rootMotionBoneName: 
     hasTranslationDoF: 0
     hasExtraRoot: 0
