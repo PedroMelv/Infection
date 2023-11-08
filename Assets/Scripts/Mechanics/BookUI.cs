@@ -1,14 +1,21 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class BookUI : MonoBehaviour
 {
     [SerializeField] private Transform pagesContent;
+    [SerializeField] private Button leftArrow, rightArrow;
     private List<GameObject> pages = new List<GameObject>();
     private PlayerInput playerInput;
     private int currentPage;
 
+
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.Escape)) CloseBook();
+    }
 
     public void OpenBook(PlayerInput pInput)
     {
@@ -39,6 +46,8 @@ public class BookUI : MonoBehaviour
     public void ChangePage(int nextPage)
     {
         currentPage = Mathf.Clamp(currentPage + nextPage, 0, pages.Count - 1);
+        leftArrow.interactable = currentPage != 0;
+        rightArrow.interactable = currentPage != pages.Count - 1;
 
         UpdatePage();
     }
