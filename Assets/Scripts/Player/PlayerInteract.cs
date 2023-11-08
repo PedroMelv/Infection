@@ -25,6 +25,9 @@ public class PlayerInteract : MonoBehaviourPun
     }
     private void Start()
     {
+        if (!photonView.IsMine)
+            return;
+
         GetUI();
 
         InitializeInteractions();
@@ -49,8 +52,6 @@ public class PlayerInteract : MonoBehaviourPun
     {
         if (!photonView.IsMine)
             return;
-
-        GetUI();
 
         mouseRay = pInput.myCamera.ScreenPointToRay(Input.mousePosition);
 
