@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: f7ee7905a0aabf74a947b51baf8d200c
+guid: 16fc97db762687e41909d5cead09dccc
 ModelImporter:
   serializedVersion: 21300
   internalIDToNameTable: []
@@ -7,23 +7,48 @@ ModelImporter:
   - first:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
-      name: Board
-    second: {fileID: 2100000, guid: 03a854ea419829747bce6ce40010bceb, type: 2}
+      name: Jaleco
+    second: {fileID: 2100000, guid: f71a88156bfdfe441935e73d60dc062d, type: 2}
   - first:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
-      name: Wood
-    second: {fileID: 2100000, guid: 9b7f120b505267042a1ec3d77b650d02, type: 2}
+      name: Jeans
+    second: {fileID: 2100000, guid: 0971ae94ff662f64090d924aacd484be, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Neck
+    second: {fileID: 2100000, guid: 29d732cfc663bdf4484bf238e97cc3a7, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Shirt
+    second: {fileID: 2100000, guid: 0fedfa9c97007da4d821108ceff54381, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Shoe
+    second: {fileID: 2100000, guid: 8ea3222f35762084fa7b43a1be3d3b57, type: 2}
   - first:
       type: UnityEngine:Texture2D
       assembly: UnityEngine.CoreModule
-      name: Wood (1)
-    second: {fileID: 2800000, guid: 28316cd8373b63145a37769248c3cf58, type: 3}
+      name: JalecoBranco
+    second: {fileID: 2800000, guid: 7ae4819b5e44b204fb8c058d9de6082b, type: 3}
   - first:
       type: UnityEngine:Texture2D
       assembly: UnityEngine.CoreModule
-      name: dark metal (1)
-    second: {fileID: 2800000, guid: b0cae4fbca23c764b8bce3c65112ad0a, type: 3}
+      name: ScientistNeck
+    second: {fileID: 2800000, guid: 4d4f3d976cfce4b46b3ed1baf11019ab, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: ScientistPant
+    second: {fileID: 2800000, guid: 0b4428e57b2117f4f8171f2f79308cb2, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: ScientistShirt
+    second: {fileID: 2800000, guid: 8430909d340dcf54aa4543d8f54dd100, type: 3}
   materials:
     materialImportMode: 2
     materialName: 0
@@ -55,7 +80,7 @@ ModelImporter:
     isReadable: 0
   meshes:
     lODScreenPercentages: []
-    globalScale: 1.5
+    globalScale: 1
     meshCompression: 0
     addColliders: 0
     useSRGBMaterialColor: 1
@@ -108,7 +133,7 @@ ModelImporter:
     armStretch: 0.05
     legStretch: 0.05
     feetSpacing: 0
-    globalScale: 1.5
+    globalScale: 1
     rootMotionBoneName: 
     hasTranslationDoF: 0
     hasExtraRoot: 0

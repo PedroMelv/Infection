@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: f7ee7905a0aabf74a947b51baf8d200c
+guid: 63d3c393154e62547ae033a8d8f221c9
 ModelImporter:
   serializedVersion: 21300
   internalIDToNameTable: []
@@ -7,23 +7,13 @@ ModelImporter:
   - first:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
-      name: Board
-    second: {fileID: 2100000, guid: 03a854ea419829747bce6ce40010bceb, type: 2}
-  - first:
-      type: UnityEngine:Material
-      assembly: UnityEngine.CoreModule
-      name: Wood
-    second: {fileID: 2100000, guid: 9b7f120b505267042a1ec3d77b650d02, type: 2}
+      name: Plant6
+    second: {fileID: 2100000, guid: 2d6815a0f5b4c4c44968fe740c58d9e1, type: 2}
   - first:
       type: UnityEngine:Texture2D
       assembly: UnityEngine.CoreModule
-      name: Wood (1)
-    second: {fileID: 2800000, guid: 28316cd8373b63145a37769248c3cf58, type: 3}
-  - first:
-      type: UnityEngine:Texture2D
-      assembly: UnityEngine.CoreModule
-      name: dark metal (1)
-    second: {fileID: 2800000, guid: b0cae4fbca23c764b8bce3c65112ad0a, type: 3}
+      name: Plant6
+    second: {fileID: 2800000, guid: 8e9b510cc1f242644b60a37923fad8d1, type: 3}
   materials:
     materialImportMode: 2
     materialName: 0
@@ -55,7 +45,7 @@ ModelImporter:
     isReadable: 0
   meshes:
     lODScreenPercentages: []
-    globalScale: 1.5
+    globalScale: 1
     meshCompression: 0
     addColliders: 0
     useSRGBMaterialColor: 1
@@ -108,7 +98,7 @@ ModelImporter:
     armStretch: 0.05
     legStretch: 0.05
     feetSpacing: 0
-    globalScale: 1.5
+    globalScale: 1
     rootMotionBoneName: 
     hasTranslationDoF: 0
     hasExtraRoot: 0
