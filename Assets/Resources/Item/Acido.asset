@@ -1,0 +1,24 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fdb9e8fc1626dfa47b7bc268ef6ce0ec, type: 3}
+  m_Name: Acido
+  m_EditorClassIdentifier: 
+  item:
+    itemName: "\xC1cido"
+    canDrop: 1
+    canUseOnTrashbin: 0
+    specialUse: 0
+    itemPrefab: {fileID: 4989279765365250008, guid: 433025c5153016749947c2da6e8d4e61,
+      type: 3}
+    itemHandPrefab: {fileID: 7920622295748051079, guid: bfb22c723f2b0e14396289124fc70a28,
+      type: 3}
+    reloadTime: 0

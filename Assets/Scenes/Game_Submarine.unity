@@ -4663,7 +4663,8 @@ Transform:
   m_LocalPosition: {x: 8.37, y: 2.67, z: -88.53}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children: []
+  m_Children:
+  - {fileID: 1073458525}
   m_Father: {fileID: 543450652022197443}
   m_RootOrder: 65
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -4679,6 +4680,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: afaf73c5a946c0943a187ff767fc59a5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  plantDisplacement: {fileID: 1073458525}
+  acidPlant: {fileID: 11400000, guid: 55c8a3ac32fdf4c4cb482a1075fa0618, type: 2}
   mixerLights:
   - {fileID: 199587355}
   - {fileID: 199587354}
@@ -8971,10 +8974,25 @@ PrefabInstance:
       propertyPath: sceneViewId
       value: 6
       objectReference: {fileID: 0}
+    - target: {fileID: 3358737525911692435, guid: 20bd282ea346bc345ad546817eceb987,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 3732227695562962644, guid: 20bd282ea346bc345ad546817eceb987,
         type: 3}
       propertyPath: m_LocalPosition.y
       value: 0.61
+      objectReference: {fileID: 0}
+    - target: {fileID: 3820140382170421753, guid: 20bd282ea346bc345ad546817eceb987,
+        type: 3}
+      propertyPath: interactionName
+      value: Coloque a amostra
+      objectReference: {fileID: 0}
+    - target: {fileID: 4321871756581445857, guid: 20bd282ea346bc345ad546817eceb987,
+        type: 3}
+      propertyPath: interactionName
+      value: Coletar o sangue
       objectReference: {fileID: 0}
     - target: {fileID: 7467224757664538779, guid: 20bd282ea346bc345ad546817eceb987,
         type: 3}
@@ -9030,9 +9048,9 @@ MonoBehaviour:
         m_CallState: 2
   characterToInteract: 2
   canInteract: 1
-  interactionName: 
+  interactionName: "Aplique o \xE1cido"
   needItem: 1
-  itemToInteract: {fileID: 11400000, guid: c3d5e88ec7c0b3a409be3e92d9543c79, type: 2}
+  itemToInteract: {fileID: 11400000, guid: 55c8a3ac32fdf4c4cb482a1075fa0618, type: 2}
   removeItem: 1
   andAddAnother: 0
   itemToAdd: {fileID: 0}
@@ -13611,6 +13629,7 @@ GameObject:
   m_Component:
   - component: {fileID: 822262812}
   - component: {fileID: 822262811}
+  - component: {fileID: 822262813}
   m_Layer: 0
   m_Name: PlantMixerRecipes
   m_TagString: Untagged
@@ -13656,6 +13675,28 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 47
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &822262813
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 822262810}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ObservedComponentsFoldoutOpen: 1
+  Group: 0
+  prefixField: -1
+  Synchronization: 3
+  OwnershipTransfer: 0
+  observableSearch: 2
+  ObservedComponents: []
+  sceneViewId: 41
+  InstantiationId: 0
+  isRuntimeInstantiated: 0
 --- !u!1 &835316488
 GameObject:
   m_ObjectHideFlags: 0
@@ -16593,6 +16634,37 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1299240310}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1073458524
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1073458525}
+  m_Layer: 7
+  m_Name: PlantDisplacement
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1073458525
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1073458524}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: -0.829}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 276333769}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1085382373
@@ -24230,7 +24302,7 @@ PrefabInstance:
     - target: {fileID: 3809700575060249853, guid: 938741d13a0ce764e8ec2698ee05c584,
         type: 3}
       propertyPath: m_RootOrder
-      value: 11
+      value: 13
       objectReference: {fileID: 0}
     - target: {fileID: 3809700575060249853, guid: 938741d13a0ce764e8ec2698ee05c584,
         type: 3}
@@ -34224,7 +34296,7 @@ GameObject:
   - component: {fileID: 5835251101917986721}
   - component: {fileID: 2912090739416327826}
   - component: {fileID: 1550464957}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: DryWall2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -37205,7 +37277,7 @@ GameObject:
   - component: {fileID: 7323177289682173740}
   - component: {fileID: 81367969057114518}
   - component: {fileID: 1847124696}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: DryWall1
   m_TagString: Untagged
   m_Icon: {fileID: 0}

@@ -50,22 +50,27 @@ public class PlantMixerRecipes : MonoBehaviourPun
 
     private void Start()
     {
-        for (int i = 0; i < 9; i++)
+        if(PhotonNetwork.IsMasterClient)
         {
-            plantRecipes.Add(CreateFakeRecipe());
+            for (int i = 0; i < 9; i++)
+            {
+                plantRecipes.Add(CreateFakeRecipe());
+            }
+
+            plantRecipes.Add(CreateRecipe());
+
+            DrawRecipeBoard();
         }
-
-        plantRecipes.Add(CreateRecipe());
-
-        DrawRecipeBoard();
     }
 
     private void DrawRecipeBoard()
     {
-        List<PlantRecipe> allRecipes = plantRecipes;
+        List<PlantRecipe> allRecipes = new List<PlantRecipe>(plantRecipes);
 
         int subAmountMax = 4;
         int subAmount = 0;
+
+        string recipeBoard = "";
 
         recipeBoardText.text = "";
 
@@ -74,15 +79,23 @@ public class PlantMixerRecipes : MonoBehaviourPun
             int randomRecipe = Random.Range(0, allRecipes.Count);
             string plantName = allRecipes[randomRecipe].GetPlantRecipe();
 
-            if(Random.value < .5f && subAmount < subAmountMax && allRecipes[randomRecipe].fakeRecipe)
+            if (Random.value < .5f && subAmount < subAmountMax && allRecipes[randomRecipe].fakeRecipe)
             {
                 plantName = "<s>" + plantName + "</s>";
                 subAmount++;
             }
 
-            recipeBoardText.text += plantName + "\n";
+            recipeBoard += plantName + "\n";
             allRecipes.RemoveAt(randomRecipe);
         }
+
+        photonView.RPC(nameof(RPC_DrawRecipeBoard), RpcTarget.All, recipeBoard);
+    }
+
+    [PunRPC]
+    private void RPC_DrawRecipeBoard(string recipeBoard)
+    {
+        recipeBoardText.text = recipeBoard;
     }
 
     private PlantRecipe CreateFakeRecipe()

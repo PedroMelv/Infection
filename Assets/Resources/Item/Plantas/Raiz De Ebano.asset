@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: fdb9e8fc1626dfa47b7bc268ef6ce0ec, type: 3}
-  m_Name: RaizDeEbano
+  m_Name: Raiz De Ebano
   m_EditorClassIdentifier: 
   item:
     itemName: Raiz De Ebano
