@@ -107,6 +107,11 @@ PrefabInstance:
       propertyPath: m_IsTrigger
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 3713979027195280269, guid: f1ffac6fd23ac4540953448471ca4aad,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0.94
+      objectReference: {fileID: 0}
     - target: {fileID: 3906457530374875002, guid: f1ffac6fd23ac4540953448471ca4aad,
         type: 3}
       propertyPath: m_LocalPosition.y
@@ -131,11 +136,6 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Shadows.m_Type
       value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 7760851474849701388, guid: f1ffac6fd23ac4540953448471ca4aad,
-        type: 3}
-      propertyPath: m_CullingMask.m_Bits
-      value: 32511
       objectReference: {fileID: 0}
     - target: {fileID: 8612205419681235562, guid: f1ffac6fd23ac4540953448471ca4aad,
         type: 3}

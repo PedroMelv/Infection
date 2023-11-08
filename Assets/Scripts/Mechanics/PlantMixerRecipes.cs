@@ -1,11 +1,13 @@
 using Photon.Pun;
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UIElements;
 
 public class PlantMixerRecipes : MonoBehaviourPun
 {
+    [SerializeField] private TextMeshPro recipeBoardText;
     [System.Serializable]
     private struct PlantRecipe
     {
@@ -16,6 +18,19 @@ public class PlantMixerRecipes : MonoBehaviourPun
         {
             this.fakeRecipe = fakeRecipe;
             this.plants = plants;
+        }
+
+        public string GetPlantRecipe()
+        {
+            string plantRecipe = "";
+
+            for (int i = 0; i < plants.Length; i++)
+            {
+                if (i != 0) plantRecipe += " + ";
+                plantRecipe += plants[i].itemName;
+            }
+
+            return plantRecipe;
         }
     }
 
@@ -35,12 +50,39 @@ public class PlantMixerRecipes : MonoBehaviourPun
 
     private void Start()
     {
-        for (int i = 0; i < 3; i++)
+        for (int i = 0; i < 9; i++)
         {
             plantRecipes.Add(CreateFakeRecipe());
         }
 
         plantRecipes.Add(CreateRecipe());
+
+        DrawRecipeBoard();
+    }
+
+    private void DrawRecipeBoard()
+    {
+        List<PlantRecipe> allRecipes = plantRecipes;
+
+        int subAmountMax = 4;
+        int subAmount = 0;
+
+        recipeBoardText.text = "";
+
+        while (allRecipes.Count > 0)
+        {
+            int randomRecipe = Random.Range(0, allRecipes.Count);
+            string plantName = allRecipes[randomRecipe].GetPlantRecipe();
+
+            if(Random.value < .5f && subAmount < subAmountMax && allRecipes[randomRecipe].fakeRecipe)
+            {
+                plantName = "<s>" + plantName + "</s>";
+                subAmount++;
+            }
+
+            recipeBoardText.text += plantName + "\n";
+            allRecipes.RemoveAt(randomRecipe);
+        }
     }
 
     private PlantRecipe CreateFakeRecipe()

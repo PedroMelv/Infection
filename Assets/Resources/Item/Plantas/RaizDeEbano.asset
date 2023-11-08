@@ -13,8 +13,9 @@ MonoBehaviour:
   m_Name: RaizDeEbano
   m_EditorClassIdentifier: 
   item:
-    itemName: RaizDeEbano
+    itemName: Raiz De Ebano
     canDrop: 1
+    canUseOnTrashbin: 1
     specialUse: 4
     itemPrefab: {fileID: 6423780929828457925, guid: 8518dad5c2b9d5a48a9e681597b15c17,
       type: 3}

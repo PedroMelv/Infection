@@ -134,6 +134,8 @@ public class EnemyMovement : MovementBase
             return;
         }
 
+        anim.SetBool("IsRunning", sprinting);
+
         HandleSpeed();
         HandleRotation();
         HandleMovement();
@@ -383,6 +385,7 @@ public class EnemyMovement : MovementBase
                 Debug.Log("Reached Destination");
                 if (timeStunned < 0f)
                 {
+                    anim.SetBool("IsWalking", false);
                     fleeing = false;
                     ChangeState(MovementAIStates.NONE);
                     health.CallForceHeal(1f);

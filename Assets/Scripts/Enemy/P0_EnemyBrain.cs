@@ -28,6 +28,8 @@ public class P0_EnemyBrain : EnemyBrain
     [SerializeField] private bool enemyDebugging;
     [SerializeField] private Transform followDebug;
 
+    private Animator anim;
+
     public override void Start()
     {
         if (!PhotonNetwork.LocalPlayer.IsMasterClient) return;
@@ -36,6 +38,8 @@ public class P0_EnemyBrain : EnemyBrain
 
         screamCooldown = screamMaxCooldown;
         attackCooldown = attackMaxCooldown;
+
+        anim = GetComponentInChildren<Animator>();
 
         GetComponent<EnemyHealth>().OnDie += () =>
         {
@@ -72,6 +76,7 @@ public class P0_EnemyBrain : EnemyBrain
             {
                 if(currentTarget != null)
                 {
+                    anim.SetTrigger("Attack");
                     CallPlayAttack();
                     currentTarget.GetComponent<PlayerHealth>().CallTakeDamage(1, Vector3.zero);
                 }

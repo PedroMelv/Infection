@@ -3,7 +3,12 @@ guid: 15129e16a6242734aa9c815654b7b51f
 ModelImporter:
   serializedVersion: 21300
   internalIDToNameTable: []
-  externalObjects: {}
+  externalObjects:
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: walkie talkie (1)
+    second: {fileID: 2800000, guid: 3e089093d743ace468be1c6ea4c5932b, type: 3}
   materials:
     materialImportMode: 2
     materialName: 0

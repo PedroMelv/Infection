@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2289422089807794052}
   - component: {fileID: 8053373897526646709}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: SeringaCheiaHandItem
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -134,6 +134,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -7511558181221131132, guid: cf3dc32320a9507419c69f3aaa940e5e,
         type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -7511558181221131132, guid: cf3dc32320a9507419c69f3aaa940e5e,
+        type: 3}
       propertyPath: m_Materials.Array.data[0]
       value: 
       objectReference: {fileID: 2100000, guid: 23ce0406d744d8a4f95a621bfa126bed, type: 2}
@@ -141,6 +146,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: Syringe
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: cf3dc32320a9507419c69f3aaa940e5e,
+        type: 3}
+      propertyPath: m_Layer
+      value: 8
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: cf3dc32320a9507419c69f3aaa940e5e, type: 3}
