@@ -8,9 +8,7 @@ public class EnemyBrain : MonoBehaviourPun
     protected EnemyMovement enemyMovement;
 
     protected Queue<BaseBehaviour> behaviours = new Queue<BaseBehaviour>();
-
     protected BaseBehaviour[] listBehaviours;
-
     protected BaseBehaviour curBehaviour;
 
     protected Transform currentTarget;

@@ -9022,6 +9022,14 @@ PrefabInstance:
       propertyPath: m_Center.z
       value: -0.15999997
       objectReference: {fileID: 0}
+    - target: {fileID: 550454565, guid: 20bd282ea346bc345ad546817eceb987, type: 3}
+      propertyPath: volume
+      value: 0.269
+      objectReference: {fileID: 0}
+    - target: {fileID: 550454565, guid: 20bd282ea346bc345ad546817eceb987, type: 3}
+      propertyPath: stepAmount
+      value: 4
+      objectReference: {fileID: 0}
     - target: {fileID: 1376725786569719320, guid: 20bd282ea346bc345ad546817eceb987,
         type: 3}
       propertyPath: followDebug
@@ -9175,7 +9183,7 @@ PrefabInstance:
     - target: {fileID: 3358737525911692435, guid: 20bd282ea346bc345ad546817eceb987,
         type: 3}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3732227695562962644, guid: 20bd282ea346bc345ad546817eceb987,
         type: 3}
@@ -9185,7 +9193,22 @@ PrefabInstance:
     - target: {fileID: 3820140382170421753, guid: 20bd282ea346bc345ad546817eceb987,
         type: 3}
       propertyPath: interactionName
-      value: Coloque a amostra
+      value: Coloque a amostra de sangue
+      objectReference: {fileID: 0}
+    - target: {fileID: 3820140382170421753, guid: 20bd282ea346bc345ad546817eceb987,
+        type: 3}
+      propertyPath: OnInteract.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 1472829602}
+    - target: {fileID: 3820140382170421753, guid: 20bd282ea346bc345ad546817eceb987,
+        type: 3}
+      propertyPath: OnInteract.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: DeliverBlood
+      objectReference: {fileID: 0}
+    - target: {fileID: 3820140382170421753, guid: 20bd282ea346bc345ad546817eceb987,
+        type: 3}
+      propertyPath: OnInteract.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: GameFinishingHandler, Assembly-CSharp
       objectReference: {fileID: 0}
     - target: {fileID: 4321871756581445857, guid: 20bd282ea346bc345ad546817eceb987,
         type: 3}
@@ -9232,9 +9255,9 @@ MonoBehaviour:
   OnInteract:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 550454562}
-        m_TargetAssemblyTypeName: CustomEvents, Assembly-CSharp
-        m_MethodName: GoBackToMenu
+      - m_Target: {fileID: 1472829602}
+        m_TargetAssemblyTypeName: GameFinishingHandler, Assembly-CSharp
+        m_MethodName: DeliverAcid
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -22453,6 +22476,38 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!1 &1472829600 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1376725786569719322, guid: 20bd282ea346bc345ad546817eceb987,
+    type: 3}
+  m_PrefabInstance: {fileID: 550454560}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1472829601 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 3820140382170421753, guid: 20bd282ea346bc345ad546817eceb987,
+    type: 3}
+  m_PrefabInstance: {fileID: 550454560}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 550454561}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ec46582b44758a945b12cc679e218236, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &1472829602
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1472829600}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7afc1d31390c2184482154301159773c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  bloodInteractable: {fileID: 1472829601}
+  acidInteractable: {fileID: 550454563}
 --- !u!1 &1475265633
 GameObject:
   m_ObjectHideFlags: 0
@@ -27554,10 +27609,12 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   m_text: "Objetivos para salvar o cientista:\n\n*N\xE3o podemos esquecer da import\xE2ncia
-    \ndo \xE1cido e dos solventes*\n\n1 - Encontrar a seringa;\n2 - Fabricar um \xE1cido
-    potente; \n3 - Ferir o monstro para aplicar o \xE1cido;\n4 - Coletar o sangue
-    ap\xF3s aplica\xE7\xE3o do \xE1cido;\n5 - Examinar a amostra de sangue no microsc\xF3pio;\n6
-    - Aplicar o soro desenvolvido e analisado no monstro."
+    \ndo \xE1cido e dos solventes quando utilizar as plantas, \ndeixamos um quadro
+    com algumas receitas \nque temos que testar*\n\n1 - Encontrar a seringa;\n2 -
+    Fabricar um \xE1cido potente usando as plantas que temos; \n3 - Ferir o monstro
+    para aplicar o \xE1cido;\n4 - Coletar o sangue ap\xF3s aplica\xE7\xE3o do \xE1cido;\n5
+    - Examinar a amostra de sangue no microsc\xF3pio;\n6 - Aplicar o soro desenvolvido
+    e analisado no monstro."
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -27584,7 +27641,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 1.35
+  m_fontSize: 1.15
   m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -33407,7 +33464,7 @@ PrefabInstance:
     - target: {fileID: -8679921383154817045, guid: 63d3c393154e62547ae033a8d8f221c9,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0.42999944
+      value: -0.195
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 63d3c393154e62547ae033a8d8f221c9,
         type: 3}
@@ -33417,7 +33474,7 @@ PrefabInstance:
     - target: {fileID: -8679921383154817045, guid: 63d3c393154e62547ae033a8d8f221c9,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: -0.7499968
+      value: -0.614
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 63d3c393154e62547ae033a8d8f221c9,
         type: 3}

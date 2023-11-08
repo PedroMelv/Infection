@@ -656,6 +656,11 @@ PrefabInstance:
       propertyPath: playerBody
       value: 
       objectReference: {fileID: 1386258782440763292}
+    - target: {fileID: 3763245986587800236, guid: f1ffac6fd23ac4540953448471ca4aad,
+        type: 3}
+      propertyPath: interactRange
+      value: 3
+      objectReference: {fileID: 0}
     - target: {fileID: 3906457530374875002, guid: f1ffac6fd23ac4540953448471ca4aad,
         type: 3}
       propertyPath: m_LocalPosition.y

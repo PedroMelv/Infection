@@ -79,9 +79,15 @@ public class GameNetwork : MonoBehaviourPunCallbacks
         playerObjects.Add(playerObj);
     }
 
-    
     private void OnDrawGizmos()
     {
         Gizmos.DrawWireSphere(spawnPos, .25f);
+    }
+
+    public override void OnDisconnected(DisconnectCause cause)
+    {
+        base.OnDisconnected(cause);
+
+        SceneManager.LoadScene(0);
     }
 }
