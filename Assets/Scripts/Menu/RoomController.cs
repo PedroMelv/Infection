@@ -82,23 +82,11 @@ public class RoomController : MonoBehaviourPunCallbacks
             playerConfig.Add("c", 0);
         }
 
-        for (int i = 0; i < playersOnline.Length; i++)
-        {
-            ExitGames.Client.Photon.Hashtable config = playersOnline[i].CustomProperties;
-
-            if (playersOnline[i].IsMasterClient)
-            {
-                cachedPlayerOneCharacter = (int)config["c"];
-            }
-            else
-            {
-                cachedPlayerTwoCharacter = (int)config["c"];
-            }
-        }
-
+        PhotonNetwork.LocalPlayer.SetCustomProperties(playerConfig);
         
 
-        PhotonNetwork.LocalPlayer.SetCustomProperties(playerConfig);
+        cachedPlayerOneCharacter = (int)playersOnline[0].CustomProperties["c"];
+        if(playersOnline.Length == 2)cachedPlayerTwoCharacter = (int)playersOnline[1].CustomProperties["c"];
 
         lobby.HideLobby();
         roomAreaObj.SetActive(true);
@@ -145,6 +133,8 @@ public class RoomController : MonoBehaviourPunCallbacks
     }
     public override void OnPlayerPropertiesUpdate(Player targetPlayer, ExitGames.Client.Photon.Hashtable changedProps)
     {
+        Debug.Log(targetPlayer.NickName + " changed character to: " + (int)changedProps["c"]);
+        
         if (targetPlayer.IsMasterClient)
         {
             cachedPlayerOneCharacter = (int)changedProps["c"];
@@ -154,6 +144,7 @@ public class RoomController : MonoBehaviourPunCallbacks
             cachedPlayerTwoCharacter = (int)changedProps["c"];
         }
     }
+
     #endregion
 
     private void UpdateUI()

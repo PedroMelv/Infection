@@ -9095,6 +9095,11 @@ PrefabInstance:
       propertyPath: sprintMultiplier
       value: 1.65
       objectReference: {fileID: 0}
+    - target: {fileID: 1376725786569719321, guid: 20bd282ea346bc345ad546817eceb987,
+        type: 3}
+      propertyPath: timeStunnedOnFlee
+      value: 30
+      objectReference: {fileID: 0}
     - target: {fileID: 1376725786569719322, guid: 20bd282ea346bc345ad546817eceb987,
         type: 3}
       propertyPath: m_Name
@@ -14382,10 +14387,10 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "\tL\xEDquen Estelar: \xC9 uma planta bastante peculiar, possui galhos
-    e flores no formato de estrelas. \n\tEste l\xEDquen cresce em rochas em \xE1reas
-    de baixa luminosidade e produz uma subst\xE2ncia que pode ser utilizada como
-    solvente em laborat\xF3rios."
+  m_text: "\tGinseng: Esta planta \xE9 conhecida por suas propriedades revitalizantes
+    e \xE9 usada na medicina tradicional para aumentar a energia e fortalecer o sistema
+    imunol\xF3gico.\n\tO Ginseng \xE9 caracterizado por uma planta rasteira com um
+    fruto no meio."
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -18973,9 +18978,10 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   m_text: "\tL\xEDquen Estelar: \xC9 uma planta bastante peculiar, possui galhos
-    e flores no formato de estrelas. \n\tEste l\xEDquen cresce em rochas em \xE1reas
-    de baixa luminosidade e produz uma subst\xE2ncia que pode ser utilizada como
-    solvente em laborat\xF3rios."
+    e flores no formato de estrelas, quando combinado com outros componentes, cria
+    um solvente poderoso. \n\tEste l\xEDquen cresce em rochas em \xE1reas de baixa
+    luminosidade e produz uma subst\xE2ncia que pode ser utilizada como solvente
+    em laborat\xF3rios."
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}

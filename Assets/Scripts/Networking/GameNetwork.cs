@@ -48,7 +48,7 @@ public class GameNetwork : MonoBehaviourPunCallbacks
             }
         }
 
-        if (everyoneIsDead) { SceneManager.LoadScene(1); }
+        if (everyoneIsDead) { SceneManager.LoadScene(0); }
     }
 
     [PunRPC]
@@ -75,7 +75,10 @@ public class GameNetwork : MonoBehaviourPunCallbacks
 
         GameObject cameraHolder = Instantiate(cameraPrefab, transform.position, Quaternion.identity);
         cameraHolder.GetComponentInChildren<PlayerCamera>().SetOwner(pInput);
+    }
 
+    public void AddMe(GameObject playerObj)
+    {
         playerObjects.Add(playerObj);
     }
 
@@ -89,5 +92,13 @@ public class GameNetwork : MonoBehaviourPunCallbacks
         base.OnDisconnected(cause);
 
         SceneManager.LoadScene(0);
+    }
+
+    public override void OnPlayerLeftRoom(Player otherPlayer)
+    {
+        base.OnPlayerLeftRoom(otherPlayer);
+
+        PhotonNetwork.Disconnect();
+
     }
 }

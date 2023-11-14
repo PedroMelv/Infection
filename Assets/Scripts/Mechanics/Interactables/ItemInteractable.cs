@@ -21,8 +21,8 @@ public class ItemInteractable : Interactable
 
         if (pInventory != null)
         {
-            pInventory.AddItem(itemScriptableObject.item);
-            if(destroyOnUse) CallDestroy();
+            if(pInventory.AddItem(itemScriptableObject.item))
+                if(destroyOnUse) CallDestroy();
         }
     }
 

@@ -67,15 +67,24 @@ public class PlayerInventory : MonoBehaviour
     {
         bool couldAdd = false;
 
-        for (int i = 0; i < slots.Length; i++)
+        if (slots[itemSlotSelected] != null && slots[itemSlotSelected].itemPrefab == null)
         {
-            if (slots[i] != null && slots[i].itemPrefab == null)
+            slots[itemSlotSelected] = addItem;
+            couldAdd = true;
+        }
+        else
+        {
+            for (int i = 0; i < slots.Length; i++)
             {
-                slots[i] = addItem;
-                couldAdd = true;
-                break;
+                if (slots[i] != null && slots[i].itemPrefab == null)
+                {
+                    slots[i] = addItem;
+                    couldAdd = true;
+                    break;
+                }
             }
         }
+
 
         OnAddItem?.Invoke(couldAdd, addItem);
         return couldAdd;
@@ -134,6 +143,8 @@ public class PlayerInventory : MonoBehaviour
 
             slot = new Item();
             OnDropItem?.Invoke();
+
+            ChangeItemSlot();
 
             return droppedItem;
         }

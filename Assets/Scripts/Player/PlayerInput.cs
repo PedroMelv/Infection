@@ -54,6 +54,8 @@ public class PlayerInput : MonoBehaviourPun
     private PlayerHealth pHealth;
     private PlayerMovement pMove;
 
+    private bool added;
+
     public bool canInput = true;
 
     private void Awake()
@@ -70,6 +72,8 @@ public class PlayerInput : MonoBehaviourPun
     private void Update()
     {
         if (photonView.IsMine == false) return;
+
+        if (added) FindObjectOfType<GameNetwork>().AddMe(this.gameObject);
 
         if(pHealth.isDead || !pMove.canMove || !canInput)
         {
