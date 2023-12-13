@@ -64,6 +64,7 @@ MonoBehaviour:
   - RPC_CheckPlants
   - RPC_DrawRecipeBoard
   - RPC_CloseRoom
+  - RPC_RemoveInteractable
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 1

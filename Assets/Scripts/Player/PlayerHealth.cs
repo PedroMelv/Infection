@@ -16,6 +16,7 @@ public class PlayerHealth : BaseHealth
         damageVolume = GameObject.FindGameObjectWithTag("DamageVolume").GetComponent<Volume>();
 
         OnDie += () => CallOnDie();
+        OnHeal += () => RemoveInteractable();
     }
 
     public override void Update()
@@ -34,5 +35,16 @@ public class PlayerHealth : BaseHealth
     private void RPC_OnDie()
     {
         interactOnDeath.SetActive(true);
+    }
+
+    private void RemoveInteractable()
+    {
+        photonView.RPC(nameof(RPC_RemoveInteractable), RpcTarget.All);
+    }
+
+    [PunRPC]
+    private void RPC_RemoveInteractable()
+    {
+        interactOnDeath.SetActive(false);
     }
 }

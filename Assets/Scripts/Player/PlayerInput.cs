@@ -148,9 +148,9 @@ public class PlayerInput : MonoBehaviourPun
 
         if (Input.GetKeyDown(KeyCode.Tab)) OnTabPressed?.Invoke();
         
-        if (Input.GetKeyDown(KeyCode.F))   OnInteractPress?.Invoke();
-        if (Input.GetKey(KeyCode.F))       OnInteractHold?.Invoke();
-        if (Input.GetKeyUp(KeyCode.F))     OnInteractRelease?.Invoke();
+        if (Input.GetKeyDown(KeyCode.Mouse0))   OnInteractPress?.Invoke();
+        if (Input.GetKey(KeyCode.Mouse0))       OnInteractHold?.Invoke();
+        if (Input.GetKeyUp(KeyCode.Mouse0))     OnInteractRelease?.Invoke();
     }
 
     public Vector2 MoveInput()

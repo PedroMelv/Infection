@@ -14,6 +14,11 @@ public class MenuController : MonoBehaviour
         lobby = GetComponent<LobbyController>();
     }
 
+    private void Start()
+    {
+        Cursor.lockState = CursorLockMode.None;
+    }
+
     public void PlayButton()
     {
         QuitMenu();

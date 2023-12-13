@@ -118,10 +118,10 @@ public class PlayerInventory : MonoBehaviour
             Transform cameraTransform = pInput.cameraPos.transform;
             Vector3 playerForward = pInput.playerLookingDir.forward;
             
-            Vector3 dir = (useForward) ? playerForward * 2.25f : Vector3.up;
+            Vector3 dir = (useForward) ? playerForward : Vector3.up;
 
 
-            float dstToTarget = Vector3.Distance(cameraTransform.position, cameraTransform.position + dir);
+            float dstToTarget = Vector3.Distance(cameraTransform.position, cameraTransform.position + dir * .5f);
             bool hittedAnything = Physics.Raycast(cameraTransform.position, dir, out RaycastHit hit, dstToTarget, dropLayerMask);
             Debug.DrawLine(cameraTransform.position, cameraTransform.position + dir, Color.green, 300f);
 
@@ -129,8 +129,8 @@ public class PlayerInventory : MonoBehaviour
 
             if (hittedAnything)
             {
-                spawnPos = hit.point + hit.normal * .5f;
                 Debug.Log("Hitted: " + spawnPos);
+                return null;
             }
             
             int itemIndex = ItemsManager.Instance.GetItemIndex(slot);
@@ -140,6 +140,7 @@ public class PlayerInventory : MonoBehaviour
             GameObject droppedItem = PhotonNetwork.Instantiate("Prefabs/" + slot.itemPrefab.name, spawnPos, Quaternion.identity);
 
             droppedItem.GetComponent<ItemInteractable>().SetItem(itemIndex);
+            droppedItem.GetComponent<Rigidbody>().AddForce((Vector3.up * .35f + playerForward) * 5.25f, ForceMode.VelocityChange);
 
             slot = new Item();
             OnDropItem?.Invoke();

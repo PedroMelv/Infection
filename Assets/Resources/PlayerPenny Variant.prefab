@@ -159,6 +159,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8739034638490398706, guid: f1ffac6fd23ac4540953448471ca4aad,
         type: 3}
+      propertyPath: Synchronization
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8739034638490398706, guid: f1ffac6fd23ac4540953448471ca4aad,
+        type: 3}
       propertyPath: ObservedComponents.Array.size
       value: 6
       objectReference: {fileID: 0}
